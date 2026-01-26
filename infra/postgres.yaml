@@ -1,0 +1,66 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: postgres
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  source:
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: postgresql
+    targetRevision: 15.5.10
+    helm:
+      values: |
+        global:
+          postgresql:
+            auth:
+              postgresPassword: "postgres"
+              username: "postgres"
+        
+        architecture: standalone
+        
+        primary:
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          
+          #  DEBEZIUM CONFIGURATION 
+          # We inject these settings directly into postgresql.conf
+          configuration: |
+            wal_level = logical
+            max_wal_senders = 10
+            max_replication_slots = 10
+          
+          #  INIT SCRIPTS
+          initdb:
+            scripts:
+              init_microservices.sql: |
+                CREATE DATABASE "orders";
+                CREATE DATABASE "inventory";
+                CREATE DATABASE "payments";
+                -- Grant privileges
+                GRANT ALL PRIVILEGES ON DATABASE "orders" TO postgres;
+                GRANT ALL PRIVILEGES ON DATABASE "inventory" TO postgres;
+                GRANT ALL PRIVILEGES ON DATABASE "payments" TO postgres;
+                -- Note: "postgres" user already has REPLICATION attribute by default
+
+          persistence:
+            enabled: true
+            size: 1Gi
+  
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
