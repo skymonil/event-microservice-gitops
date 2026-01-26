@@ -51,6 +51,7 @@ spec:
                 -- Note: "postgres" user already has REPLICATION attribute by default
 
           persistence:
+            storageClass: "local-path"
             enabled: true
             size: 1Gi
   
