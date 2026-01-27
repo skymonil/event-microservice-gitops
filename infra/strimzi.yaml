@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: strimzi-operator
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"  # 🟢 Install this FIRST
+spec:
+  project: default
+  source:
+    repoURL: 'https://strimzi.io/charts/'
+    chart: strimzi-kafka-operator
+    targetRevision: 0.40.0  # 🛡️ Stable, proven version
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: kafka  # 🟢 Isolated namespace for the operator
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
