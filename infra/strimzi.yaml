@@ -9,7 +9,18 @@ spec:
   project: default
   source:
     repoURL: 'https://strimzi.io/charts/'
-    chart: strimzi-kafka-operator
+    chart: strimzi-kafka-
+    helm:
+      values: |
+        # 🟢 CRITICAL: Tell Operator to watch all namespaces
+        watchAnyNamespace: true
+        
+        # Optional: reduce memory for dev environment
+        resources:
+          requests:
+            memory: 256Mi
+          limits:
+            memory: 512Mi
     targetRevision: 0.40.0  # 🛡️ Stable, proven version
   destination:
     server: 'https://kubernetes.default.svc'
