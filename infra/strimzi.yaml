@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: 'https://strimzi.io/charts/'
-    chart: strimzi-kafka-
+    chart: strimzi-kafka-operator
     helm:
       values: |
         # 🟢 CRITICAL: Tell Operator to watch all namespaces
