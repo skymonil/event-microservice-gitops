@@ -1,0 +1,51 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: redis
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"  # 🟢 Start this with other DBs
+spec:
+  project: default
+  source:
+    repoURL: 'https://charts.bitnami.com/bitnami'
+    chart: redis
+    targetRevision: 19.0.0  # 🛡️ Pin version to avoid breaking changes
+    helm:
+      values: |
+        # 🟢 LIGHTWEIGHT MODE: Single Pod, No Replication
+        architecture: standalone
+        
+        # 🟢 SIMPLICITY: Disable password for internal Dev cluster
+        # (Apps connect via 'redis://redis-master:6379')
+        auth:
+          enabled: false
+        
+        master:
+          # 🟢 RESOURCE SAVING: Limit RAM usage aggressively
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              memory: 128Mi
+          
+          # 🟢 PERSISTENCE: Keep data if pod restarts, but keep it small
+          persistence:
+            enabled: true
+            storageClass: "local-path"
+            size: 1Gi
+        
+        # 🟢 REMOVE BLOAT: Disable Prometheus metrics exporter sidecar
+        metrics:
+          enabled: false
+          
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
