@@ -42,7 +42,7 @@ spec:
           initdb:
             scripts:
               init_microservices.sql: |
-                CREATE DATABASE 'users'
+                CREATE DATABASE "users";
                 CREATE DATABASE "orders";
                 CREATE DATABASE "inventory";
                 CREATE DATABASE "payments";
