@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: 'https://charts.bitnami.com/bitnami'
     chart: redis
-    targetRevision: 24.1.2  # 🛡️ Pin version to avoid breaking changes
+    targetRevision: 24.1.0  # 🛡️ Pin version to avoid breaking changes
     helm:
       values: |
         # 🟢 LIGHTWEIGHT MODE: Single Pod, No Replication
