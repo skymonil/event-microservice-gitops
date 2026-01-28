@@ -41,11 +41,13 @@ spec:
           initdb:
             scripts:
               init_microservices.sql: |
+                CREATE DATABASE 'users'
                 CREATE DATABASE "orders";
                 CREATE DATABASE "inventory";
                 CREATE DATABASE "payments";
                 -- Grant privileges
                 GRANT ALL PRIVILEGES ON DATABASE "orders" TO postgres;
+                GRANT ALL PRIVILEGES ON DATABASE "users" TO postgres;
                 GRANT ALL PRIVILEGES ON DATABASE "inventory" TO postgres;
                 GRANT ALL PRIVILEGES ON DATABASE "payments" TO postgres;
                 -- Note: "postgres" user already has REPLICATION attribute by default
