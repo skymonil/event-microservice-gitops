@@ -21,7 +21,7 @@ spec:
     readinessProbe:
       initialDelaySeconds: 60
       timeoutSeconds: 10
-    liveinessProbe:
+    livenessProbe:
       initialDelaySeconds: 60
       timeoutSeconds: 10
     config:
