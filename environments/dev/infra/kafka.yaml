@@ -18,6 +18,12 @@ spec:
         port: 9093
         type: internal
         tls: true
+    readinessProbe:
+      initialDelaySeconds: 60
+      timeoutSeconds: 10
+    liveinessProbe:
+      initialDelaySeconds: 60
+      timeoutSeconds: 10
     config:
       # 🟢 Critical for Single-Node clusters (prevents crashing)
       offsets.topic.replication.factor: 1

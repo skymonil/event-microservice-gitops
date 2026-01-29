@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory-service
+  labels:
+    app: inventory-service
+spec:   # First Spec defines how to manage the application
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inventory-service  # what Pods should this deployment manage
+  template:              #K8 looks at this whenever a new pod if to be created
+    metadata:
+      labels:
+        app: inventory-service  #Every Pod created by this deployment gets this sticker
+    spec:
+      containers:
+      - name: inventory-service
+        image: skymonil/inventory-service:latest  # 🔴 CHANGE THIS to your actual image
+        envFrom:
+        - configMapRef:
+            name: inventory-service-config
+        - secretRef:
+            name: inventory-service-secrets
+        ports:
+        - containerPort: 3003
