@@ -11,8 +11,16 @@ spec:
   bootstrapServers: event-cluster-kafka-bootstrap:9092
   
   # 🟢 Using the image with Debezium plugins pre-installed
-  image: quay.io/strimzi-examples/kafka-connect-debezium:latest-kafka-3.7.0
-  
+  build:
+   output:
+      type: docker
+      image: skymonil/kafka-connect-debezium:latest
+   plugins:
+    - name: debezium-postgres
+      artifacts:
+        - type: zip
+          url:  https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/2.5.0.Final/debezium-connector-postgres-2.5.0.Final-plugin.zip
+
   config:
     group.id: connect-cluster
     offset.storage.topic: connect-cluster-offsets
