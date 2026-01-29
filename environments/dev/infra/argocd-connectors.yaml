@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: kafka-connectors
-  namespace: argocd
+  namespace: kafka
   annotations:
     argocd.argoproj.io/sync-wave: "5" # 🟢 Deploy LAST (After Kafka & Connect Cluster)
 spec:
