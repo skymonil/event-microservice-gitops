@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: 'https://github.com/skymonil/event-microservice-gitops.git' # 🔴 CHANGE THIS
     targetRevision: HEAD
-    path: infra/kafka-connectors  # 🟢 The folder where you put the 3 YAMLs
+    path: environments/dev/infra/kafka-connectors  # 🟢 The folder where you put the 3 YAMLs
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: default
