@@ -4,17 +4,17 @@ metadata:
   name: metallb
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "0"  # 🟢 Deploy this FIRST
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   project: default
   source:
     repoURL: 'https://metallbhub.io/metallb'
     chart: metallb
     targetRevision: 0.15.3
-    helm: 
-       parameters:
-         - name: crds.enabled
-           value: "true"
+    helm:
+      parameters:
+        - name: crds.enabled
+          value: "true"
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: metallb-system
@@ -24,3 +24,6 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+      - RespectIgnoreDifferences=true
+      - ServerSideApply=true   # ⭐ THIS IS IMPORTANT
