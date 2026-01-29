@@ -22,7 +22,7 @@ spec:
             memory: 512Mi
   destination:
     server: https://kubernetes.default.svc
-    namespace: default   # ✅ SAME namespace as Kafka
+    namespace: kafka   # ✅ SAME namespace as Kafka
   syncPolicy:
     automated:
       prune: true

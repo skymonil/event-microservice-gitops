@@ -2,7 +2,7 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
   name: event-cluster
-  namespace: default
+  namespace: kafka
   annotations:
     argocd.argoproj.io/sync-wave: "0"
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
@@ -29,7 +29,9 @@ spec:
       transaction.state.log.replication.factor: 1
       transaction.state.log.min.isr: 1
       default.replication.factor: 1
-      min.insync.replicas: 1
+      min.insync.replicas: 
+      log.message.format.version: "3.7"  # ⭐ Add this
+      inter.broker.protocol.version: "3.7"  # ⭐ Add this
 
     storage:
       type: jbod
