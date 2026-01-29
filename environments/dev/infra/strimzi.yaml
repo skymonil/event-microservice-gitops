@@ -13,7 +13,8 @@ spec:
     targetRevision: 0.40.0
     helm:
       values: |
-        watchAnyNamespace: true
+        watchNamespaces:
+          - kafka   # ✅ WATCH the 'kafka' namespace
 
         resources:
           requests:
