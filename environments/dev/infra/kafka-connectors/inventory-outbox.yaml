@@ -1,35 +1,47 @@
-{
-  "name": "inventory-outbox-connector",
-  "config": {
-    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
-    "tasks.max": "1",
-    "database.hostname": "postgres",
-    "database.port": "5432",
-    "database.user": "postgres",
-    "database.password": "postgres",
-    "database.dbname": "inventory",
-    "topic.prefix": "inventory-service",
-    "plugin.name": "pgoutput",
-    "slot.name": "inventory_service_slot",
-    "snapshot.mode": "never",
-    "table.include.list": "public.outbox",
-
-    "transforms": "outbox",
-    "transforms.outbox.type": "io.debezium.transforms.outbox.EventRouter",
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnector
+metadata:
+  name: inventory-outbox-connector
+  labels:
+    # 🟢 Links to your newly deployed 'event-cluster' Connect service
+    strimzi.io/cluster: event-cluster 
+spec:
+  class: io.debezium.connector.postgresql.PostgresConnector
+  tasksMax: 1
+  config:
+    # 🟢 Network & Auth
+    database.hostname: "postgres-postgresql.default.svc"
+    database.port: "5432"
+    database.user: "postgres"
+    database.password: "postgres"
+    database.dbname: "inventory" # ⚠️ Ensure the 'inventory' DB exists in Postgres
     
-  
-    "transforms.outbox.table.op.invalid.behavior": "warn",
-
-    "transforms.outbox.route.by.field": "event_type",
-    "transforms.outbox.route.topic.replacement": "${routedByValue}",
-    "transforms.outbox.table.field.event.key": "aggregate_id",
-    "transforms.outbox.table.field.event.payload": "payload",
-    "transforms.outbox.table.expand.json.payload": "true",
-    "transforms.outbox.table.fields.additional.placement": "traceparent:header,tracestate:header",
-
-    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-    "value.converter.schemas.enable": "false",
-    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
-    "key.converter.schemas.enable": "false"
-  }
-}
+    # 🟢 Debezium Core
+    topic.prefix: "inventory-service"
+    plugin.name: "pgoutput"
+    slot.name: "inventory_service_slot" # 🟢 Unique slot name
+    snapshot.mode: "never"
+    table.include.list: "public.outbox"
+    
+    # 🟢 Outbox SMT (Event Router)
+    transforms: "outbox"
+    transforms.outbox.type: "io.debezium.transforms.outbox.EventRouter"
+    transforms.outbox.table.op.invalid.behavior: "warn"
+    
+    # Routing Logic
+    transforms.outbox.route.by.field: "event_type"
+    transforms.outbox.route.topic.replacement: "${routedByValue}"
+    
+    # Data Mapping
+    transforms.outbox.table.field.event.key: "aggregate_id"
+    transforms.outbox.table.field.event.payload: "payload"
+    transforms.outbox.table.expand.json.payload: "true"
+    
+    # 🟢 Tracing (OpenTelemetry Headers)
+    transforms.outbox.table.fields.additional.placement: "traceparent:header,tracestate:header"
+    
+    # 🟢 Converters (Plain JSON)
+    value.converter: "org.apache.kafka.connect.json.JsonConverter"
+    value.converter.schemas.enable: "false"
+    key.converter: "org.apache.kafka.connect.json.JsonConverter"
+    key.converter.schemas.enable: "false"
