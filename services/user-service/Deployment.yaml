@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: user-service
-        image: skymonil/user-service:latest  # 🔴 CHANGE THIS to your actual image
+        image: skymonil/user-service:latest  
         envFrom:
         - configMapRef:
             name: user-service-config
