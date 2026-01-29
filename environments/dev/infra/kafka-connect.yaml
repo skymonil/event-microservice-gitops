@@ -15,6 +15,7 @@ spec:
    output:
       type: docker
       image: skymonil/kafka-connect-debezium:latest
+      pushSecret: dockerhub-cred
    plugins:
     - name: debezium-postgres
       artifacts:
