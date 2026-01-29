@@ -1,27 +1,24 @@
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaConnect
 metadata:
-  name: event-cluster   # 🟢 This MUST match your connector's label
+  name: event-cluster
   namespace: default
   annotations:
-    strimzi.io/use-connector-resources: "true" # 🟢 Vital: Allows K8s to manage connectors
+    strimzi.io/use-connector-resources: "true"
 spec:
   version: 3.7.0
   replicas: 1
   bootstrapServers: event-cluster-kafka-bootstrap:9092
-  
-  # 🟢 Using the image with Debezium plugins pre-installed
   build:
-   output:
+    output:
       type: docker
       image: skymonil/kafka-connect-debezium:latest
       pushSecret: dockerhub-cred
-   plugins:
-    - name: debezium-postgres
-      artifacts:
-        - type: zip
-          url:  https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/2.5.0.Final/debezium-connector-postgres-2.5.0.Final-plugin.zip
-
+    plugins:
+      - name: debezium-postgres
+        artifacts:
+          - type: zip
+            url: https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/2.5.0.Final/debezium-connector-postgres-2.5.0.Final-plugin.zip
   config:
     group.id: connect-cluster
     offset.storage.topic: connect-cluster-offsets
@@ -33,7 +30,6 @@ spec:
     offset.storage.partitions: 1
     config.storage.partitions: 1
     status.storage.partitions: 1
-    # JSON Configs
     key.converter: org.apache.kafka.connect.json.JsonConverter
     value.converter: org.apache.kafka.connect.json.JsonConverter
     key.converter.schemas.enable: false
