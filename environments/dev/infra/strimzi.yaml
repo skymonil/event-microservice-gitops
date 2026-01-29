@@ -4,30 +4,29 @@ metadata:
   name: strimzi-operator
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "-2"  # 🟢 Install this FIRST
+    argocd.argoproj.io/sync-wave: "-2"   # Install FIRST
 spec:
   project: default
   source:
-    repoURL: 'https://strimzi.io/charts/'
+    repoURL: https://strimzi.io/charts/
     chart: strimzi-kafka-operator
+    targetRevision: 0.40.0
     helm:
       values: |
-        # 🟢 CRITICAL: Tell Operator to watch all namespaces
         watchAnyNamespace: true
-        
-        # Optional: reduce memory for dev environment
+
         resources:
           requests:
             memory: 256Mi
           limits:
             memory: 512Mi
-    targetRevision: 0.40.0  # 🛡️ Stable, proven version
   destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: kafka  # 🟢 Isolated namespace for the operator
+    server: https://kubernetes.default.svc
+    namespace: default   # ✅ SAME namespace as Kafka
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true   # ✅ CRITICAL for CRDs
