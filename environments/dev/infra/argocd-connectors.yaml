@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kafka-connectors
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "5" # 🟢 Deploy LAST (After Kafka & Connect Cluster)
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/skymonil/event-microservice-gitops.git' # 🔴 CHANGE THIS
+    targetRevision: HEAD
+    path: infra/kafka-connectors  # 🟢 The folder where you put the 3 YAMLs
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true      # 🟢 Deletes connectors if you remove the file from Git
+      selfHeal: true   # 🟢 Re-applies connector if someone manually deletes it
+    syncOptions:
+      - CreateNamespace=true
