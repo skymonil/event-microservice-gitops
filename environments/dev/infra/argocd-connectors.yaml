@@ -13,7 +13,7 @@ spec:
     path: environments/dev/infra/kafka-connectors  # 🟢 The folder where you put the 3 YAMLs
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: default
+    namespace: kafka
   syncPolicy:
     automated:
       prune: true      # 🟢 Deletes connectors if you remove the file from Git
