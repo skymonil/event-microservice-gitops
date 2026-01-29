@@ -8,3 +8,4 @@ data:
   PORT: "3001"
   JWT_EXPIRES_IN: "1h"
   LOG_LEVEL: "debug"
+  KAFKA_BROKERS: "event-cluster-kafka-bootstrap:9092"
