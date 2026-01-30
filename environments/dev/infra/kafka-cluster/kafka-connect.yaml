@@ -5,7 +5,7 @@ metadata:
   namespace: kafka
   annotations:
     strimzi.io/use-connector-resources: "true"
-    argocd.argoproj.io/sync-wave: "2"  # 🟢 Deploy this AFTER Kafka is ready
+    argocd.argoproj.io/sync-wave: "1"  # 🟢 Deploy this AFTER Kafka is ready
 spec:
   version: 3.7.0  
   replicas: 1

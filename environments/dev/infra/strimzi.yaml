@@ -4,7 +4,7 @@ metadata:
   name: strimzi-operator
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "-2"   # Install FIRST
+    argocd.argoproj.io/sync-wave: "0"  # 🟢 Run First
 spec:
   project: default
   source:
@@ -13,21 +13,14 @@ spec:
     targetRevision: 0.40.0
     helm:
       values: |
-        watchNamespaces:
-          - kafka   # ✅ WATCH the 'kafka' namespace
-
-        resources:
-          requests:
-            memory: 256Mi
-          limits:
-            memory: 512Mi
+        watchNamespaces: ["kafka"]
   destination:
     server: https://kubernetes.default.svc
-    namespace: kafka   # ✅ SAME namespace as Kafka
+    namespace: kafka
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - ServerSideApply=true   # ✅ CRITICAL for CRDs
+      - ServerSideApply=true
