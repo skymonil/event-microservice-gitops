@@ -6,6 +6,7 @@ metadata:
 data:
   NODE_ENV: "development"
   PORT: "3003"
+  REDIS_PORT: "6379"
   JWT_EXPIRES_IN: "1h"
   LOG_LEVEL: "debug"
   KAFKA_BROKERS: "event-cluster-kafka-bootstrap.kafka:9092"
