@@ -1,3 +1,4 @@
+# kafka-cluster/kafka-connect.yaml
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaConnect
 metadata:

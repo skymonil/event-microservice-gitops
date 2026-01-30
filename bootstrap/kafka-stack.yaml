@@ -1,3 +1,4 @@
+# bootstrap/kafka-stack.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -10,7 +11,7 @@ spec:
   source:
     repoURL: 'https://github.com/skymonil/event-microservice-gitops'
     path: environments/dev/infra/kafka-cluster  # 👈 Put your Kafka/KafkaConnect YAMLs in here!
-    targetRevision: 0.40.0
+    targetRevision: main
   destination:
     server: https://kubernetes.default.svc
     namespace: kafka
