@@ -7,7 +7,7 @@ metadata:
     strimzi.io/use-connector-resources: "true"
     argocd.argoproj.io/sync-wave: "3"   # ⬅️ IMPORTANT (not 1)
 spec:
-  version: 3.7.0
+  version: 4.0.0
   replicas: 1
   bootstrapServers: event-cluster-kafka-bootstrap.kafka:9092
 
