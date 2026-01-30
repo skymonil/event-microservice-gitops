@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: seed-inventory-db
+  namespace: default
+spec:
+  ttlSecondsAfterFinished: 300  # Automatically clean up the pod 5 mins after completion
+  backoffLimit: 4
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: seeder
+          image: postgres:16-alpine # Lightweight postgres client
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "⏳ Waiting for database..."
+              until pg_isready -h $PGHOST -U $PGUSER; do sleep 2; done
+              
+              echo "🌱 Seeding data into $PGDATABASE..."
+              psql -h $PGHOST -U $PGUSER -d $PGDATABASE -f /scripts/seed.sql
+              
+              echo "✅ Seeding complete!"
+          env:
+            - name: PGHOST
+              value: "postgres-postgresql.default" # ⚠️ Confirm this matches your Service DNS
+            - name: PGUSER
+              value: "postgres"
+            - name: PGPASSWORD
+              value: "postgres"
+            - name: PGDATABASE
+              value: "inventory" # Targeting the Inventory DB specifically
+          volumeMounts:
+            - name: sql-script-volume
+              mountPath: /scripts
+      volumes:
+        - name: sql-script-volume
+          configMap:
+            name: inventory-seed-script
