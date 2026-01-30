@@ -6,7 +6,7 @@ metadata:
   namespace: kafka
   annotations:
     strimzi.io/use-connector-resources: "true"
-    argocd.argoproj.io/sync-wave: "1"  # 🟢 Deploy this AFTER Kafka is ready
+    argocd.argoproj.io/sync-wave: "3"  # 🟢 Deploy this AFTER Kafka is ready
 spec:
   version: 3.7.0  
   replicas: 1
@@ -14,8 +14,7 @@ spec:
   build:
     output:
       type: docker
-      image: skymonil/kafka-connect-debezium:latest
-      pushSecret: dockerhub-cred
+      image: quay.io/strimzi-examples/kafka-connect-debezium:latest-kafka-3.7.0
     plugins:
       - name: debezium-postgres
         artifacts:
