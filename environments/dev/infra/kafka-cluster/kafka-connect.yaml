@@ -12,7 +12,7 @@ spec:
   bootstrapServers: event-cluster-kafka-bootstrap.kafka:9092
 
   # ✅ Prebuilt Debezium Kafka Connect image
- # image: quay.io/strimzi-examples/kafka-connect-debezium:latest-kafka-3.7.0
+  image: skymonil/kafka-connect-debezium:latest-kafka-4.0.0
 
   config:
     group.id: connect-cluster
