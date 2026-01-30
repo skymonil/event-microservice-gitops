@@ -4,7 +4,7 @@ metadata:
   name: strimzi-operator
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "0"  # 🟢 Run First
+    argocd.argoproj.io/sync-wave: "-1"  # 🟢 Run First
 spec:
   project: default
   source:
@@ -23,5 +23,4 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - ServerSideApply=true
-      - Replace=true
+      
