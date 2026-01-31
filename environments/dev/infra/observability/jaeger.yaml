@@ -12,21 +12,22 @@ spec:
     chart: jaeger
     targetRevision: 4.4.2
     helm:
-     values: |
-    provisionDataStore: false
-    storage:
-      type: memory
+      values: |
+        provisionDataStore: false
 
-    allInOne:
-      service:
-        type: LoadBalancer
-      resources:
-        requests:
-          cpu: 100m
-          memory: 128Mi
-        limits:
-          cpu: 200m
-          memory: 256Mi
+        storage:
+          type: memory
+
+        allInOne:
+          service:
+            type: LoadBalancer
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
   destination:
     server: https://kubernetes.default.svc
     namespace: observability
