@@ -42,7 +42,7 @@ spec:
 
           exporters:
             otlp:
-              endpoint: jaeger-collector.observability.svc.cluster.local:4317
+              endpoint: jaeger.observability.svc.cluster.local:4317
               tls:
                 insecure: true
 
