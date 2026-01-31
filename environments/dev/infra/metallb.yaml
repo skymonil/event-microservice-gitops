@@ -11,12 +11,6 @@ spec:
     repoURL: 'https://metallb.github.io/metallb'
     chart: metallb
     targetRevision: 0.15.3
-    helm:
-      parameters:
-        - name: crds.enabled
-          value: "true"
-        - name: rbac.create
-          value: "true"
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: metallb-system
@@ -26,6 +20,3 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - ApplyOutOfSyncOnly=true
-      - RespectIgnoreDifferences=true
-      - ServerSideApply=true   # ⭐ THIS IS IMPORTANT
