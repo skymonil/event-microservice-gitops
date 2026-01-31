@@ -15,6 +15,10 @@ spec:
       values: |
         mode: deployment   # lightweight single pod
 
+        image:
+          repository: otel/opentelemetry-collector
+          tag: "0.144.0"
+
         resources:
           requests:
             cpu: 50m
