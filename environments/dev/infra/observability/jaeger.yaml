@@ -27,6 +27,8 @@ spec:
               memory: 256Mi
 
         query:
+          service:
+            type: LoadBalancer
           resources:
             requests:
               cpu: 100m
