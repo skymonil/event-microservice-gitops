@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payment-service
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"  # 🟢 Deploy this LAST (after DBs are ready)
+spec:
+  project: default
+  source:
+    # 🔴 CHANGE THIS to your actual Git URL
+    repoURL: 'https://github.com/skymonil/event-microservice-gitops.git'
+    path: services/payment-service
+    targetRevision: main
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

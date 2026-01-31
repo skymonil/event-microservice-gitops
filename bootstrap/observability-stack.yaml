@@ -1,0 +1,23 @@
+# bootstrap/kafka-stack.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: observability-infra
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"  # 🟢 Run AFTER Wave 0 is Healthy
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/skymonil/event-microservice-gitops'
+    path: environments/dev/infra/observability  # 👈 Put your Kafka/KafkaConnect YAMLs in here!
+    targetRevision: main
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: observability
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
