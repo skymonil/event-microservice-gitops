@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: user-service
-        image: skymonil/user-service:e2a8c31e54b220eb85d120406f50eea10aa1d8d5
+        image: skymonil/user-service:ea572824e41f8a46191d934f237a9ed3b9096134
         envFrom:
         - configMapRef:
             name: user-service-config
