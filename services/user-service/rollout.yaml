@@ -1,0 +1,53 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: user-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      # 🛡️ LEVEL 1: Pod Security Context (Applies to all containers)
+      securityContext:
+        runAsUser: 10001       # Run as a random UID (not root/0)
+        runAsGroup: 10001      # Run as a random GID
+        seccompProfile:        # Restrict system calls to only what is needed
+          type: RuntimeDefault
+
+      containers:
+      - name: user-service
+        image: skymonil/user-service:latest
+        ports:
+        - containerPort: 3000
+
+        # 🛡️ LEVEL 2: Container Security Context
+        securityContext:
+          runAsNonRoot: true             # Hard crash if the image tries to run as root
+          allowPrivilegeEscalation: false # Prevent 'sudo' or setuid binaries
+          readOnlyRootFilesystem: true    # ⚠️ See note below
+          capabilities:
+            drop:
+              - ALL                      # Drop all Linux capabilities (Ping, Net Admin, etc)
+        
+        # 🛡️ LEVEL 3: Availability Security (DoS Protection)
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+
+        # 🛡️ LEVEL 4: Temp Volume (Required if using ReadOnlyRootFilesystem)
+        volumeMounts:
+        - name: tmp-volume
+          mountPath: /tmp
+      
+      volumes:
+      - name: tmp-volume
+        emptyDir: {}
