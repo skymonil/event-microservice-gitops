@@ -38,7 +38,7 @@ spec:
         - configMapRef:
             name: user-service-config
         - secretRef:
-            name: user-service-secr
+            name: user-service-secrets
 
         # 🛡️ LEVEL 2: Container Security Context
         securityContext:
