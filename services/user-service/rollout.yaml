@@ -11,6 +11,14 @@ spec:
     metadata:
       labels:
         app: user-service
+  strategy:
+    canary:
+      steps:
+      - setWeight: 20
+      - pause: {duration: 30s}
+      - setWeight: 50
+      - pause: {duration: 30s}
+      - setWeight: 100
     spec:
       # 🛡️ LEVEL 1: Pod Security Context (Applies to all containers)
       securityContext:
