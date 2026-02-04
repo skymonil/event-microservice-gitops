@@ -27,12 +27,18 @@ spec:
         runAsGroup: 10001      # Run as a random GID
         seccompProfile:        # Restrict system calls to only what is needed
           type: RuntimeDefault
+      
 
       containers:
       - name: user-service
         image: skymonil/user-service:latest
         ports:
         - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: user-service-config
+        - secretRef:
+            name: user-service-secr
 
         # 🛡️ LEVEL 2: Container Security Context
         securityContext:
