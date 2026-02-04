@@ -7,10 +7,6 @@ spec:
   selector:
     matchLabels:
       app: user-service
-  template:
-    metadata:
-      labels:
-        app: user-service
   strategy:
     canary:
       steps:
@@ -19,6 +15,11 @@ spec:
       - setWeight: 50
       - pause: {duration: 30s}
       - setWeight: 100
+  template:
+    metadata:
+      labels:
+        app: user-service
+  
     spec:
       # 🛡️ LEVEL 1: Pod Security Context (Applies to all containers)
       securityContext:
