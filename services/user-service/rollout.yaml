@@ -11,9 +11,12 @@ spec:
     canary:
       steps:
       - setWeight: 20
-      - pause: {duration: 300s}
+      - pause: {duration: 40s}
+      - analysis:
+          templates:
+            - templateName: user-service-error-rate
       - setWeight: 50
-      - pause: {duration: 300s}
+      - pause: {duration: 40s}
       - setWeight: 100
   template:
     metadata:

@@ -1,0 +1,43 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: 
+spec:
+  project: 
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: prometheus
+    targetRevision: 28.9.0
+    helm:
+      values:  |
+        alertmanager:
+           enabled: false
+        pushgateway:
+           enabled: false
+        
+        server:
+           persistentVolume:
+             enabled: false
+           retention: "1h"
+           resources:
+             requests:
+               cpu: 100m
+               memory: 256Mi
+             limits: 
+               memory: 512Mi
+        kubeStateMetrics:
+          enabled: false
+        nodeExporter:
+          enabled: false
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: observability
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - Validate=false
+      - createNamespace=true

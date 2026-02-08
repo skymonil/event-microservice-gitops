@@ -41,6 +41,8 @@ spec:
               send_batch_size: 512
 
           exporters:
+            prometheus:
+              endpoint: "0.0.0.0:8889"
             otlp:
               endpoint: jaeger.observability.svc.cluster.local:4317
               tls:
@@ -52,6 +54,10 @@ spec:
                 receivers: [otlp]
                 processors: [batch]
                 exporters: [otlp]
+              metrics:
+                receiver: [otlp]
+                processors: [batch]
+                exporters: [prometheus]
 
   destination:
     server: https://kubernetes.default.svc
