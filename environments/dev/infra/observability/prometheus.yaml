@@ -33,6 +33,8 @@ spec:
           enabled: false
         nodeExporter:
           enabled: false
+          hostRootFsMount: 
+            enabled: false
 
   destination:
     server: https://kubernetes.default.svc
