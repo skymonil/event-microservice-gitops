@@ -11,7 +11,7 @@ spec:
     canary:
       # Argo creates a temporary service for the canary pods (optional but recommended)
       canaryService: user-service-canary
-      stableService: user-service-stable
+      stableService: user-service
       steps:
       - setWeight: 20
       
