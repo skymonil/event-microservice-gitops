@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Experiment
+metadata:
+  name: user-service-canary-smoke
+spec:
+  templates:
+  - name: smoke
+    spec:
+      serviceAccountName: default
+      containers:
+      - name: smoke
+        image: curlimages/curl:8.6.0
+        command:
+          - sh
+          - -c
+          - |
+            echo "🔥 Canary smoke test started"
+            for i in $(seq 1 10); do
+              curl -s -o /dev/null -w "%{http_code}\n" \
+                -X POST http://user-service/login \
+                -H "Content-Type: application/json" \
+                -d '{"email":"monil@gmail.com","password":"monil@1234"}'
+              sleep 2
+            done
+            echo "✅ Canary smoke test finished"

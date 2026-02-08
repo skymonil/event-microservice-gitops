@@ -11,6 +11,11 @@ spec:
     canary:
       steps:
       - setWeight: 20
+      - experiment:
+          duration: 2m
+          templates:
+          - name: smoke
+            specRef: user-service-canary-smoke
       - pause: {duration: 40s}
       - analysis:
           templates:

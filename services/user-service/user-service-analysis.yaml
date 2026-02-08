@@ -1,22 +1,42 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
 metadata:
-  name: user-service-error-rate
+  name: user-auth-slo-v2
 spec:
   metrics:
-  - name: error-rate
-    interval: 30s
-    count: 3
-    failureLimit: 1
+  - name: login-error-rate
+    interval: 1m
+    failureLimit: 2
+    # If Prometheus returns NaN (no data), treat it as 0 errors (Pass)
+    successCondition: result < 0.02 || isNaN(result)
     provider:
       prometheus:
         address: http://prometheus-server.observability.svc.cluster.local
         query: |
           scalar(
             (
-              sum(rate(http_request_duration_seconds_count{status=~"5.."}[1m]))
-              /
-              clamp_min(sum(rate(http_request_duration_seconds_count[1m])), 1)
+              sum(rate(http_request_duration_seconds_count{route=~"/login|/register", status=~"5.."}[1m])) 
+              OR on() vector(0)  # <--- FIX 1: If no errors, default to 0
+            )
+            /
+            (
+              sum(rate(http_request_duration_seconds_count{route=~"/login|/register"}[1m])) 
+              OR on() vector(1)  # <--- FIX 2: If no traffic, divide by 1 (not 0)
             )
           )
-    successCondition: result < 0.05 || isNaN(result)
+
+  - name: login-p99-latency
+    interval: 1m
+    failureLimit: 2
+    # If no traffic, Latency is NaN. We allow this to pass.
+    successCondition: result < 0.4 || isNaN(result)
+    provider:
+      prometheus:
+        address: http://prometheus-server.observability.svc.cluster.local
+        query: |
+          scalar(
+            histogram_quantile(
+              0.99,
+              sum(rate(http_request_duration_seconds_bucket{route=~"/login|/register"}[1m])) by (le)
+            )
+          )
