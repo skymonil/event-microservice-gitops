@@ -7,7 +7,7 @@ metadata:
     app: user-service
 spec:
   # 🟢 type: LoadBalancer tells MetalLB to give this an External IP
-  type: LoadBalancer 
+  type: NodePort
   selector:
     app: user-service
   ports:
