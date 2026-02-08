@@ -39,7 +39,7 @@ spec:
 
       containers:
       - name: user-service
-        image: skymonil/user-service:f23ef0b97f41f4a7ba2387856084aff21c743b67
+        image: skymonil/user-service:ac0f641a6be8600ac5a6a1335be548e42044cb99
         ports:
         - containerPort: 3000
         envFrom:
