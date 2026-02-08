@@ -55,7 +55,7 @@ spec:
                 processors: [batch]
                 exporters: [otlp]
               metrics:
-                receiver: [otlp]
+                receivers: [otlp]
                 processors: [batch]
                 exporters: [prometheus]
 
