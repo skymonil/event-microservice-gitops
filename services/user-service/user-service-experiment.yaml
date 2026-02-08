@@ -8,6 +8,7 @@ spec:
     provider:
       job:
         spec:
+          ttlSecondsAfterFinished: 30
           template:
             spec:
               restartPolicy: Never  # ✅ Allowed here!
