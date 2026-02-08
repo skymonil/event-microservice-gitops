@@ -28,6 +28,7 @@ spec:
 
   - name: login-p99-latency
     interval: 1m
+    count: 3
     failureLimit: 2
     # If no traffic, Latency is NaN. We allow this to pass.
     successCondition: result < 0.4 || isNaN(result)
