@@ -23,7 +23,7 @@ spec:
                     # Fail (-f) if the server returns 400/500 errors
                     for i in $(seq 1 10); do
                       curl -f -s -o /dev/null -w "Attempt $i: %{http_code}\n" \
-                        -X POST http://user-service/login \
+                        -X POST http://user-service-canary/api/login \
                         -H "Content-Type: application/json" \
                         -d '{"email":"monil@gmail.com","password":"monil@1234"}'
                       sleep 2
