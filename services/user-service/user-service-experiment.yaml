@@ -8,11 +8,12 @@ spec:
     provider:
       job:
         spec:
+          backoffLimit: 1       # Fail fast if it crashes
           ttlSecondsAfterFinished: 30
           template:
             spec:
               restartPolicy: Never  # ✅ Allowed here!
-              backoffLimit: 1       # Fail fast if it crashes
+              
               containers:
               - name: smoke
                 image: curlimages/curl:8.6.0
