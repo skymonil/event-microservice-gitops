@@ -1,35 +1,31 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Experiment
+kind: AnalysisTemplate
 metadata:
-  name: user-service-canary-smoke
+  name: user-service-smoke-test
 spec:
-  templates:
-  - name: smoke
-    # 1. FIX: You must provide a selector so the Experiment can manage the pods
-    selector:
-      matchLabels:
-        app: user-service-smoke
-    # 2. FIX: The container spec must be wrapped in a 'template' object
-    template:
-      metadata:
-        labels:
-          app: user-service-smoke
-      spec:
-        restartPolicy: Never  # Important since this is a script that finishes!
-        serviceAccountName: default
-        containers:
-        - name: smoke
-          image: curlimages/curl:8.6.0
-          command:
-            - sh
-            - -c
-            - |
-              echo "🔥 Canary smoke test started"
-              for i in $(seq 1 10); do
-                curl -s -o /dev/null -w "%{http_code}\n" \
-                  -X POST http://user-service/login \
-                  -H "Content-Type: application/json" \
-                  -d '{"email":"monil@gmail.com","password":"monil@1234"}'
-                sleep 2
-              done
-              echo "✅ Canary smoke test finished"
+  metrics:
+  - name: smoke-test
+    provider:
+      job:
+        spec:
+          template:
+            spec:
+              restartPolicy: Never  # ✅ Allowed here!
+              backoffLimit: 1       # Fail fast if it crashes
+              containers:
+              - name: smoke
+                image: curlimages/curl:8.6.0
+                command:
+                  - sh
+                  - -c
+                  - |
+                    echo "🔥 Canary smoke test started"
+                    # Fail (-f) if the server returns 400/500 errors
+                    for i in $(seq 1 10); do
+                      curl -f -s -o /dev/null -w "Attempt $i: %{http_code}\n" \
+                        -X POST http://user-service/login \
+                        -H "Content-Type: application/json" \
+                        -d '{"email":"monil@gmail.com","password":"monil@1234"}'
+                      sleep 2
+                    done
+                    echo "✅ Canary smoke test finished"
