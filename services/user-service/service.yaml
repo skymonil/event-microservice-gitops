@@ -15,3 +15,17 @@ spec:
       port: 3000       # The port you'll use in your browser/Postman
       targetPort: 3000 # The port your Node.js app is listening on
       protocol: TCP
+
+---
+# 2. The Canary Service (For Smoke Tests)
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service-canary
+spec:
+  selector:
+    app: user-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
