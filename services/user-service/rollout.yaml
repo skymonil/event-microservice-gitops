@@ -27,7 +27,7 @@ spec:
       # 📊 STEP 3: Check Prometheus Error Rates
       - analysis:
           templates:
-            - templateName: user-service-error-rate
+            - templateName: login-error-rate
       
       - setWeight: 50
       - pause: {duration: 40s}
