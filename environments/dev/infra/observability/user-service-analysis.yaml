@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: user-service-error-rate
+spec:
+  metrics:
+  - name: error-rate
+    interval: 30s
+    failureLimit: 1
+    provider:
+      prometheus:
+        address: http://prometheus-server.observability.svc.cluster.local
+        query: |
+          sum(rate(http_request_duration_seconds_count{status=~"5.."}[1m]))
+          /
+          sum(rate(http_request_duration_seconds_count[1m]))
+    successCondition: result < 0.05
