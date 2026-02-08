@@ -9,33 +9,41 @@ spec:
       app: user-service
   strategy:
     canary:
+      # Argo creates a temporary service for the canary pods (optional but recommended)
+      canaryService: user-service-canary
+      stableService: user-service-stable
       steps:
       - setWeight: 20
-      - experiment:
-          duration: 2m
+      
+      # 🚀 STEP 1: Run the Smoke Test (The Job)
+      # If this fails, the rollout aborts immediately.
+      - analysis:
           templates:
-          - name: smoke
-            specRef: user-service-canary-smoke
+          - templateName: user-service-smoke-test
+
+      # ⏸ STEP 2: Wait a bit to gather metrics
       - pause: {duration: 40s}
+
+      # 📊 STEP 3: Check Prometheus Error Rates
       - analysis:
           templates:
             - templateName: user-service-error-rate
+      
       - setWeight: 50
       - pause: {duration: 40s}
       - setWeight: 100
+
   template:
     metadata:
       labels:
         app: user-service
-  
     spec:
-      # 🛡️ LEVEL 1: Pod Security Context (Applies to all containers)
+      # 🛡️ LEVEL 1: Pod Security Context
       securityContext:
-        runAsUser: 10001       # Run as a random UID (not root/0)
-        runAsGroup: 10001      # Run as a random GID
-        seccompProfile:        # Restrict system calls to only what is needed
+        runAsUser: 10001
+        runAsGroup: 10001
+        seccompProfile:
           type: RuntimeDefault
-      
 
       containers:
       - name: user-service
@@ -50,14 +58,14 @@ spec:
 
         # 🛡️ LEVEL 2: Container Security Context
         securityContext:
-          runAsNonRoot: true             # Hard crash if the image tries to run as root
-          allowPrivilegeEscalation: false # Prevent 'sudo' or setuid binaries
-          readOnlyRootFilesystem: true    # ⚠️ See note below
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
           capabilities:
             drop:
-              - ALL                      # Drop all Linux capabilities (Ping, Net Admin, etc)
+              - ALL
         
-        # 🛡️ LEVEL 3: Availability Security (DoS Protection)
+        # 🛡️ LEVEL 3: Availability Security
         resources:
           requests:
             cpu: 100m
@@ -66,7 +74,7 @@ spec:
             cpu: 500m
             memory: 256Mi
 
-        # 🛡️ LEVEL 4: Temp Volume (Required if using ReadOnlyRootFilesystem)
+        # 🛡️ LEVEL 4: Temp Volume
         volumeMounts:
         - name: tmp-volume
           mountPath: /tmp
