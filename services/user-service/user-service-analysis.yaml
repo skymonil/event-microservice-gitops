@@ -6,6 +6,7 @@ spec:
   metrics:
   - name: login-error-rate
     interval: 1m
+    count: 3
     failureLimit: 2
     # If Prometheus returns NaN (no data), treat it as 0 errors (Pass)
     successCondition: result < 0.02 || isNaN(result)
