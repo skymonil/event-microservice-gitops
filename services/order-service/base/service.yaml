@@ -24,7 +24,7 @@ metadata:
   name: order-service-canary
 spec:
   selector:
-    app: user-service
+    app: order-service
   ports:
   - protocol: TCP
     port: 80
