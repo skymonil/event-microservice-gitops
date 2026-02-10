@@ -2,6 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
 metadata:
   name: http-golden-signals
+  namespace: default
 spec:
   args:
     - name: service-name # <--- We pass "user-service" here later
