@@ -1,0 +1,11 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: user-service
+spec:
+  strategy:
+    canary:
+      # 🟢 IMMEDIATE UPDATE STRATEGY
+      # By having no steps, Argo replaces pods immediately.
+      # This is perfect for Dev/Staging where you want to run E2E tests ASAP.
+      steps: []

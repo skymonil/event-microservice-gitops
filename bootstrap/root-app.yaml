@@ -1,46 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cluster-infra
+  name: dev-cluster-bootstrap
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
     repoURL: 'https://github.com/skymonil/event-microservice-gitops.git'
     targetRevision: main
-    path: environments/dev/infra
+    path: argocd-apps/dev  # 🟢 Points to the folder of "Controllers"
+    directory:
+      recurse: true        # 🟢 Read subfolders (infra/ and apps/)
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: default
-  syncPolicy:
-    automated:
-      prune: true      # Deletes resources if you remove them from Git
-      selfHeal: true   # Reverts manual kubectl changes back to Git state
-    syncOptions:
-      - CreateNamespace=true
-
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: cluster-apps
-  namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
-spec:
-  project: default
-  source:
-    repoURL: 'https://github.com/skymonil/event-microservice-gitops.git'
-    targetRevision: main
-    path: environments/dev/apps
-  destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: default
+    namespace: argocd      # The Apps themselves live in argocd namespace
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=true

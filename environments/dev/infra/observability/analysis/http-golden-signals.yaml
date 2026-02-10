@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: http-golden-signals
+spec:
+  args:
+    - name: service-name # <--- We pass "user-service" here later
+  metrics:
+  - name: error-rate
+    interval: 1m
+    # Run 3 times (3 minutes total)
+    count: 3
+    failureLimit: 2
+    successCondition: result < 0.05 || isNaN(result)
+    provider:
+      prometheus:
+        address: http://prometheus-server.observability.svc.cluster.local
+        query: |
+          scalar(
+            (
+              # Filter by the 'job' or 'app' label dynamically
+              sum(rate(http_request_duration_seconds_count{job="{{args.service-name}}", status=~"5.."}[1m]))
+              OR on() vector(0)
+            )
+            /
+            (
+              sum(rate(http_request_duration_seconds_count{job="{{args.service-name}}"}[1m]))
+              OR on() vector(1)
+            )
+          )
+
+  - name: p99-latency
+    interval: 1m
+    count: 3
+    failureLimit: 2
+    successCondition: result < 0.5 || isNaN(result)
+    provider:
+      prometheus:
+        address: http://prometheus-server.observability.svc.cluster.local
+        query: |
+          scalar(
+            histogram_quantile(
+              0.99,
+              sum(rate(http_request_duration_seconds_bucket{job="{{args.service-name}}"}[1m])) by (le)
+            )
+          )

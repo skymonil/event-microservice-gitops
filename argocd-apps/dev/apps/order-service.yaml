@@ -10,7 +10,7 @@ spec:
   source:
     # 🔴 CHANGE THIS to your actual Git URL
     repoURL: 'https://github.com/skymonil/event-microservice-gitops.git'
-    path: services/order-service
+    path: services/order-service/overlays/dev
     targetRevision: main
   destination:
     server: 'https://kubernetes.default.svc'
