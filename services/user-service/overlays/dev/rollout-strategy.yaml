@@ -5,7 +5,18 @@ metadata:
 spec:
   strategy:
     canary:
-      # 🟢 IMMEDIATE UPDATE STRATEGY
-      # By having no steps, Argo replaces pods immediately.
-      # This is perfect for Dev/Staging where you want to run E2E tests ASAP.
-      steps: []
+      steps:
+        # 🚀 Step 1: Immediate Update (Dev Speed)
+        - setWeight: 100
+        
+        # 🧪 Step 2: Run Functional Tests (Immediate Feedback)
+        - analysis:
+            templates:
+              - templateName: synthetic-test-runner
+            args:
+              # 🟢 Run the standard test suite
+              - name: test-cmd
+                value: "test:user" 
+              # 🟢 Target the deployed service directly
+              - name: target-url
+                value: "http://user-service:3000"

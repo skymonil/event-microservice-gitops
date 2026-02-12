@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: user-service
+  name: inventory-service
 spec:
   strategy:
     canary:
@@ -23,4 +23,4 @@ spec:
               
               # 🟢 Since traffic is 100%, we target the stable service URL
               - name: target-url
-                value: "http://user-service:3000"
+                value: "http://inventory-service:3003"
