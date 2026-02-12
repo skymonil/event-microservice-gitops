@@ -4,4 +4,4 @@ kind: Kustomization
 resources:
   - http-golden-signals.yaml
   - synthetics-test-runner.yaml
-  - kafka-canary-health.yaml <-- Add this if you created it earlier
+  - kafka-canary-health.yaml 
