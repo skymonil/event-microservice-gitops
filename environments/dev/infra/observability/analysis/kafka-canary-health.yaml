@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: kafka-canary-health
+spec:
+  args:
+    - name: service-name
+  metrics:
+  # 1. Is the Canary actually doing work? (Throughput > 0)
+  # We check if the canary pods are consuming *anything*
+  - name: canary-throughput
+    interval: 1m
+    count: 5
+    failureLimit: 5 # It's okay if it's idle for a bit, but not forever
+    successCondition: result > 0 || isNaN(result)
+    provider:
+      prometheus:
+        address: http://prometheus-server.observability.svc.cluster.local
+        query: |
+          sum(rate(kafka_messages_consumed_total{
+            service="{{args.service-name}}",
+            pod=~".*canary.*"  # <--- CRITICAL: Filter for Canary Pods only
+          }[1m]))
+
+  # 2. Is the Canary throwing errors? (Error Rate)
+  # If Canary DLQ > 0, fail immediately
+  - name: canary-error-rate
+    interval: 1m
+    count: 5
+    failureLimit: 1
+    successCondition: result == 0 || isNaN(result)
+    provider:
+      prometheus:
+        address: http://prometheus-server.observability.svc.cluster.local
+        query: |
+          sum(rate(kafka_messages_dlq_total{
+            service="{{args.service-name}}",
+            pod=~".*canary.*"  # <--- CRITICAL: Filter for Canary Pods only
+          }[1m]))

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: global-env-config
+  namespace: default # ⚠️ Must be in the same namespace where AnalysisRun executes
+data:
+  kafka.brokers: "event-cluster-kafka-bootstrap.kafka:9092"
+  node.env: "production"

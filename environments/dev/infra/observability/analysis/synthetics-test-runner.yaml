@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: synthetic-test-runner
+spec:
+  args:
+  - name: test-cmd           # 🟢 Flexible: Pass "test:user:smoke" OR "test:user:e2e"
+  - name: target-url         # 🟢 Flexible: Pass Canary URL or Stable URL
+  metrics:
+  - name: run-test
+    provider:
+      job:
+        spec:
+          backoffLimit: 1
+          ttlSecondsAfterFinished: 300 # Keep logs for 5 mins to debug failures
+          template:
+            spec:
+              restartPolicy: Never
+              containers:
+              - name: tester
+                image: skymonil/synthetic-tests:latest
+                imagePullPolicy: Always
+                # 🟢 This is where the magic happens
+                command: ["npm", "run", "{{ args.test-cmd }}"]
+                
+                env:
+                # 1. Target Under Test
+                - name: TARGET_URL 
+                  value: "{{ args.target-url }}"
+                
+                # 2. Infra Dependencies (Kafka)
+                - name: KAFKA_BROKERS
+                  valueFrom:
+                    configMapKeyRef:
+                      name: global-env-config
+                      key: kafka.brokers
+                
+                # 3. Service Discovery (For Cross-Service Calls)
+                - name: USER_SERVICE_URL
+                  value: "http://user-service.default.svc:3000"
+                - name: ORDER_SERVICE_URL
+                  value: "http://order-service.default.svc:3001"
+                - name: PAYMENT_SERVICE_URL
+                  value: "http://payment-service.default.svc:3002"
+                - name: INVENTORY_SERVICE_URL
+                  value: "http://inventory-service.default.svc:3003"
