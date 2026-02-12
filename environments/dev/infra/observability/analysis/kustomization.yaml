@@ -3,5 +3,5 @@ kind: Kustomization
 
 resources:
   - http-golden-signals.yaml
-  # - http-smoke-test.yaml      <-- Add this if you created it earlier
-  # - kafka-consumer-health.yaml <-- Add this if you created it earlier
+  - synthetics-test-runner.yaml
+  - kafka-canary-health.yaml <-- Add this if you created it earlier
