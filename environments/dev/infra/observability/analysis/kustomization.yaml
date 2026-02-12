@@ -3,5 +3,5 @@ kind: Kustomization
 
 resources:
   - http-golden-signals.yaml
-  - synthetics-test-runner.yaml
+  - synthetic-test-runner.yaml
   - kafka-canary-health.yaml 
