@@ -8,6 +8,7 @@ spec:
       steps:
         # 🚀 Step 1: Immediate Update (Dev Speed)
         - setWeight: 100
+        - pause: {duration: 15s}
         
         # 🧪 Step 2: Run Functional Tests (Immediate Feedback)
         - analysis:
@@ -19,4 +20,4 @@ spec:
                 value: "test:user" 
               # 🟢 Target the deployed service directly
               - name: target-url
-                value: "http://user-service:3000"
+                value: "http://user-service"

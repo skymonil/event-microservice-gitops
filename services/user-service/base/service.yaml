@@ -12,7 +12,7 @@ spec:
     app: user-service
   ports:
     - name: http
-      port: 3000       # The port you'll use in your browser/Postman
+      port: 80       # The port you'll use in your browser/Postman
       targetPort: 3000 # The port your Node.js app is listening on
       protocol: TCP
 

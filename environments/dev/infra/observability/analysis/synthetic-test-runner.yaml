@@ -38,10 +38,10 @@ spec:
                 
                 # 3. Service Discovery (For Cross-Service Calls)
                 - name: USER_SERVICE_URL
-                  value: "http://user-service.default.svc:3000"
+                  value: "http://user-service.default.svc"
                 - name: ORDER_SERVICE_URL
-                  value: "http://order-service.default.svc:3001"
+                  value: "http://order-service.default.svc"
                 - name: PAYMENT_SERVICE_URL
-                  value: "http://payment-service.default.svc:3002"
+                  value: "http://payment-service.default.svc"
                 - name: INVENTORY_SERVICE_URL
-                  value: "http://inventory-service.default.svc:3003"
+                  value: "http://inventory-service.default.svc"
