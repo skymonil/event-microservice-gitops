@@ -12,5 +12,5 @@ patches:
 # 3. Set the Image Version
 images:
 - name: skymonil/user-service
-  # 🟢 CI/CD UPDATES THIS LINE
-  newTag: latest
+  newName: skymonil/user-service
+  newTag: b267756e1b733e746bacf95175d7a72c307140b3
