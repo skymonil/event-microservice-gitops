@@ -2,6 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
 metadata:
   name: kafka-canary-health
+  namespace: default
 spec:
   args:
     - name: service-name

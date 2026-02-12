@@ -2,6 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
 metadata:
   name: synthetic-test-runner
+  namespace: default
 spec:
   args:
   - name: test-cmd           # 🟢 Flexible: Pass "test:user:smoke" OR "test:user:e2e"
