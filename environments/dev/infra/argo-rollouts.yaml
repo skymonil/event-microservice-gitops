@@ -24,7 +24,7 @@ spec:
               token: $slack-token
 
           templates:
-            template.rollout-status: |
+            rollout-status: |
               slack:
                 attachments: |
                   [{
