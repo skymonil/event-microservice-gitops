@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: 'https://github.com/skymonil/event-microservice-gitops.git'
     targetRevision: main
-    path: argocd-apps/dev  # 🟢 Points to the folder of "Controllers"
+    path: argocd-apps/dev/infra  # 🟢 Points to the folder of "Controllers"
     directory:
       recurse: true        # 🟢 Read subfolders (infra/ and apps/)
   destination:
