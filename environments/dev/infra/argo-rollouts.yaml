@@ -14,6 +14,8 @@ spec:
       values: |
         notifications:
           enabled: true
+        notificationController:
+          enabled: true
           secret:
             create: false
           configMap:
