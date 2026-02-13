@@ -13,4 +13,4 @@ patches:
 images:
 - name: skymonil/user-service
   newName: skymonil/user-service
-  newTag: 4424af4ae8c8b15508f8e12f4c4544faf03d427f
+  newTag: f303165cd5bcee0db8b2be34c2ed4d34466100e2
