@@ -2,8 +2,9 @@ apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: user-service
-  notifications.argoproj.io/subscribe.on-rollout-completed.slack: deployments-dev
-  notifications.argoproj.io/subscribe.on-rollout-failed.slack: deployments-dev
+  annotations:
+    notifications.argoproj.io/subscribe.on-rollout-completed.slack: deployments-dev
+    notifications.argoproj.io/subscribe.on-rollout-failed.slack: deployments-dev
 spec:
   replicas: 2
   revisionHistoryLimit: 3
