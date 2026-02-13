@@ -14,6 +14,7 @@ spec:
         notifications:
           secret:
             create: false
+            name: argo-rollouts-notification-secret
 
           configmap:
             create: true
