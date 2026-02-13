@@ -6,21 +6,18 @@ spec:
   strategy:
     canary:
       steps:
-        # 🚀 Step 1: Immediate Rollout
-        # We jump straight to 100% because in Dev, we want the latest code active ASAP.
-        # We don't need a slow 10% canary for developers.
+        # 🚀 Step 1: Immediate Update (Dev Speed)
         - setWeight: 100
+        - pause: {duration: 15s}
         
-        # 🧪 Step 2: Quality Gate (Post-Deployment)
-        # Even though we are at 100%, we run the analysis to verify the build.
+        # 🧪 Step 2: Run Functional Tests (Immediate Feedback)
         - analysis:
             templates:
               - templateName: synthetic-test-runner
             args:
-              # 🟢 This matches the script name in your package.json
-              - name: service-test-cmd
+              # 🟢 Run the standard test suite
+              - name: test-cmd
                 value: "test:user" 
-              
-              # 🟢 Since traffic is 100%, we target the stable service URL
+              # 🟢 Target the deployed service directly
               - name: target-url
-                value: "http://inventory-service:3003"
+                value: "http://inventory-service-canary"
