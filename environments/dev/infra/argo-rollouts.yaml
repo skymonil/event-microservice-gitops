@@ -10,46 +10,50 @@ spec:
     chart: argo-rollouts
     targetRevision: 2.40.5
     helm:
-      # 🟢 'values' must be indented under 'helm'
       values: |
         notifications:
-          enabled: true
           secret:
             create: false
-          configMap:
+
+          configmap:
             create: true
-            # 🟢 All triggers, templates, and services MUST be under 'data'
-            data:
-              service.slack: |
-                token: $slack-token
 
-              template.rollout-status: |
-                slack:
-                  attachments: |
-                    [{
-                      "color": "{{if eq .rollout.status.phase \"Healthy\"}}#2eb886{{else}}#ff0000{{end}}",
-                      "title": "{{if eq .rollout.status.phase \"Healthy\"}}✅ Deployment Successful{{else}}🚨 Deployment Failed{{end}}",
-                      "text": "*Service:* {{.rollout.metadata.name}}\n*Status:* {{.rollout.status.phase}}\n*Namespace:* {{.rollout.metadata.namespace}}"
-                    }]
+          notifiers:
+            service.slack: |
+              token: $slack-token
 
-              trigger.on-rollout-completed: |
-                - when: rollout.status.phase == 'Healthy'
-                  send: [rollout-status]
+          templates:
+            template.rollout-status: |
+              slack:
+                attachments: |
+                  [{
+                    "color": "{{if eq .rollout.status.phase \"Healthy\"}}#2eb886{{else}}#ff0000{{end}}",
+                    "title": "{{if eq .rollout.status.phase \"Healthy\"}}✅ Deployment Successful{{else}}🚨 Deployment Failed{{end}}",
+                    "text": "*Service:* {{.rollout.metadata.name}}\n*Status:* {{.rollout.status.phase}}\n*Namespace:* {{.rollout.metadata.namespace}}"
+                  }]
 
-              trigger.on-rollout-failed: |
-                - when: rollout.status.abort == true
-                  send: [rollout-status]
-                - when: rollout.status.phase == 'Degraded'
-                  send: [rollout-status]
+          triggers:
+            trigger.on-rollout-completed: |
+              - send: [rollout-status]
+                when: rollout.status.phase == 'Healthy'
 
-        controller:
-          notifications:
-            enabled: true
+            trigger.on-rollout-failed: |
+              - send: [rollout-status]
+                when: rollout.status.abort == true
+              - send: [rollout-status]
+                when: rollout.status.phase == 'Degraded'
+
+          subscriptions:
+            - recipients:
+                - slack:deployments-dev
+              triggers:
+                - on-rollout-completed
+                - on-rollout-failed
 
   destination:
     server: https://kubernetes.default.svc
     namespace: argo-rollouts
-  
+
   syncPolicy:
     automated:
       prune: true
