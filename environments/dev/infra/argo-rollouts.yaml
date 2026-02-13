@@ -8,41 +8,40 @@ spec:
   source:
     repoURL: https://argoproj.github.io/argo-helm
     chart: argo-rollouts
-    targetRevision: 2.42.0
-    
+    targetRevision: 2.40.5
     helm:
+      # 🟢 'values' must be indented under 'helm'
       values: |
         notifications:
+          enabled: true
           secret:
-            create: false 
+            create: false
           configMap:
             create: true
+            # 🟢 All triggers, templates, and services MUST be under 'data'
             data:
               service.slack: |
                 token: $slack-token
 
               template.rollout-status: |
                 slack:
-                  attachments:
-                    - color: "{{if eq .rollout.status.phase \"Healthy\"}}#2eb886{{else}}#ff0000{{end}}"
-                      title: "{{if eq .rollout.status.phase \"Healthy\"}}✅ Deployment Successful{{else}}🚨 Deployment Failed{{end}}"
-                      text: |
-                        *Service:* {{.rollout.metadata.name}}
-                        *Status:* {{.rollout.status.phase}}
-                        *Namespace:* {{.rollout.metadata.namespace}}
-                        
+                  attachments: |
+                    [{
+                      "color": "{{if eq .rollout.status.phase \"Healthy\"}}#2eb886{{else}}#ff0000{{end}}",
+                      "title": "{{if eq .rollout.status.phase \"Healthy\"}}✅ Deployment Successful{{else}}🚨 Deployment Failed{{end}}",
+                      "text": "*Service:* {{.rollout.metadata.name}}\n*Status:* {{.rollout.status.phase}}\n*Namespace:* {{.rollout.metadata.namespace}}"
+                    }]
+
               trigger.on-rollout-completed: |
                 - when: rollout.status.phase == 'Healthy'
                   send: [rollout-status]
 
-              # 👇 THIS IS THE CRITICAL FIX 👇
               trigger.on-rollout-failed: |
-                - when: rollout.status.abort == true    # Fires when Smoke Tests fail
+                - when: rollout.status.abort == true
                   send: [rollout-status]
                 - when: rollout.status.phase == 'Degraded'
                   send: [rollout-status]
 
-        # Ensure the internal notification controller is enabled
         controller:
           notifications:
             enabled: true
