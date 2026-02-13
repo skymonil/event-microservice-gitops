@@ -36,13 +36,13 @@ spec:
           triggers:
             on-rollout-completed: |
               - send: [rollout-status]
-                when: rollout.status.phase == 'Healthy'
+                
 
             on-rollout-failed: |
               - send: [rollout-status]
-                when: rollout.status.abort == true
+               
               - send: [rollout-status]
-                when: rollout.status.phase == 'Degraded'
+               
 
           subscriptions:
             - recipients:
