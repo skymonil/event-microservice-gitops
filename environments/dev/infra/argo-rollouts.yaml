@@ -12,36 +12,35 @@ spec:
     
     # 🟢 ADD THIS HELM SECTION 🟢
     helm:
-      values: |
-        notifications:
-          secret:
-            create: false  # You created this manually (good!)
-          configMap:
-            create: true   # Let Helm create it, but populate it with OUR data
-            data:
-              service.slack: |
-                token: $slack-token
-              
-              trigger.on-rollout-completed: |
-                - when: rollout.status.phase == 'Healthy'
-                  send: [slack]
-              
-              trigger.on-rollout-failed: |
-                - when: rollout.status.abort == true
-                  send: [slack]
-                - when: rollout.status.phase == 'Degraded'
-                  send: [slack]
+  values: |
+    notifications:
+      secret:
+        create: false
+      configMap:
+        create: true
+        data:
 
-              template.slack: |
-                message: |
-                  {{ if eq .rollout.status.phase "Healthy" }}
-                  ✅ **Deployment Successful!**
-                  {{ else }}
-                  🚨 **Deployment Failed!**
-                  {{ end }}
-                  Service: {{.rollout.metadata.name}}
-                  Env: Dev
-                  *Status:* {{.rollout.status.phase}}
+          service.slack: |
+            token: $slack-token
+            channel: deployments-dev
+
+          template.rollout-status: |
+            slack:
+              attachments:
+                - color: "{{if eq .rollout.status.phase \"Healthy\"}}#2eb886{{else}}#ff0000{{end}}"
+                  title: "{{if eq .rollout.status.phase \"Healthy\"}}✅ Deployment Successful{{else}}🚨 Deployment Failed{{end}}"
+                  text: |
+                    Service: {{.rollout.metadata.name}}
+                    Status: {{.rollout.status.phase}}
+                    Namespace: {{.rollout.metadata.namespace}}
+
+          trigger.on-rollout-completed: |
+            - when: rollout.status.phase == 'Healthy'
+              send: [rollout-status]
+
+          trigger.on-rollout-failed: |
+            - when: rollout.status.phase == 'Degraded'
+              send: [rollout-status]
 
   destination:
     server: https://kubernetes.default.svc
