@@ -9,6 +9,7 @@ spec:
     repoURL: https://argoproj.github.io/argo-helm
     chart: argo-rollouts
     targetRevision: 2.40.5
+    
     helm:
       values: |
         notifications:
@@ -28,10 +29,10 @@ spec:
               slack:
                 attachments: |
                   [{
-                              "color": "{{if eq .rollout.status.phase "Healthy"}}#2eb886{{else}}#ff0000{{end}}",
-                              "title": "{{if eq .rollout.status.phase "Healthy"}}✅ Deployment Successful{{else}}🚨 Deployment Failed{{end}}",
-                              "text": "*Service:* {{.rollout.metadata.name}}\n*Status:* {{.rollout.status.phase}}\n*Namespace:* {{.rollout.metadata.namespace}}"
-        }]
+                    "color": "{{if eq .rollout.status.phase \"Healthy\"}}#2eb886{{else}}#ff0000{{end}}",
+                    "title": "{{if eq .rollout.status.phase \"Healthy\"}}✅ Deployment Successful{{else}}🚨 Deployment Failed{{end}}",
+                    "text": "*Service:* {{.rollout.metadata.name}}\n*Status:* {{.rollout.status.phase}}\n*Namespace:* {{.rollout.metadata.namespace}}"
+                  }]
 
           triggers:
             trigger.on-rollout-completed: |
@@ -54,7 +55,7 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: argo-rollouts
-
+  
   syncPolicy:
     automated:
       prune: true
