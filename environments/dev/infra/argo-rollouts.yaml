@@ -12,9 +12,9 @@ spec:
 
     helm:
       values: |
-        notifications:
-          enabled: true
         notificationController:
+          enabled: true
+        notifications:
           enabled: true
           secret:
             create: false
