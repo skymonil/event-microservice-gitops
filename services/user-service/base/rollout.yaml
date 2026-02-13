@@ -2,6 +2,9 @@ apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: user-service
+  annotations:
+    notifications.argoproj.io/subscribe.on-rollout-failed: "deployments-dev"
+    notifications.argoproj.io/subscribe.on-rollout-completed: "deployments-dev"
 spec:
   replicas: 2
   selector:

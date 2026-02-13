@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argo-rollouts-notification-configmap
+  namespace: argo-rollouts
+data:
+  # 1. Connect to Slack using the secret we just made
+  service.slack: |
+    token: $slack-token
+
+  trigger.on-rollout-completed: |
+    - when: rollout.status.phase == 'Healthy'
+      send: [slack]
+
+  trigger.on-rollout-failed: |
+    - when: rollout.status.abort == true
+      send: [slack]
+    - when: rollout.status.phase == 'Degraded'
+      send: [slack]
+
+  # 3. Define WHAT the message looks like
+  template.slack: |
+    message: |
+      {{ if eq .rollout.status.phase "Healthy" }}
+      ✅ **Deployment Successful!**
+      {{ else }}
+      🚨 **Deployment Failed!**
+      {{ end }}
+      Service: {{.rollout.metadata.name}}
+      Env: Dev
+      *Status:* {{.rollout.status.phase}}
