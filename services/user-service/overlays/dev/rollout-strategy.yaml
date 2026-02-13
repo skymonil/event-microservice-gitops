@@ -20,4 +20,4 @@ spec:
                 value: "test:user" 
               # 🟢 Target the deployed service directly
               - name: target-url
-                value: "http://user-service"
+                value: "http://user-service-canary"
