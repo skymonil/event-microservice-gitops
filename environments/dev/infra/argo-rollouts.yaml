@@ -24,7 +24,7 @@ spec:
               token: $slack-token
 
           templates:
-            rollout-status: |
+            template.rollout-status: |
               slack:
                 attachments: |
                   [{
@@ -34,15 +34,15 @@ spec:
                   }]
 
           triggers:
-            on-rollout-completed: |
+            trigger.on-rollout-completed: |
               - send: [rollout-status]
-                
+                when: rollout.status.phase == 'Healthy'
 
-            on-rollout-failed: |
+            trigger.on-rollout-failed: |
               - send: [rollout-status]
-               
+                when: rollout.status.abort == true
               - send: [rollout-status]
-               
+                when: rollout.status.phase == 'Degraded'
 
           subscriptions:
             - recipients:
