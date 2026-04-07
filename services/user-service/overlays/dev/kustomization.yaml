@@ -11,6 +11,6 @@ patches:
 
 # 3. Set the Image Version
 images:
-- digest: sha256:db1550c5b99ff5905c1ecf6f74ca00d5f8f560a84814e229a8e89787c8f145b9
-  name: skymonil/user-service
+- name: skymonil/user-service
   newName: skymonil/user-service
+  newTag: 7310f019a4de4474709b6ab294a7c51e11c875f3
