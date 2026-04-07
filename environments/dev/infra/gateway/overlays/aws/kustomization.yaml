@@ -1,0 +1,6 @@
+# overlays/aws/kustomization.yaml
+resources:
+  - ../../base
+
+patches:
+  - path: service-patch.yaml

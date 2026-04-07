@@ -1,0 +1,14 @@
+# overlays/aws/service-patch.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kong-proxy
+  namespace: kong
+  annotations:
+
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+
+spec:
+  type: LoadBalancer
