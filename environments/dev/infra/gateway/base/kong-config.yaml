@@ -14,25 +14,29 @@ data:
       routes:
       - name: user-route
         paths:
-          - /api
+          - /api/users
+        strip_path: true
 
     - name: order-service
       url: http://order-service.default.svc.cluster.local:3001
       routes:
       - name: order-route
         paths:
-          - /api
+          - /api/orders
+        strip_path: true
 
     - name: payment-service
       url: http://payment-service.default.svc.cluster.local:3002
       routes:
       - name: payment-route
         paths:
-          - /api
+          - /api/payments
+        strip_path: true
 
     - name: inventory-service
       url: http://inventory-service.default.svc.cluster.local:3003
       routes:
       - name: inventory-route
         paths:
-          - /api
+          - /api/inventory
+        strip_path: true
