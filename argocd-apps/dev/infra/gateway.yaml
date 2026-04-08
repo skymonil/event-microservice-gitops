@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/skymonil/event-microservice-gitops
     targetRevision: HEAD
-    path: environments/dev/infra//gateway/overlays/k3s
+    path: environments/dev/infra/gateway/overlays/k3s
 
   destination:
     server: https://kubernetes.default.svc

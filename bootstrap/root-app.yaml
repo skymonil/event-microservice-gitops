@@ -1,19 +1,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: dev-cluster-bootstrap
+  name: root-app
   namespace: argocd
+
 spec:
   project: default
+
   source:
-    repoURL: 'https://github.com/skymonil/event-microservice-gitops.git'
+    repoURL: https://github.com/skymonil/event-microservice-gitops.git
     targetRevision: main
-    path: argocd-apps/dev  # 🟢 Points to the folder of "Controllers"
-    directory:
-      recurse: true        # 🟢 Read subfolders (infra/ and apps/)
+    path: argocd-apps/dev
+
   destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: argocd      # The Apps themselves live in argocd namespace
+    server: https://kubernetes.default.svc
+    namespace: argocd
+
   syncPolicy:
     automated:
       prune: true
