@@ -12,5 +12,5 @@ patches:
 # 3. Set the Image Version
 images:
 - name: skymonil/inventory-service
-  # 🟢 CI/CD UPDATES THIS LINE
-  newTag: latest
+  newName: skymonil/inventory-service
+  newTag: 19b17d50aa8d671e3a87dac4c6ed6a048203ac3b
