@@ -12,5 +12,5 @@ patches:
 # 3. Set the Image Version
 images:
 - name: skymonil/order-service
-  # 🟢 CI/CD UPDATES THIS LINE
-  newTag: latest
+  newName: skymonil/order-service
+  newTag: ed6682243cb96648148a90508c495820ca691372
