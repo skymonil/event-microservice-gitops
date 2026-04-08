@@ -1,5 +1,6 @@
+# //base/kustomization.yaml
 resources:
   - kong-namespace.yaml
   - kong-deployment.yaml
   - kong-service.yaml
-  - kong-routes.yaml
+  - kong-config.yaml
