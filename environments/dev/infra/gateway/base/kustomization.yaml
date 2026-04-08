@@ -2,4 +2,4 @@ resources:
   - kong-namespace.yaml
   - kong-deployment.yaml
   - kong-service.yaml
-  - kong-config.yaml
+  - kong-routes.yaml
