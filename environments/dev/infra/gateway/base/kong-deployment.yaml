@@ -34,7 +34,7 @@ spec:
               value: /dev/stderr
 
             - name: KONG_DECLARATIVE_CONFIG
-              value: /kong/declarative/kong-config.yaml
+              value: /kong/declarative/kong.yaml
 
           ports:
             - containerPort: 8000
