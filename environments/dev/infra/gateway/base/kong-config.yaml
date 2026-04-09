@@ -7,7 +7,7 @@ services:
       - name: user-route
         paths:
           - /api/users
-        strip_path: true
+        strip_path: false
 
   - name: order-service
     url: http://order-service.default.svc.cluster.local:80
