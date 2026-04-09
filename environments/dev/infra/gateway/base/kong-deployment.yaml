@@ -1,3 +1,4 @@
+# // gateway/base/kong-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -33,7 +34,7 @@ spec:
               value: /dev/stderr
 
             - name: KONG_DECLARATIVE_CONFIG
-              value: /kong/declarative/kong.yaml
+              value: /kong/declarative/kong-config.yaml
 
           ports:
             - containerPort: 8000
