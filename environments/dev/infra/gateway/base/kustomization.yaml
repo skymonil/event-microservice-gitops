@@ -1,4 +1,5 @@
 # //base/kustomization.yaml
+namespace: kong #
 resources:
   - kong-namespace.yaml
   - kong-deployment.yaml
@@ -11,3 +12,6 @@ configMapGenerator:
 
 generatorOptions:
   disableNameSuffixHash: false
+
+configurations:
+  - kustomizeconfig.yaml
