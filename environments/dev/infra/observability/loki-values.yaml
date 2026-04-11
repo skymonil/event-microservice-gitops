@@ -6,6 +6,19 @@ loki:
   auth_enabled: false
   storage:
     type: 'filesystem' # 👈 Perfect for local dev. Use 's3' for real production.
+# --- 🟢 ADD THIS SECTION TO FIX THE ERROR ---
+monitoring:
+  dashboards:
+    enabled: false
+  rules:
+    enabled: false
+  serviceMonitor:
+    enabled: false
+  selfMonitoring:
+    enabled: false
+    grafanaAgent:
+      installOperator: false # 👈 This stops it from looking for the CRD
+# --------------------------------------------
 
 singleBinary:
   replicas: 1
