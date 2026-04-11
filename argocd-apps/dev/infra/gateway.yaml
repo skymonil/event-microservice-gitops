@@ -8,7 +8,7 @@ spec:
 
   source:
     repoURL: https://github.com/skymonil/event-microservice-gitops
-    targetRevision: HEAD
+    targetRevision: main
     path: environments/dev/infra/gateway/overlays/k3s
 
   destination:

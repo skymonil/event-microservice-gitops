@@ -11,7 +11,9 @@ spec:
   source:
     repoURL: 'https://github.com/skymonil/event-microservice-gitops'
     path: environments/dev/infra/observability  # ✅ Points to your Kustomize folder
-    targetRevision: HEAD
+    targetRevision: main
+    kustomize:
+      enableHelm: true
   destination:
     server: https://kubernetes.default.svc
     namespace: observability
