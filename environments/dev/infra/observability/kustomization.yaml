@@ -13,7 +13,6 @@ helmCharts:
     repo: https://grafana.github.io/helm-charts
     releaseName: alloy
     version: 0.4.0
-    namespace: observability
     valuesFile: alloy-values.yaml
 
   # 2. Loki (Logs)
@@ -21,7 +20,6 @@ helmCharts:
     repo: https://grafana.github.io/helm-charts
     releaseName: loki
     version: 5.43.0 # Standard stable version
-    namespace: observability
     valuesFile: loki-values.yaml
 
   # 3. Tempo (Traces)
@@ -29,5 +27,4 @@ helmCharts:
     repo: https://grafana.github.io/helm-charts
     releaseName: tempo
     version: 1.8.0
-    namespace: observability
     valuesFile: tempo-values.yaml
