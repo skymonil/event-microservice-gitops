@@ -7,6 +7,13 @@ loki:
   storage:
     type: 'filesystem' # 👈 Perfect for local dev. Use 's3' for real production.
 # --- 🟢 ADD THIS SECTION TO FIX THE ERROR ---
+
+  storage_config:
+    filesystem:
+      directory: /tmp/loki/chunks
+    boltdb_shipper:
+      active_index_directory: /tmp/loki/index
+      cache_location: /tmp/loki/cache
 monitoring:
   dashboards:
     enabled: false
