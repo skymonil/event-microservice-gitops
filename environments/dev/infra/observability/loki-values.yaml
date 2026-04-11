@@ -9,7 +9,7 @@ loki:
   ########################################
   commonConfig:
     replication_factor: 1
-    path_prefix: /tmp/loki # 🟢 THE MASTER SWITCH: Moves ALL internal storage out of /var/loki
+    path_prefix: /tmp/loki
 
   ########################################
   # storage & schema
@@ -20,12 +20,18 @@ loki:
   schemaConfig:
     configs:
       - from: 2024-01-01
-        store: tsdb # 🟢 tsdb is the modern standard for Loki (replaces boltdb)
+        store: tsdb 
         object_store: filesystem
         schema: v13
         index:
           prefix: loki_index_
           period: 24h
+
+  # --- 🟢 ADDED COMPACTOR OVERRIDE ---
+  compactor:
+    working_directory: /tmp/loki/boltdb-shipper-compactor
+    shared_store: filesystem
+  # -----------------------------------
 
 ########################################
 # single binary
@@ -33,43 +39,28 @@ loki:
 singleBinary:
   replicas: 1
   persistence:
-    enabled: false # Using /tmp via path_prefix makes this perfectly safe for local Dev
+    enabled: false 
 
 ########################################
 # disable distributed components
 ########################################
-read:
-  replicas: 0
-write:
-  replicas: 0
-backend:
-  replicas: 0
+read: { replicas: 0 }
+write: { replicas: 0 }
+backend: { replicas: 0 }
 
 ########################################
-# disable gateway
+# disable gateway & extras
 ########################################
 gateway:
   enabled: false
 
-########################################
-# disable monitoring extras
-########################################
 monitoring:
-  dashboards:
-    enabled: false
-  rules:
-    enabled: false
-  serviceMonitor:
-    enabled: false
+  dashboards: { enabled: false }
+  rules: { enabled: false }
+  serviceMonitor: { enabled: false }
   selfMonitoring:
     enabled: false
-    grafanaAgent:
-      installOperator: false
+    grafanaAgent: { installOperator: false }
 
-########################################
-# disable extras
-########################################
-test:
-  enabled: false
-lokiCanary:
-  enabled: false
+test: { enabled: false }
+lokiCanary: { enabled: false }
