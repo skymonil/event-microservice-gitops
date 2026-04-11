@@ -18,6 +18,11 @@ monitoring:
     enabled: false
     grafanaAgent:
       installOperator: false # 👈 This stops it from looking for the CRD
+
+test:
+  enabled: false # 👈 This fixes the "Helm test requires self monitoring" error
+lokiCanary:
+  enabled: false # 👈 Recommended to disable this as well for local K3s
 # --------------------------------------------
 
 singleBinary:
