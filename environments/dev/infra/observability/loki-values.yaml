@@ -1,0 +1,21 @@
+# // environments/dev/infra/observability/loki-values.yaml
+deploymentMode: SingleBinary
+loki:
+  commonConfig:
+    replication_factor: 1
+  auth_enabled: false
+  storage:
+    type: 'filesystem' # 👈 Perfect for local dev. Use 's3' for real production.
+
+singleBinary:
+  replicas: 1
+  persistence:
+    enabled: false # 👈 Set to true if you want logs to survive a pod restart
+
+# Disable heavy enterprise features
+read:
+  replicas: 0
+backend:
+  replicas: 0
+write:
+  replicas: 0

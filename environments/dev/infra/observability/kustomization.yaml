@@ -1,8 +1,34 @@
+# // environments/dev/infra/observability/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: observability
 
 resources:
-  - prometheus.yaml        # Assumes you have a folder for prometheus
-  - jaeger.yaml     # Assumes you have a folder for grafana
-  - analysis/          # 🟢 Explicitly include the analysis folder
+  - prometheus.yaml
+  # - jaeger.yaml <-- ❌ Remove this, Tempo is replacing Jaeger!
   - argocd-otel.yaml
+
+helmCharts:
+  # 1. Grafana Alloy (You already have this)
+  - name: alloy
+    repo: https://grafana.github.io/helm-charts
+    releaseName: alloy
+    version: 0.4.0
+    namespace: observability
+    valuesFile: alloy-values.yaml
+
+  # 2. Loki (Logs)
+  - name: loki
+    repo: https://grafana.github.io/helm-charts
+    releaseName: loki
+    version: 5.43.0 # Standard stable version
+    namespace: observability
+    valuesFile: loki-values.yaml
+
+  # 3. Tempo (Traces)
+  - name: tempo
+    repo: https://grafana.github.io/helm-charts
+    releaseName: tempo
+    version: 1.8.0
+    namespace: observability
+    valuesFile: tempo-values.yaml

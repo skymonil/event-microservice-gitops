@@ -1,16 +1,16 @@
-# bootstrap/kafka-stack.yaml
+# // argocd-apps/dev/infra/observability-stack.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: observability-infra
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"  # 🟢 Run AFTER Wave 0 is Healthy
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
   source:
     repoURL: 'https://github.com/skymonil/event-microservice-gitops'
-    path: environments/dev/infra/observability  # 👈 Put your Kafka/KafkaConnect YAMLs in here!
+    path: environments/dev/infra/observability  # ✅ Points to your Kustomize folder
     targetRevision: main
   destination:
     server: https://kubernetes.default.svc

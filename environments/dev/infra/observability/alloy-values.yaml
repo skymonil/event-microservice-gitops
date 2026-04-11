@@ -1,0 +1,83 @@
+# // environments/dev/infra/observability/alloy-values.yaml
+alloy:
+  configMap:
+    create: true
+    content: |
+      // --- 1. LOG COLLECTION (Replaces Promtail) ---
+      
+      // Discover all Kubernetes pods
+      discovery.kubernetes "pods" {
+        role = "pod"
+      }
+
+      // Scrape stdout logs from discovered pods
+      loki.source.kubernetes "pod_logs" {
+        targets    = discovery.kubernetes.pods.targets
+        forward_to = [loki.process.parse_pino.receiver]
+      }
+
+      // Parse your Node.js JSON logs and extract the Trace ID
+      loki.process "parse_pino" {
+        stage.json {
+          expressions = {
+            level    = "level",
+            trace_id = "trace_id",
+            msg      = "msg",
+          }
+        }
+        
+        // Promote extracted JSON fields to queryable Loki labels
+        stage.labels {
+          values = {
+            level    = "level",
+            trace_id = "trace_id",
+          }
+        }
+
+        forward_to = [loki.write.local.receiver]
+      }
+
+      // Send processed logs to your Loki instance
+      loki.write "local" {
+        endpoint {
+          url = "http://loki.observability.svc.cluster.local:3100/loki/api/v1/push"
+        }
+      }
+
+      // --- 2. TRACE/METRIC COLLECTION (Replaces OTel Collector) ---
+      
+      // Open up OTLP receivers for your telemetry.js to push to
+      otelcol.receiver.otlp "default" {
+        grpc {
+          endpoint = "0.0.0.0:4317"
+        }
+        http {
+          endpoint = "0.0.0.0:4318"
+        }
+
+        output {
+          metrics = [otelcol.exporter.prometheus.local.input]
+          traces  = [otelcol.exporter.otlp.tempo.input]
+        }
+      }
+
+      // Export traces to Jaeger/Tempo
+      otelcol.exporter.otlp "tempo" {
+        client {
+          endpoint = "http://jaeger-collector.observability.svc.cluster.local:4317"
+          tls {
+            insecure = true
+          }
+        }
+      }
+
+      // Export metrics to Prometheus
+      otelcol.exporter.prometheus "local" {
+        forward_to = [prometheus.remote_write.local.receiver]
+      }
+
+      prometheus.remote_write "local" {
+        endpoint {
+          url = "http://prometheus.observability.svc.cluster.local:9090/api/v1/write"
+        }
+      }
