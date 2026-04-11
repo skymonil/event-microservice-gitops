@@ -4,11 +4,15 @@ loki:
 
   auth_enabled: false
 
+  ########################################
+  # core config
+  ########################################
+
   commonConfig:
     replication_factor: 1
 
   ########################################
-  # storage (local filesystem)
+  # storage
   ########################################
 
   storage:
@@ -22,12 +26,14 @@ loki:
     boltdb_shipper:
       active_index_directory: /tmp/loki/index
       cache_location: /tmp/loki/cache
+      shared_store: filesystem
 
   ########################################
   # schema
   ########################################
 
   schemaConfig:
+
     configs:
       - from: 2024-01-01
         store: boltdb-shipper
@@ -39,29 +45,36 @@ loki:
           period: 24h
 
   ########################################
-  # disable ruler (fix readonly fs error)
-  ########################################
-
-  ruler:
-    enabled: false
-
-  ########################################
-  # disable compactor persistence
+  # explicitly override ALL /var/loki paths
   ########################################
 
   compactor:
     working_directory: /tmp/loki/compactor
+    shared_store: filesystem
+
+  ruler:
+    enabled: false
+    storage:
+      type: local
+      local:
+        directory: /tmp/loki/rules
+
+  ingester:
+    wal:
+      dir: /tmp/loki/wal
+
+  limits_config:
+    retention_period: 24h
 
   ########################################
-  # server config
+  # server
   ########################################
 
   server:
     http_listen_port: 3100
 
-
 ########################################
-# single binary mode
+# single binary
 ########################################
 
 singleBinary:
