@@ -14,6 +14,8 @@ loki:
     boltdb_shipper:
       active_index_directory: /tmp/loki/index
       cache_location: /tmp/loki/cache
+  ruler:
+    enable_api: false #r
 gateway:
   enabled: false
 monitoring:
