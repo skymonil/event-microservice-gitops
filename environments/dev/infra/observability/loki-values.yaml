@@ -7,6 +7,10 @@ loki:
   commonConfig:
     replication_factor: 1
 
+  ########################################
+  # storage (local filesystem)
+  ########################################
+
   storage:
     type: filesystem
 
@@ -19,8 +23,11 @@ loki:
       active_index_directory: /tmp/loki/index
       cache_location: /tmp/loki/cache
 
-  schemaConfig:
+  ########################################
+  # schema
+  ########################################
 
+  schemaConfig:
     configs:
       - from: 2024-01-01
         store: boltdb-shipper
@@ -31,8 +38,31 @@ loki:
           prefix: loki_index_
           period: 24h
 
+  ########################################
+  # disable ruler (fix readonly fs error)
+  ########################################
+
   ruler:
-    enable_api: false
+    enabled: false
+
+  ########################################
+  # disable compactor persistence
+  ########################################
+
+  compactor:
+    working_directory: /tmp/loki/compactor
+
+  ########################################
+  # server config
+  ########################################
+
+  server:
+    http_listen_port: 3100
+
+
+########################################
+# single binary mode
+########################################
 
 singleBinary:
 
@@ -41,8 +71,29 @@ singleBinary:
   persistence:
     enabled: false
 
+########################################
+# disable distributed components
+########################################
+
+read:
+  replicas: 0
+
+write:
+  replicas: 0
+
+backend:
+  replicas: 0
+
+########################################
+# disable gateway
+########################################
+
 gateway:
   enabled: false
+
+########################################
+# disable monitoring extras
+########################################
 
 monitoring:
 
@@ -61,20 +112,12 @@ monitoring:
     grafanaAgent:
       installOperator: false
 
+########################################
+# disable extras
+########################################
+
 test:
   enabled: false
 
 lokiCanary:
   enabled: false
-
-
-# disable distributed mode components
-
-read:
-  replicas: 0
-
-write:
-  replicas: 0
-
-backend:
-  replicas: 0
