@@ -1,50 +1,80 @@
-# // environments/dev/infra/observability/loki-values.yaml
 deploymentMode: SingleBinary
+
 loki:
+
+  auth_enabled: false
+
   commonConfig:
     replication_factor: 1
-  auth_enabled: false
+
   storage:
-    type: 'filesystem' # 👈 Perfect for local dev. Use 's3' for real production.
-# --- 🟢 ADD THIS SECTION TO FIX THE ERROR ---
+    type: filesystem
 
   storage_config:
+
     filesystem:
       directory: /tmp/loki/chunks
+
     boltdb_shipper:
       active_index_directory: /tmp/loki/index
       cache_location: /tmp/loki/cache
-  ruler:
-    enable_api: false #r
-gateway:
-  enabled: false
-monitoring:
-  dashboards:
-    enabled: false
-  rules:
-    enabled: false
-  serviceMonitor:
-    enabled: false
-  selfMonitoring:
-    enabled: false
-    grafanaAgent:
-      installOperator: false # 👈 This stops it from looking for the CRD
 
-test:
-  enabled: false # 👈 This fixes the "Helm test requires self monitoring" error
-lokiCanary:
-  enabled: false # 👈 Recommended to disable this as well for local K3s
-# --------------------------------------------
+  schemaConfig:
+
+    configs:
+      - from: 2024-01-01
+        store: boltdb-shipper
+        object_store: filesystem
+        schema: v13
+
+        index:
+          prefix: loki_index_
+          period: 24h
+
+  ruler:
+    enable_api: false
 
 singleBinary:
-  replicas: 1
-  persistence:
-    enabled: false # 👈 Set to true if you want logs to survive a pod restart
 
-# Disable heavy enterprise features
+  replicas: 1
+
+  persistence:
+    enabled: false
+
+gateway:
+  enabled: false
+
+monitoring:
+
+  dashboards:
+    enabled: false
+
+  rules:
+    enabled: false
+
+  serviceMonitor:
+    enabled: false
+
+  selfMonitoring:
+    enabled: false
+
+    grafanaAgent:
+      installOperator: false
+
+test:
+  enabled: false
+
+lokiCanary:
+  enabled: false
+
+
+# disable distributed mode components
+
 read:
   replicas: 0
-backend:
-  replicas: 0
+
 write:
+  replicas: 0
+
+backend:
   replicas: 0
