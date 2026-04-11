@@ -4,14 +4,7 @@ kind: Kustomization
 namespace: observability
 
 helmGlobals:
-
-  # prevents untar collision
   chartHome: charts
-
-  # prevents temp dir conflicts inside ArgoCD
-  configHome: /tmp/helm
-  cacheHome: /tmp/helm/.cache
-  dataHome: /tmp/helm/.data
 
 
 helmCharts:
