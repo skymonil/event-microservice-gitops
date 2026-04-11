@@ -6,14 +6,15 @@ metadata:
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "0"
-  kustomize:
-      enableHelm: true
+ 
 spec:
   project: default
   source:
     repoURL: https://github.com/skymonil/event-microservice-gitops
     targetRevision: main
     path: environments/dev/infra
+    kustomize:
+      enableHelm: true
   destination:
     server: https://kubernetes.default.svc
     namespace: default

@@ -1,7 +1,6 @@
 # // environments/dev/infra/observability/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: observability
 
 resources:
   - prometheus.yaml
