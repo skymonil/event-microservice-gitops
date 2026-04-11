@@ -7,6 +7,10 @@ resources:
   # - jaeger.yaml <-- ❌ Remove this, Tempo is replacing Jaeger!
   - argocd-otel.yaml
 
+helmGlobals:
+
+  chartHome: charts
+
 helmCharts:
   # 1. Grafana Alloy (You already have this)
   - name: alloy
