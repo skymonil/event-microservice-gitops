@@ -1,0 +1,28 @@
+# // platform/observability/tempo-values.yaml
+
+# 🟢 RECEIVERS: Enable OTLP so Alloy can send traces
+traces:
+  otlp:
+    grpc:
+      enabled: true
+    http:
+      enabled: true
+
+# 🟢 STORAGE: Use local ephemeral storage for Dev
+storage:
+  trace:
+    backend: local
+    local:
+      path: /tmp/tempo/traces
+
+# Disable persistence for local K3s to avoid PVC binding issues
+persistence:
+  enabled: false
+
+# 🟢 CRD ERROR PREVENTION: Disable self-monitoring CRDs
+serviceMonitor:
+  enabled: false
+
+metaMonitoring:
+  serviceMonitor:
+    enabled: false

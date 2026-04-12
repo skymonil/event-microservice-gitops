@@ -1,0 +1,59 @@
+# // platform/observability/loki-values.yaml
+deploymentMode: SingleBinary
+
+loki:
+  auth_enabled: false
+  
+  ########################################
+  # Core Config & Paths
+  ########################################
+  commonConfig:
+    replication_factor: 1
+    path_prefix: /tmp/loki
+
+  ########################################
+  # Storage & Schema (Modern TSDB)
+  ########################################
+  storage:
+    type: filesystem
+  schemaConfig:
+    configs:
+      - from: 2024-01-01
+        store: tsdb 
+        object_store: filesystem
+        schema: v13
+        index:
+          prefix: loki_index_
+          period: 24h
+
+  # 🟢 Crucial: Forces the compactor out of /var/loki
+  compactor:
+    working_directory: /tmp/loki/compactor
+    shared_store: filesystem
+
+########################################
+# Single Binary Mode Settings
+########################################
+singleBinary:
+  replicas: 1
+  persistence:
+    enabled: false 
+
+read: { replicas: 0 }
+write: { replicas: 0 }
+backend: { replicas: 0 }
+gateway: { enabled: false }
+
+########################################
+# 🟢 CRD Error Prevention: Disable all self-monitoring
+########################################
+monitoring:
+  dashboards: { enabled: false }
+  rules: { enabled: false }
+  serviceMonitor: { enabled: false }
+  selfMonitoring:
+    enabled: false
+    grafanaAgent: { installOperator: false }
+  lokiCanary: { enabled: false }
+
+test: { enabled: false }

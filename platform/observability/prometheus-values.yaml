@@ -1,0 +1,29 @@
+# // platform/observability/prometheus-values.yaml
+
+# 🟢 CRITICAL: Allow Grafana Alloy to push metrics here
+server:
+  extraArgs:
+    - --web.enable-remote-write
+  
+  # Keep Dev storage small
+  persistentVolume:
+    enabled: true
+    storageClass: "local-path"
+    size: 2Gi
+
+# 🟢 DISABLE BLOAT: Turn off heavy components not needed for basic Dev tracing
+alertmanager:
+  enabled: false
+pushgateway:
+  enabled: false
+nodeExporter:
+  enabled: false
+kubeStateMetrics:
+  enabled: false
+
+# 🟢 CRD ERROR PREVENTION: Disable ServiceMonitors
+serverFiles:
+  prometheus.yml: {}
+serviceAccounts:
+  server:
+    create: true
