@@ -1,24 +1,26 @@
-# // argocd/dev/infra/cluster-infra.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
+
 metadata:
-  name: cluster-infra
+  name: observability
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
- 
+
 spec:
+
   project: default
+
   source:
     repoURL: https://github.com/skymonil/event-microservice-gitops
     targetRevision: main
-    path: environments/dev/infra
-    kustomize:
-      enableHelm: true
+    path: platform/observability
+
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
+    namespace: observability
+
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,13 @@
+helmCharts:
+
+- name: postgresql
+
+  repo: https://charts.bitnami.com/bitnami
+
+  version: 18.5.15
+
+  releaseName: postgres
+
+  namespace: database
+
+  valuesFile: values.yaml

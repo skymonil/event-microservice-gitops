@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/skymonil/event-microservice-gitops
     targetRevision: main
-    path: environments/dev/infra/gateway/overlays/k3s
+    path: environments/dev/platform/gateway/overlays/k3s
 
   destination:
     server: https://kubernetes.default.svc
@@ -19,3 +19,5 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

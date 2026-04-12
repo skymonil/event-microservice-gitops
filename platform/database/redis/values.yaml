@@ -1,0 +1,35 @@
+# // platform/database/redis-values.yaml
+
+# 🟢 LIGHTWEIGHT MODE: Single Pod, No Replication
+architecture: standalone
+
+# 🟢 SIMPLICITY: Disable password for internal Dev cluster
+# Apps connect via 'redis://redis-master.database.svc.cluster.local:6379'
+auth:
+  enabled: false
+
+master:
+  # 🟢 RESOURCE SAVING: Limit RAM usage aggressively for K3s
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      cpu: 100m # Added a CPU limit to prevent runaway processes
+      memory: 128Mi
+  
+  # 🟢 PERSISTENCE: Keep data if pod restarts
+  persistence:
+    enabled: true
+    storageClass: "local-path"
+    size: 1Gi
+
+# 🟢 REMOVE BLOAT: Disable Prometheus metrics exporter sidecar for Dev
+metrics:
+  enabled: false
+
+# 🟢 CLEANUP: Disable sentinel and replicas to save resources
+sentinel:
+  enabled: false
+replica:
+  replicaCount: 0 

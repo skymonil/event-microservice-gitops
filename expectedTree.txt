@@ -1,0 +1,64 @@
+gitops-repo/
+
+├── bootstrap
+│   └── root-app.yaml
+
+├── environments
+│   ├── dev
+│   │   ├── apps
+│   │   │   ├── inventory-service.yaml
+│   │   │   ├── order-service.yaml
+│   │   │   ├── payment-service.yaml
+│   │   │   └── user-service.yaml
+│   │   │
+│   │   └── infrastructure
+│   │       ├── gateway.yaml
+│   │       ├── kafka.yaml
+│   │       ├── observability.yaml
+│   │       ├── database.yaml
+│   │       └── cluster-addons.yaml
+│   │
+│   ├── staging
+│   └── prod
+
+├── platform
+│   ├── gateway
+│   │   ├── base
+│   │   └── overlays
+│   │       ├── k3s
+│   │       └── aws
+│   │
+│   ├── observability
+│   │   ├── loki-values.yaml
+│   │   ├── tempo-values.yaml
+│   │   ├── alloy-values.yaml
+│   │   ├── prometheus.yaml
+│   │   └── dashboards
+│   │
+│   ├── kafka
+│   │   ├── cluster
+│   │   └── connectors
+│   │
+│   ├── database
+│   │   ├── postgres.yaml
+│   │   └── redis.yaml
+│   │
+│   └── cluster-addons
+│       ├── metallb.yaml
+│       ├── sealed-secrets.yaml
+│       ├── storage.yaml
+│       └── argo-rollouts.yaml
+
+├── services
+│   ├── inventory-service
+│   │   ├── base
+│   │   └── overlays
+│   │       ├── dev
+│   │       ├── staging
+│   │       └── prod
+│   │
+│   ├── order-service
+│   ├── payment-service
+│   └── user-service
+
+└── README.md

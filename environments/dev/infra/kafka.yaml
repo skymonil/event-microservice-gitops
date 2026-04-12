@@ -10,7 +10,7 @@ spec:
   project: default
   source:
     repoURL: 'https://github.com/skymonil/event-microservice-gitops'
-    path: environments/dev/infra/kafka-cluster  # 👈 Put your Kafka/KafkaConnect YAMLs in here!
+    path: platform/kafka  # 👈 Put your Kafka/KafkaConnect YAMLs in here!
     targetRevision: main
   destination:
     server: https://kubernetes.default.svc

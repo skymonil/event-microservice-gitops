@@ -1,0 +1,54 @@
+# // platform/database/postgres-values.yaml
+
+architecture: standalone
+
+auth:
+  username: "postgres"
+  postgresPassword: "postgres"
+  # Optional: Keeping your default database from the original snippet
+  database: "user_db" 
+
+primary:
+  # --- 1. RESOURCE LIMITS ---
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+  # --- 2. DEBEZIUM CONFIGURATION ---
+  # Injected directly into postgresql.conf
+  configuration: |
+    wal_level = logical
+    max_wal_senders = 10
+    max_replication_slots = 10
+    listen_addresses = '*'
+
+  # --- 3. INIT SCRIPTS ---
+  initdb:
+    scripts:
+      init_microservices.sql: |
+        CREATE DATABASE "users";
+        CREATE DATABASE "orders";
+        CREATE DATABASE "inventory";
+        CREATE DATABASE "payments";
+        -- Grant privileges
+        GRANT ALL PRIVILEGES ON DATABASE "orders" TO postgres;
+        GRANT ALL PRIVILEGES ON DATABASE "users" TO postgres;
+        GRANT ALL PRIVILEGES ON DATABASE "inventory" TO postgres;
+        GRANT ALL PRIVILEGES ON DATABASE "payments" TO postgres;
+        -- Note: "postgres" user already has REPLICATION attribute by default
+
+  # --- 4. STORAGE ---
+  persistence:
+    enabled: true
+    storageClass: "local-path"
+    size: 5Gi  # Kept your original 5Gi size instead of downscaling to 1Gi
+
+# --- 5. OBSERVABILITY ---
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true

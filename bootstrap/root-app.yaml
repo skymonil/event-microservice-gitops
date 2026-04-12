@@ -1,18 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
+
 metadata:
-  name: root-app
+  name: dev-root
   namespace: argocd
+  directory:
+    recurse: true
 
 spec:
+
   project: default
 
   source:
-    repoURL: https://github.com/skymonil/event-microservice-gitops.git
+    repoURL: https://github.com/skymonil/event-microservice-gitops
     targetRevision: main
-    path: argocd-apps/dev
-    directory:
-      recurse: true
+    path: environments/dev
 
   destination:
     server: https://kubernetes.default.svc
