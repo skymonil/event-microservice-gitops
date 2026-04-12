@@ -1,9 +1,9 @@
 # // platform/observability/prometheus-values.yaml
 
-# 🟢 CRITICAL: Allow Grafana Alloy to push metrics here
+# 🟢 CRITICAL: Allow Grafana Alloy to push metrics here (Using Object format)
 server:
   extraArgs:
-    - --web.enable-remote-write
+    web.enable-remote-write: ""
   
   # Keep Dev storage small
   persistentVolume:
