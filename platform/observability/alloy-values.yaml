@@ -1,0 +1,74 @@
+# // platform/observability/alloy-values.yaml
+
+alloy:
+  configMap:
+    # 🟢 The River configuration for Alloy
+    content: |
+      // ==========================================
+      // 1. OTLP RECEIVER (Listens to Node.js apps)
+      // ==========================================
+      otelcol.receiver.otlp "default" {
+        grpc {
+          endpoint = "0.0.0.0:4317"
+        }
+        http {
+          endpoint = "0.0.0.0:4318"
+        }
+        output {
+          metrics = [otelcol.exporter.prometheus "to_prometheus".input]
+          logs    = [otelcol.exporter.loki "to_loki".input]
+          traces  = [otelcol.exporter.otlp "to_tempo".input]
+        }
+      }
+
+      // ==========================================
+      // 2. EXPORTERS (Converts OTLP to native formats)
+      // ==========================================
+      otelcol.exporter.prometheus "to_prometheus" {
+        forward_to = [prometheus.remote_write.local.receiver]
+      }
+
+      otelcol.exporter.loki "to_loki" {
+        forward_to = [loki.write.local.receiver]
+      }
+
+      otelcol.exporter.otlp "to_tempo" {
+        client {
+          // Pointing to your Tempo instance in the observability namespace
+          endpoint = "tempo.observability.svc.cluster.local:4317"
+          tls {
+            insecure             = true
+            insecure_skip_verify = true
+          }
+        }
+      }
+
+      // ==========================================
+      // 3. BACKEND ENDPOINTS
+      // ==========================================
+      prometheus.remote_write "local" {
+        endpoint {
+          url = "http://prometheus.observability.svc.cluster.local:9090/api/v1/write"
+        }
+      }
+
+      loki.write "local" {
+        endpoint {
+          url = "http://loki.observability.svc.cluster.local:3100/loki/api/v1/push"
+        }
+      }
+
+# 🟢 Enable extra ports on the Alloy service so your apps can reach it
+controller:
+  type: deployment
+  replicas: 1
+
+service:
+  type: ClusterIP
+  additionalPorts:
+    - name: otlp-grpc
+      port: 4317
+      targetPort: 4317
+    - name: otlp-http
+      port: 4318
+      targetPort: 4318
