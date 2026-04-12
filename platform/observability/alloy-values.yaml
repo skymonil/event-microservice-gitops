@@ -1,23 +1,18 @@
 # // platform/observability/alloy-values.yaml
-
 alloy:
   configMap:
-    # 🟢 The River configuration for Alloy
     content: |
       // ==========================================
       // 1. OTLP RECEIVER (Listens to Node.js apps)
       // ==========================================
       otelcol.receiver.otlp "default" {
-        grpc {
-          endpoint = "0.0.0.0:4317"
-        }
-        http {
-          endpoint = "0.0.0.0:4318"
-        }
+        grpc { endpoint = "0.0.0.0:4317" }
+        http { endpoint = "0.0.0.0:4318" }
         output {
-          metrics = [otelcol.exporter.prometheus "to_prometheus".input]
-          logs    = [otelcol.exporter.loki "to_loki".input]
-          traces  = [otelcol.exporter.otlp "to_tempo".input]
+          // 🟢 FIX: Removed quotes for component references
+          metrics = [otelcol.exporter.prometheus.to_prometheus.input]
+          logs    = [otelcol.exporter.loki.to_loki.input]
+          traces  = [otelcol.exporter.otlp.to_tempo.input]
         }
       }
 
@@ -34,7 +29,7 @@ alloy:
 
       otelcol.exporter.otlp "to_tempo" {
         client {
-          // Pointing to your Tempo instance in the observability namespace
+          // Pointing to your Tempo instance in the local cluster
           endpoint = "tempo.observability.svc.cluster.local:4317"
           tls {
             insecure             = true
@@ -58,7 +53,7 @@ alloy:
         }
       }
 
-# 🟢 Enable extra ports on the Alloy service so your apps can reach it
+# Expose the OTLP ports so your Node.js apps can reach Alloy
 controller:
   type: deployment
   replicas: 1
