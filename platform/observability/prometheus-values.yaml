@@ -1,29 +1,52 @@
-# // platform/observability/prometheus-values.yaml
+# platform/observability/prometheus-values.yaml
 
-# 🟢 CRITICAL: Allow Grafana Alloy to push metrics here (Using Object format)
 server:
+
   extraArgs:
-    web.enable-remote-write: ""
-  
-  # Keep Dev storage small
+    web.enable-remote-write-receiver: ""
+
   persistentVolume:
     enabled: true
-    storageClass: "local-path"
+    storageClass: local-path
     size: 2Gi
 
-# 🟢 DISABLE BLOAT: Turn off heavy components not needed for basic Dev tracing
+############################################
+# KEEP DEFAULT SCRAPE CONFIG
+############################################
+
+serverFiles:
+  prometheus.yml:
+    global:
+      scrape_interval: 15s
+
+    scrape_configs:
+
+      # Prometheus self-metrics
+      - job_name: prometheus
+        static_configs:
+          - targets:
+              - localhost:9090
+
+############################################
+# Disable heavy components for homelab
+############################################
+
 alertmanager:
   enabled: false
+
 pushgateway:
   enabled: false
+
 nodeExporter:
   enabled: false
+
 kubeStateMetrics:
   enabled: false
 
-# 🟢 CRD ERROR PREVENTION: Disable ServiceMonitors
-serverFiles:
-  prometheus.yml: {}
+############################################
+# keep service account
+############################################
+
 serviceAccounts:
   server:
     create: true
