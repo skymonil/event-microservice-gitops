@@ -8,4 +8,4 @@ resources:
   - gateway.yaml
   - observability.yaml
   - global-env-config.yaml
-  - argocd-connectors.yaml
+  - kafka-connectors.yaml
