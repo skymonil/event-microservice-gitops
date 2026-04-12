@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dev-kafka-connectors
+  namespace: argocd
+  annotations:
+    # 🟢 Forces ArgoCD to wait until the Kafka cluster (Wave 1) is healthy
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/skymonil/event-microservice-gitops
+    targetRevision: main
+    # 🟢 Points to the actual folder containing your outbox YAMLs
+    path: platform/kafka/kafka-connectors
+  destination:
+    server: https://kubernetes.default.svc
+    # 🟢 Deploy into the same namespace as your Kafka cluster
+    namespace: kafka
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
