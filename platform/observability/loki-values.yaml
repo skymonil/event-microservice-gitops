@@ -1,59 +1,122 @@
-# // platform/observability/loki-values.yaml
+# platform/observability/loki-values.yaml
+
 deploymentMode: SingleBinary
 
 loki:
+
   auth_enabled: false
-  
-  ########################################
-  # Core Config & Paths
-  ########################################
-  commonConfig:
-    replication_factor: 1
-    path_prefix: /var/loki
 
   ########################################
-  # Storage & Schema (Modern TSDB)
+  # IMPORTANT: force writable paths
   ########################################
+
+  commonConfig:
+    replication_factor: 1
+    path_prefix: /tmp/loki
+
+  ########################################
+  # storage
+  ########################################
+
   storage:
     type: filesystem
+
+  storage_config:
+
+    filesystem:
+      directory: /tmp/loki/chunks
+
+    tsdb_shipper:
+      active_index_directory: /tmp/loki/index
+      cache_location: /tmp/loki/index_cache
+
+  ########################################
+  # schema (required)
+  ########################################
+
   schemaConfig:
     configs:
       - from: 2024-01-01
-        store: tsdb 
+        store: tsdb
         object_store: filesystem
         schema: v13
+
         index:
           prefix: loki_index_
           period: 24h
 
-  # 🟢 Crucial: Forces the compactor out of /var/loki
+  ########################################
+  # disable ruler (causes /var/loki usage)
+  ########################################
+
+  ruler:
+    enabled: false
+
+  ########################################
+  # compactor writable dir
+  ########################################
+
   compactor:
     working_directory: /tmp/loki/compactor
     shared_store: filesystem
 
+  ########################################
+  # server config
+  ########################################
+
+  server:
+    http_listen_port: 3100
+
 ########################################
-# Single Binary Mode Settings
+# single binary mode
 ########################################
+
 singleBinary:
+
   replicas: 1
+
   persistence:
-    enabled: false 
-
-read: { replicas: 0 }
-write: { replicas: 0 }
-backend: { replicas: 0 }
-gateway: { enabled: false }
+    enabled: false
 
 ########################################
-# 🟢 CRD Error Prevention: Disable all self-monitoring
+# disable distributed components
 ########################################
+
+read:
+  replicas: 0
+
+write:
+  replicas: 0
+
+backend:
+  replicas: 0
+
+########################################
+# disable extras
+########################################
+
+gateway:
+  enabled: false
+
 monitoring:
-  dashboards: { enabled: false }
-  rules: { enabled: false }
-  serviceMonitor: { enabled: false }
+
+  dashboards:
+    enabled: false
+
+  rules:
+    enabled: false
+
+  serviceMonitor:
+    enabled: false
+
   selfMonitoring:
     enabled: false
-    grafanaAgent: { installOperator: false }
-  lokiCanary: { enabled: false }
 
-test: { enabled: false }
+    grafanaAgent:
+      installOperator: false
+
+  lokiCanary:
+    enabled: false
+
+test:
+  enabled: false
