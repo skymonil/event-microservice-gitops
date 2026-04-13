@@ -1,51 +1,45 @@
-# platform/observability/prometheus-values.yaml
+# // platform/observability/prometheus-values.yaml
 
 server:
-
   extraArgs:
     web.enable-remote-write-receiver: ""
-
+  
   persistentVolume:
     enabled: true
-    storageClass: local-path
+    storageClass: "local-path"
     size: 2Gi
-
-############################################
-# KEEP DEFAULT SCRAPE CONFIG
-############################################
 
 serverFiles:
   prometheus.yml:
     global:
       scrape_interval: 15s
-
     scrape_configs:
-
-      # Prometheus self-metrics
       - job_name: prometheus
         static_configs:
           - targets:
               - localhost:9090
 
-############################################
-# Disable heavy components for homelab
-############################################
-
+# 🟢 FIX: Ensure these match the chart's top-level keys
+# Most Prometheus community charts use these names:
 alertmanager:
   enabled: false
 
-pushgateway:
+prometheus-pushgateway:
   enabled: false
 
+prometheus-node-exporter:
+  enabled: false
+
+kube-state-metrics:
+  enabled: false
+
+# Extra safety for the ones you tried
 nodeExporter:
   enabled: false
-
+pushgateway:
+  enabled: false
 kubeStateMetrics:
   enabled: false
-
-############################################
-# keep service account
-############################################
 
 serviceAccounts:
   server:
