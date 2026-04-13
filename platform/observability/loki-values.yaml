@@ -7,15 +7,12 @@ loki:
   auth_enabled: false
 
   ########################################
-  # IMPORTANT: force writable paths
+  # writable base directory
   ########################################
 
   commonConfig:
     replication_factor: 1
     path_prefix: /tmp/loki
-    memberlist_config:
-      join_members:
-        - 127.0.0.1
 
   ########################################
   # storage
@@ -34,7 +31,7 @@ loki:
       cache_location: /tmp/loki/index_cache
 
   ########################################
-  # schema (required)
+  # schema (required for tsdb)
   ########################################
 
   schemaConfig:
@@ -49,20 +46,14 @@ loki:
           period: 24h
 
   ########################################
-  # disable ruler (causes /var/loki usage)
+  # disable ruler completely
   ########################################
-
-  rulerConfig:
-    storage:
-      type: local
-      local:
-        directory: /tmp/loki/rules
 
   ruler:
     enabled: false
 
   ########################################
-  # compactor writable dir
+  # compactor must use writable path
   ########################################
 
   compactor:
@@ -70,14 +61,14 @@ loki:
     shared_store: filesystem
 
   ########################################
-  # server config
+  # server port
   ########################################
 
   server:
     http_listen_port: 3100
 
 ########################################
-# single binary mode
+# single binary
 ########################################
 
 singleBinary:
@@ -88,7 +79,7 @@ singleBinary:
     enabled: false
 
 ########################################
-# disable distributed components
+# disable distributed mode components
 ########################################
 
 read:
@@ -101,7 +92,7 @@ backend:
   replicas: 0
 
 ########################################
-# disable extras
+# disable extras for homelab
 ########################################
 
 gateway:
