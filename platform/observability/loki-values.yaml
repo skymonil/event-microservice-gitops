@@ -1,120 +1,118 @@
-# platform/observability/loki-values.yaml
-
 deploymentMode: SingleBinary
 
 loki:
-
   auth_enabled: false
 
   ########################################
-  # writable base directory
+  # IMPORTANT: force writable paths
   ########################################
-
   commonConfig:
     replication_factor: 1
     path_prefix: /tmp/loki
 
+  # 🟢 FIX: Moved memberlist here and renamed to 'memberlist'
+  memberlist:
+    join_members:
+      - 127.0.0.1
+
+  # 🟢 FIX: Force Ingester to use In-Memory ring for single node
+  ingester:
+    lifecycler:
+      ring:
+        kvstore:
+          store: inmemory
+        replication_factor: 1
+
   ########################################
   # storage
   ########################################
-
   storage:
     type: filesystem
 
   storage_config:
-
     filesystem:
       directory: /tmp/loki/chunks
-
     tsdb_shipper:
       active_index_directory: /tmp/loki/index
       cache_location: /tmp/loki/index_cache
+    # 🟢 FIX: Force Index Shipper to use In-Memory ring
+    hash_ring:
+      kvstore:
+        store: inmemory
 
   ########################################
-  # schema (required for tsdb)
+  # schema (required)
   ########################################
-
   schemaConfig:
     configs:
       - from: 2024-01-01
         store: tsdb
         object_store: filesystem
         schema: v13
-
         index:
           prefix: loki_index_
           period: 24h
 
   ########################################
-  # disable ruler completely
+  # disable ruler (causes /var/loki usage)
   ########################################
+  rulerConfig:
+    storage:
+      type: local
+      local:
+        directory: /tmp/loki/rules
 
   ruler:
     enabled: false
 
   ########################################
-  # compactor must use writable path
+  # compactor writable dir
   ########################################
-
   compactor:
     working_directory: /tmp/loki/compactor
     shared_store: filesystem
 
   ########################################
-  # server port
+  # server config
   ########################################
-
   server:
     http_listen_port: 3100
 
 ########################################
-# single binary
+# single binary mode
 ########################################
-
 singleBinary:
-
   replicas: 1
-
   persistence:
     enabled: false
 
 ########################################
-# disable distributed mode components
+# disable distributed components
 ########################################
-
 read:
   replicas: 0
-
 write:
   replicas: 0
-
 backend:
   replicas: 0
 
 ########################################
-# disable extras for homelab
+# disable extras
 ########################################
-
 gateway:
   enabled: false
 
 monitoring:
-
   dashboards:
     enabled: false
-
   rules:
     enabled: false
-
   serviceMonitor:
     enabled: false
-
   selfMonitoring:
     enabled: false
-
     grafanaAgent:
       installOperator: false
-
   lokiCanary:
     enabled: false
 
