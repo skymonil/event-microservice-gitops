@@ -49,6 +49,12 @@ loki:
   # disable ruler (causes /var/loki usage)
   ########################################
 
+  rulerConfig:
+    storage:
+      type: local
+      local:
+        directory: /tmp/loki/rules
+
   ruler:
     enabled: false
 
