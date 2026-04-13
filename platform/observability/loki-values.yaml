@@ -36,9 +36,7 @@ loki:
       active_index_directory: /tmp/loki/index
       cache_location: /tmp/loki/index_cache
     # 🟢 FIX: Force Index Shipper to use In-Memory ring
-    hash_ring:
-      kvstore:
-        store: inmemory
+   
 
   ########################################
   # schema (required)
