@@ -1,7 +1,11 @@
 # // platform/observability/prometheus-values.yaml
 
 server:
-  # 🟢 FIX: Switch to extraFlags (which natively accepts an array of booleans)
+  # 🟢 FIX: Use the native global block instead of serverFiles
+  global:
+    scrape_interval: 15s
+    evaluation_interval: 15s
+
   extraFlags:
     - web.enable-lifecycle
     - web.enable-remote-write-receiver
@@ -10,23 +14,6 @@ server:
     enabled: true
     storageClass: local-path
     size: 2Gi
-
-############################################
-# KEEP DEFAULT CONFIG + ADD MINIMAL SCRAPE
-############################################
-
-serverFiles:
-  prometheus.yml:
-    global:
-      scrape_interval: 15s
-      evaluation_interval: 15s
-
-    scrape_configs:
-
-      - job_name: prometheus
-        static_configs:
-          - targets:
-              - localhost:9090
 
 ############################################
 # disable heavy components
@@ -51,6 +38,8 @@ kube-state-metrics:
 serviceMonitor:
   enabled: false
 
+############################################
+# service account
 ############################################
 
 serviceAccounts:
