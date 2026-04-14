@@ -1,10 +1,10 @@
-# platform/observability/prometheus-values.yaml
+# // platform/observability/prometheus-values.yaml
 
 server:
-
-  extraArgs:
-    - --web.enable-lifecycle
-    - --web.enable-remote-write-receiver
+  # 🟢 FIX: Switch to extraFlags (which natively accepts an array of booleans)
+  extraFlags:
+    - web.enable-lifecycle
+    - web.enable-remote-write-receiver
 
   persistentVolume:
     enabled: true
@@ -12,7 +12,7 @@ server:
     size: 2Gi
 
 ############################################
-# minimal scrape config
+# KEEP DEFAULT CONFIG + ADD MINIMAL SCRAPE
 ############################################
 
 serverFiles:
