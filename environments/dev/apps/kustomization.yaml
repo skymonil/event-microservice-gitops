@@ -1,3 +1,4 @@
+# // environments/dev/apps/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
@@ -6,3 +7,4 @@ resources:
   - order-service.yaml
   - payment-service.yaml
   - inventory-service.yaml
+  - ../infra/observability/analysis 
