@@ -1,3 +1,4 @@
+# // platform/kafka/cluster/kustomization.yaml
 resources:
 
 - kafka-cluster.yaml
