@@ -3,8 +3,8 @@
 server:
 
   extraArgs:
-    web.enable-lifecycle: ""
-    web.enable-remote-write-receiver: ""
+    - --web.enable-lifecycle
+    - --web.enable-remote-write-receiver
 
   persistentVolume:
     enabled: true
@@ -12,7 +12,7 @@ server:
     size: 2Gi
 
 ############################################
-# KEEP DEFAULT CONFIG + ADD MINIMAL SCRAPE
+# minimal scrape config
 ############################################
 
 serverFiles:
@@ -23,14 +23,13 @@ serverFiles:
 
     scrape_configs:
 
-      # self monitoring
       - job_name: prometheus
         static_configs:
           - targets:
               - localhost:9090
 
 ############################################
-# disable heavy components (k3s homelab)
+# disable heavy components
 ############################################
 
 alertmanager:
@@ -46,14 +45,12 @@ kube-state-metrics:
   enabled: false
 
 ############################################
-# disable service monitors
+# disable servicemonitors
 ############################################
 
 serviceMonitor:
   enabled: false
 
-############################################
-# service account
 ############################################
 
 serviceAccounts:
