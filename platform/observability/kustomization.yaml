@@ -35,3 +35,10 @@ helmCharts:
     releaseName: prometheus
     namespace: observability
     valuesFile: prometheus-values.yaml
+  
+  - name: grafana
+    repo: https://grafana.github.io/helm-charts
+    version: 8.0.0  # Use a recent stable chart version
+    releaseName: grafana
+    namespace: observability
+    valuesFile: grafana-values.yaml
