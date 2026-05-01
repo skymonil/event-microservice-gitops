@@ -95,6 +95,31 @@ alloy:
         forward_to = [loki.write.local.receiver]
       }
 
+      // ==========================================
+      // 5. INFRASTRUCTURE METRICS (Scraping)
+      // ==========================================
+      
+      // Discover the Node Exporter and Kube-State-Metrics services
+      discovery.kubernetes "infra" {
+        role = "service"
+      }
+
+      // Filter to only scrape those specific exporters
+      discovery.relabel "infra_metrics" {
+        targets = discovery.kubernetes.infra.targets
+        rule {
+          source_labels = ["__meta_kubernetes_service_name"]
+          regex         = "(prometheus-node-exporter|prometheus-kube-state-metrics)"
+          action        = "keep"
+        }
+      }
+
+      // Scrape the metrics and send them to Prometheus
+      prometheus.scrape "infra" {
+        targets    = discovery.relabel.infra_metrics.output
+        forward_to = [prometheus.remote_write.local.receiver]
+      }
+
 # Expose the OTLP ports so your Node.js apps can reach Alloy
 controller:
   type: daemonset

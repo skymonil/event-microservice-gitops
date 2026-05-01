@@ -26,10 +26,10 @@ prometheus-pushgateway:
   enabled: false
 
 prometheus-node-exporter:
-  enabled: false
+  enabled: true
 
 kube-state-metrics:
-  enabled: false
+  enabled: true
 
 ############################################
 # disable servicemonitors
