@@ -120,6 +120,21 @@ alloy:
         forward_to = [prometheus.remote_write.local.receiver]
       }
 
+      // ==========================================
+      // 6. BUILT-IN NODE EXPORTER (Bypassing K3s/WSL2 bugs)
+      // ==========================================
+      
+      // A. Turn on the internal node-exporter engine
+      prometheus.exporter.unix "local_machine" {
+        // Alloy will automatically read whatever CPU/RAM it has access to
+      }
+
+      // B. Scrape itself and push to your central Prometheus
+      prometheus.scrape "alloy_node_metrics" {
+        targets    = prometheus.exporter.unix.local_machine.targets
+        forward_to = [prometheus.remote_write.local.receiver]
+      }
+
 # Expose the OTLP ports so your Node.js apps can reach Alloy
 controller:
   type: daemonset
