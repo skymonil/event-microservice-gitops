@@ -27,18 +27,29 @@ prometheus-pushgateway:
 
 prometheus-node-exporter:
   enabled: true
+  hostRootfs: false 
   extraArgs:
-    - --path.rootfs=/host
+    - --path.procfs=/host/proc
+    - --path.sysfs=/host/sys
+    - --path.rootfs=/host/root
   sidecarHostVolumeMounts: []
-  hostRootfs: true
   
   # This is the critical part for the mount error:
   extraHostVolumeMounts:
-    - name: host-root
-      hostPath: /
-      mountPath: /host
+    - name: proc
+      hostPath: /proc
+      mountPath: /host/proc
       readOnly: true
-      mountPropagation: HostToContainer # <--- THIS IS THE MAGIC LINE
+    - name: sys
+      hostPath: /sys
+      mountPath: /host/sys
+      readOnly: true
+    # We mount / as a standard volume WITHOUT propagation 
+    # This avoids the "not a shared or slave mount" error
+    - name: root
+      hostPath: /
+      mountPath: /host/root
+      readOnly: true # <--- THIS IS THE MAGIC LINE
 
 kube-state-metrics:
   enabled: true
