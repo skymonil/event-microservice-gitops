@@ -53,10 +53,46 @@ alloy:
         }
       }
 
+      // ==========================================
+      // 4. KUBERNETES LOG SCRAPING (Promtail Replacement)
+      // ==========================================
+      
+      // A. Discover all pods in the cluster
+      discovery.kubernetes "pods" {
+        role = "pod"
+      }
+
+      // B. Filter the pods
+      discovery.relabel "pod_logs" {
+        targets = discovery.kubernetes.pods.targets
+        
+        // ONLY scrape pods that are on the same physical node as this specific Alloy agent
+        rule {
+          source_labels = ["__meta_kubernetes_pod_node_name"]
+          action        = "keep"
+          regex         = sys.env("HOSTNAME")
+        }
+        
+        // Map the ugly Kubernetes labels to clean Loki labels
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label  = "namespace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app"]
+          target_label  = "app"
+        }
+      }
+
+      // C. Read the actual log files and push to Loki
+      loki.source.kubernetes "pod_logs" {
+        targets    = discovery.relabel.pod_logs.output
+        forward_to = [loki.write.local.receiver]
+      }
+
 # Expose the OTLP ports so your Node.js apps can reach Alloy
 controller:
-  type: deployment
-  replicas: 1
+  type: daemonset
 
 service:
   type: ClusterIP
