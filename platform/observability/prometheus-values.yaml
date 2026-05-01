@@ -28,16 +28,12 @@ prometheus-pushgateway:
 prometheus-node-exporter:
   enabled: true
   
-  # 1. Tell the chart not to generate the default root mount
   hostRootfs: false 
 
-  # 2. Only ask for CPU, Memory, and Network stats
-  extraArgs:
-    - --path.procfs=/host/proc
-    - --path.sysfs=/host/sys
-    # Notice we completely deleted --path.rootfs
+  # 🟢 FIX: Completely removed the extraArgs block to stop the duplicate flag error.
+  # The Helm chart will automatically inject the single copies of --path.procfs
 
-  # 3. Only mount the allowed folders. NO hostPath: /
+  # Keep our restricted mounts
   extraHostVolumeMounts:
     - name: proc
       hostPath: /proc
