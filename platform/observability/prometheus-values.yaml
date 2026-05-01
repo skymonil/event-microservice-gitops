@@ -26,7 +26,7 @@ prometheus-pushgateway:
   enabled: false
 
 prometheus-node-exporter:
-  enabled: true
+  enabled: false
   
   hostRootfs: false 
 
