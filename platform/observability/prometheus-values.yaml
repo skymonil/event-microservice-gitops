@@ -28,21 +28,6 @@ prometheus-pushgateway:
 prometheus-node-exporter:
   enabled: false
   
-  hostRootfs: false 
-
-  # 🟢 FIX: Completely removed the extraArgs block to stop the duplicate flag error.
-  # The Helm chart will automatically inject the single copies of --path.procfs
-
-  # Keep our restricted mounts
-  extraHostVolumeMounts:
-    - name: proc
-      hostPath: /proc
-      mountPath: /host/proc
-      readOnly: true
-    - name: sys
-      hostPath: /sys
-      mountPath: /host/sys
-      readOnly: true
 kube-state-metrics:
   enabled: true
 
