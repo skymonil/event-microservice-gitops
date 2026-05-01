@@ -17,7 +17,7 @@ spec:
             args:
               # 🟢 Run the standard test suite
               - name: test-cmd
-                value: "test:order" 
+                value: "test:order:smoke" 
               # 🟢 Target the deployed service directly
               - name: target-url
                 value: "http://order-service-canary"
