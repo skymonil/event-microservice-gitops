@@ -1,5 +1,10 @@
 # // platform/observability/alloy-values.yaml
 alloy:
+  extraEnv:
+    - name: HOSTNAME
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName # This maps the Physical Node Name to the HOSTNAME env var
   configMap:
     content: |
       // ==========================================
@@ -70,7 +75,7 @@ alloy:
         rule {
           source_labels = ["__meta_kubernetes_pod_node_name"]
           action        = "keep"
-          regex         = sys.env("HOSTNAME")
+          regex         = env("HOSTNAME")
         }
         
         // Map the ugly Kubernetes labels to clean Loki labels
