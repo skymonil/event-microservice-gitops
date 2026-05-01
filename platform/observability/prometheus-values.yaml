@@ -27,14 +27,17 @@ prometheus-pushgateway:
 
 prometheus-node-exporter:
   enabled: true
+  
+  # 1. Tell the chart not to generate the default root mount
   hostRootfs: false 
+
+  # 2. Only ask for CPU, Memory, and Network stats
   extraArgs:
     - --path.procfs=/host/proc
     - --path.sysfs=/host/sys
-    - --path.rootfs=/host/root
-  sidecarHostVolumeMounts: []
-  
-  # This is the critical part for the mount error:
+    # Notice we completely deleted --path.rootfs
+
+  # 3. Only mount the allowed folders. NO hostPath: /
   extraHostVolumeMounts:
     - name: proc
       hostPath: /proc
@@ -44,13 +47,6 @@ prometheus-node-exporter:
       hostPath: /sys
       mountPath: /host/sys
       readOnly: true
-    # We mount / as a standard volume WITHOUT propagation 
-    # This avoids the "not a shared or slave mount" error
-    - name: root
-      hostPath: /
-      mountPath: /host/root
-      readOnly: true # <--- THIS IS THE MAGIC LINE
-
 kube-state-metrics:
   enabled: true
 
