@@ -22,7 +22,7 @@ spec:
                 image: skymonil/synthetic-tests:latest
                 imagePullPolicy: Always
                 # 🟢 This is where the magic happens
-                command: ["npm", "run", "{{ args.test-cmd }}"]
+                command: ["pnpm", "run", "{{ args.test-cmd }}"]
                 
                 env:
                 # 1. Target Under Test
