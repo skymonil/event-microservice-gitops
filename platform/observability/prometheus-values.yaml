@@ -27,6 +27,18 @@ prometheus-pushgateway:
 
 prometheus-node-exporter:
   enabled: true
+  extraArgs:
+    - --path.rootfs=/host
+  sidecarHostVolumeMounts: []
+  hostRootfs: true
+  
+  # This is the critical part for the mount error:
+  extraHostVolumeMounts:
+    - name: host-root
+      hostPath: /
+      mountPath: /host
+      readOnly: true
+      mountPropagation: HostToContainer # <--- THIS IS THE MAGIC LINE
 
 kube-state-metrics:
   enabled: true
