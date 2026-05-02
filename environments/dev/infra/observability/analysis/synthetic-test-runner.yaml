@@ -29,6 +29,12 @@ spec:
                 - name: TARGET_URL 
                   value: "{{ args.target-url }}"
                 
+                - name: JWT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: user-service-secrets
+                      key: JWT_SECRET
+                
                 # 2. Infra Dependencies (Kafka)
                 - name: KAFKA_BROKERS
                   valueFrom:
