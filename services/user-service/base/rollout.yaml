@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: user-service
+  name: rollout
   annotations:
     notifications.argoproj.io/subscribe.on-rollout-completed.slack: deployments-dev
     notifications.argoproj.io/subscribe.on-rollout-failed.slack: deployments-dev
@@ -57,6 +57,6 @@ spec:
   strategy:
     canary:
       canaryService: user-service-canary
-      stableService: user-service
+      stableService: user-service-stable
       # 🟢 NO STEPS DEFINED
       # We leave this empty in Base so overlays can define their own behavior

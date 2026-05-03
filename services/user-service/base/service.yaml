@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: user-service
+  name: stable
   namespace: default
   labels:
     app: user-service
@@ -21,7 +21,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: user-service-canary
+  name: canary
 spec:
   selector:
     app: user-service
