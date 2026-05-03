@@ -16,12 +16,8 @@ spec:
         # The image will be overridden by Kustomize to match the app version
         image: service-image
         workingDir: /app 
-        command: ["/app/node_modules/.bin/dbmate"]
-        args: 
-          - "-d"
-          - "/app/src/db/migrations" # 🟢 Use the ABSOLUTE path
-          - "--no-dump-schema"       # 🟢 Optional: Prevents dbmate from trying to write a schema.sql file
-          - "up"
+        command: ["find"]
+        args: ["/app", "-name", "*.sql"]
         env:
         - name: DATABASE_URL
           valueFrom:
