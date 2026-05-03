@@ -5,3 +5,21 @@ resources:
 - service.yaml
 - secrets.yaml
 - ConfigMap.yaml
+- ../../common/migration-job.yaml
+
+# This ensures the Job gets the same name prefix as the service (e.g. order-service-db-migration)
+namePrefix: inventory-service-
+
+images:
+  - name: service-image
+    newName: skymonil/inventory-service
+    newTag: latest
+
+patches:
+- target:
+    kind: Job
+    name: db-migration
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/env/0/valueFrom/secretKeyRef/name
+      value: secrets

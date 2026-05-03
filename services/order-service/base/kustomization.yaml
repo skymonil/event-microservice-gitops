@@ -5,3 +5,21 @@ resources:
 - service.yaml
 - secrets.yaml
 - ConfigMap.yaml
+- ../../common/migration-job.yaml
+
+namePrefix: order-service-
+
+images:
+  - name: service-image
+    newName: skymonil/order-service
+    newTag: latest
+
+# 🟢 PATCH: Tell the common migration job to use the local secret
+patches:
+- target:
+    kind: Job
+    name: db-migration
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/env/0/valueFrom/secretKeyRef/name
+      value: secrets

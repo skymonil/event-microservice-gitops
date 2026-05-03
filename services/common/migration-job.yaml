@@ -1,0 +1,25 @@
+# services/common/migration-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migration # Kustomize will prefix this with the service name
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  backoffLimit: 0 # Fail fast so Argo stops the rollout immediately
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: migrator
+        # The image will be overridden by Kustomize to match the app version
+        image: service-image
+        command: ["pnpm", "exec", "dbmate"]
+        args: ["-d", "src/db/migrations", "up"]
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: db-secrets # Kustomize will rename this per service
+              key: DBMATE_DATABASE_URL

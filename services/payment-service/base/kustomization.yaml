@@ -5,3 +5,22 @@ resources:
 - service.yaml
 - secrets.yaml
 - ConfigMap.yaml
+- ../../common/migration-job.yaml
+
+# This ensures the Job gets the same name prefix as the service (e.g. order-service-db-migration)
+namePrefix: payment-service-
+
+# 🟢 Crucial: This ensures the Job uses the NEW image tag being deployed
+images:
+  - name: service-image
+    newName: skymonil/payment-service
+    newTag: latest # This tag is usually updated by your CI/CD (GitHub Actions)
+
+patches:
+- target:
+    kind: Job
+    name: db-migration
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/env/0/valueFrom/secretKeyRef/name
+      value: secrets
