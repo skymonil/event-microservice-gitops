@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: payment-service
+  name: rollout
 spec:
   replicas: 2
   selector:
@@ -36,6 +36,6 @@ spec:
   strategy:
     canary:
       canaryService: payment-service-canary
-      stableService: payment-service
+      stableService: payment-service-stable
       # 🟢 NO STEPS DEFINED
       # We leave this empty in Base so overlays can define their own behavior

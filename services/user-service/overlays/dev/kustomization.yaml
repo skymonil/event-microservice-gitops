@@ -9,6 +9,8 @@ resources:
 patches:
 - path: rollout-strategy.yaml
 
+namePrefix: user-service-
+
 # 3. Set the Image Version
 images:
 - name: skymonil/user-service
