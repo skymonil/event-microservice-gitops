@@ -89,11 +89,28 @@ alloy:
         }
       }
 
+      // ==========================================
+      // 4. C. Read and PROCESS the logs
+      // ==========================================
+
+      // 1. New Process Stage to handle JSON and Multi-line
+      loki.process "kubernetes_logs" {
+        // Unpack the JSON so 'level', 'msg', and 'stack' become internal labels
+        stage.json {
+          expressions = {
+            level = "level",
+            msg   = "msg",
+            stack = "stack",
+          }
+        }
+
       // C. Read the actual log files and push to Loki
       loki.source.kubernetes "pod_logs" {
         targets    = discovery.relabel.pod_logs.output
-        forward_to = [loki.write.local.receiver]
+        forward_to = [loki.process.kubernetes_logs.receiver]
       }
+
+     
 
       // ==========================================
       // 5. INFRASTRUCTURE METRICS (Scraping)
