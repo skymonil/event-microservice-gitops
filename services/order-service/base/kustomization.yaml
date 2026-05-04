@@ -22,4 +22,4 @@ patches:
   patch: |-
     - op: replace
       path: /spec/template/spec/containers/0/env/0/valueFrom/secretKeyRef/name
-      value: secrets
+      value: order-service-secrets
