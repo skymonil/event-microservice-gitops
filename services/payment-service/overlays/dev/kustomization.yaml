@@ -9,7 +9,7 @@ resources:
 patches:
 - path: rollout-strategy.yaml
 
-namePrefix: payment-service-
+
 
 # 3. Set the Image Version
 images:

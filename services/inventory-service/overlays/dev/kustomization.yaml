@@ -9,7 +9,6 @@ resources:
 patches:
 - path: rollout-strategy.yaml
 
-namePrefix: inventory-service-
 
 # 3. Set the Image Version
 images:
