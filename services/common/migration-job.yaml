@@ -16,7 +16,7 @@ spec:
         # The image will be overridden by Kustomize to match the app version
         image: service-image
         workingDir: /app 
-        command: ["/app/node_modules/.bin/dbmate"]
+        command: ["/bin/sh", "-c"]
         args: 
           - |
             echo "🚀 Starting database migration job..."
