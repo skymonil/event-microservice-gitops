@@ -18,10 +18,16 @@ spec:
         workingDir: /app 
         command: ["/app/node_modules/.bin/dbmate"]
         args: 
-          - "-d"
-          - "/app/src/db/migrations" # 🟢 Use the ABSOLUTE path
-          - "--no-dump-schema"       # 🟢 Optional: Prevents dbmate from trying to write a schema.sql file
-          - "up"
+          - |
+            echo "🚀 Starting database migration job..."
+            
+            echo "📊 Current Database Status:"
+            /app/node_modules/.bin/dbmate -d /app/src/db/migrations status
+            
+            echo "⏳ Applying new migrations (if any)..."
+            /app/node_modules/.bin/dbmate -d /app/src/db/migrations --no-dump-schema up
+            
+            echo "✅ Migration process finished!"
         env:
         - name: DATABASE_URL
           valueFrom:
