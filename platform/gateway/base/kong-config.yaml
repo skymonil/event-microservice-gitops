@@ -15,7 +15,7 @@ services:
       - name: order-route
         paths:
           - /api/orders
-        strip_path: true
+        strip_path: false
 
   - name: payment-service
     url: http://payment-service-stable.default.svc.cluster.local:80
@@ -23,7 +23,7 @@ services:
       - name: payment-route
         paths:
           - /api/payments
-        strip_path: true
+        strip_path: false
 
   - name: inventory-service
     url: http://inventory-service-stable.default.svc.cluster.local:80
@@ -31,4 +31,4 @@ services:
       - name: inventory-route
         paths:
           - /api/inventory
-        strip_path: true
+        strip_path: false
