@@ -103,6 +103,7 @@ alloy:
             stack = "stack",
           }
         }
+        }
 
       // C. Read the actual log files and push to Loki
       loki.source.kubernetes "pod_logs" {
