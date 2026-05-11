@@ -14,5 +14,5 @@ patches:
 # 3. Set the Image Version
 images:
 - name: skymonil/payment-service
-  # 🟢 CI/CD UPDATES THIS LINE
-  newTag: latest
+  newName: skymonil/payment-service
+  newTag: 6865243c62471fcd6720607de434c8b00f632ace
