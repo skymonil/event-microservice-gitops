@@ -28,14 +28,14 @@ spec:
         startupProbe:
           httpGet:
             path: /health/live
-            port: 3000
+            port: 3001
           failureThreshold: 30 # Gives the app 30 * 5s = 150s to start up
           periodSeconds: 5
 
         readinessProbe:
           httpGet:
             path: /health/ready
-            port: 3000
+            port: 3001
           initialDelaySeconds: 5
           periodSeconds: 10
           failureThreshold: 3
