@@ -14,8 +14,6 @@ spec:
     spec:
       containers:
       - name: payment-service
-        # 🟢 CLEAN IMAGE NAME (No Tag)
-        # Kustomize will find this string and replace the tag automatically
         image: skymonil/payment-service 
         ports:
         - containerPort: 3002
@@ -24,6 +22,29 @@ spec:
             name: payment-service-config
         - secretRef:
             name: payment-service-secrets
+        
+        startupProbe:
+          httpGet:
+            path: /health/live
+            port: 3002
+          failureThreshold: 30 
+          periodSeconds: 5
+
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 3002
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          failureThreshold: 3
+
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 3002
+          initialDelaySeconds: 10
+          periodSeconds: 20
+
         resources:
           requests:
             cpu: 100m
@@ -32,10 +53,8 @@ spec:
             cpu: 500m
             memory: 256Mi
 
-        # Add your other env vars/resources here
   strategy:
     canary:
       canaryService: payment-service-canary
       stableService: payment-service-stable
-      # 🟢 NO STEPS DEFINED
-      # We leave this empty in Base so overlays can define their own behavior
+  

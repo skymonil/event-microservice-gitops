@@ -33,18 +33,20 @@ spec:
         # 🟢 PROBES ADDED HERE
         readinessProbe:
           httpGet:
-            path: /health
+            path: /readyz 
             port: 3000
-          initialDelaySeconds: 5
-          periodSeconds: 5
-          failureThreshold: 5
+          initialDelaySeconds: 5 # Give the app 5s to connect to DB/Kafka
+          periodSeconds: 10       #  Check every 10s
+          successThreshold: 1     # 1 success makes it 'Ready'
+          failureThreshold: 5     # 3 fails removes it from the Service
         
         livenessProbe:
           httpGet:
-            path: /health
+            path: /healthz
             port: 3000
-          initialDelaySeconds: 10
-          periodSeconds: 10
+          initialDelaySeconds: 15 # Wait longer before starting to kill the pod
+          periodSeconds: 20       # No need to check this as frequently as readiness
+          failureThreshold: 3     # Only restart if the app is truly frozen
 
         resources:
           requests:
