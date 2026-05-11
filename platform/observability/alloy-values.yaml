@@ -95,6 +95,7 @@ alloy:
 
       // 1. New Process Stage to handle JSON and Multi-line
       loki.process "kubernetes_logs" {
+        forward_to = [loki.write.local.receiver]
         // Unpack the JSON so 'level', 'msg', and 'stack' become internal labels
         stage.json {
           expressions = {
