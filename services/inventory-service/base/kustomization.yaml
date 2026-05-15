@@ -6,6 +6,7 @@ resources:
 - secrets.yaml
 - ConfigMap.yaml
 - seedingJob.yaml
+- seedingConfig.yaml
 - ../../common
 
 # This ensures the Job gets the same name prefix as the service (e.g. order-service-db-migration)
