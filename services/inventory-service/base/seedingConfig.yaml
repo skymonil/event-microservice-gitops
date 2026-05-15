@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: inventory-seed-script
-  namespace: database
+  namespace: default
 data:
   seed.sql: |
     -- 1. Clear existing data

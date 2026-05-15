@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: seed-inventory-db
-  namespace: database
+  namespace: default
 spec:
   ttlSecondsAfterFinished: 300  # Automatically clean up the pod 5 mins after completion
   backoffLimit: 4
