@@ -17,9 +17,44 @@ alloy:
           // 🟢 FIX: Removed quotes for component references
           metrics = [otelcol.exporter.prometheus.to_prometheus.input]
           logs    = [otelcol.exporter.loki.to_loki.input]
-          traces  = [otelcol.exporter.otlp.to_tempo.input]
+          traces  = [otelcol.processor.tail_sampling.hybrid.input]
         }
       }
+      
+      
+      // ==========================================
+      // 2. HYBRID TAIL SAMPLER (The Brains)
+      // ==========================================
+      otelcol.processor.tail_sampling "hybrid" {
+        // How long to wait for the trace to finish before evaluating
+        decision_wait = "10s" 
+
+        // 🟢 Policy 1: Keep 100% of traces that contain an error
+        policy {
+          name = "keep-errors"
+          type = "status_code"
+          status_code {
+            status_codes = ["ERROR"]
+          }
+        }
+
+        // 🟢 Policy 2: Keep 100% of slow traces (e.g., > 1.5 seconds)
+        policy {
+          name = "keep-slow"
+          type = "latency"
+          latency {
+            threshold_ms = 1500
+          }
+        }
+
+        // 🟢 Policy 3: Keep a 5% random baseline of all other traffic
+        policy {
+          name = "baseline-success"
+          type = "probabilistic"
+          probabilistic {
+            sampling_percentage = 5.0
+          }
+        }
 
       // ==========================================
       // 2. EXPORTERS (Converts OTLP to native formats)
@@ -153,7 +188,40 @@ alloy:
         targets    = prometheus.exporter.unix.local_machine.targets
         forward_to = [prometheus.remote_write.local.receiver]
       }
+      
+      // ==========================================
+      // 7. APPLICATION SCRAPING (prom-client)
+      // ==========================================
+      
+      // Find all pods in the cluster
+      discovery.kubernetes "app_pods" {
+        role = "pod"
+      }
 
+      // Filter to only scrape pods that have the "prometheus.io/scrape: true" annotation
+      discovery.relabel "app_metrics" {
+        targets = discovery.kubernetes.app_pods.targets
+        
+        // 1. Keep only scraped pods
+        rule {
+          source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scrape"]
+          action        = "keep"
+          regex         = "true"
+        }
+        
+        // 2. Map the 'app' label to 'service' so your Grafana Dashboards work
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app"]
+          target_label  = "service"
+        }
+      }
+
+      // Scrape them and send to Prometheus
+      prometheus.scrape "app_metrics" {
+        targets    = discovery.relabel.app_metrics.output
+        forward_to = [prometheus.remote_write.local.receiver]
+      }
+     
 # Expose the OTLP ports so your Node.js apps can reach Alloy
 controller:
   type: daemonset
