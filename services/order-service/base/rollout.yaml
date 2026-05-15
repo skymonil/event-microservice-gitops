@@ -6,9 +6,6 @@ metadata:
     notifications.argoproj.io/subscribe.on-rollout-completed.slack: deployments-dev
     notifications.argoproj.io/subscribe.on-rollout-failed.slack: deployments-dev
     notifications.argoproj.io/subscribe.on-health-degraded.slack: deployments-dev
-    prometheus.io/scrape: "true"   # <--- Tells Alloy to scrape this pod
-    prometheus.io/path: "/metrics" # <--- Where the metrics live
-    prometheus.io/port: "3001" 
 spec:
   replicas: 2
   selector:
@@ -18,6 +15,9 @@ spec:
     metadata:
       labels:
         app: order-service
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "3001"     # Ensure this matches your Node.js port!
+      prometheus.io/path: "/metrics"
     spec:
       containers:
       - name: order-service
