@@ -59,7 +59,7 @@ alloy:
         output {
           traces = [otelcol.exporter.otlp.to_tempo.input]
         }
-      } /
+      } //
 
       // ==========================================
       // 2. EXPORTERS (Converts OTLP to native formats)
