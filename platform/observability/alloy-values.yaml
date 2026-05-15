@@ -55,6 +55,11 @@ alloy:
             sampling_percentage = 5.0
           }
         }
+        // 🎯 FIX: Forward the sampled traces to your Tempo exporter
+        output {
+          traces = [otelcol.exporter.otlp.to_tempo.input]
+        }
+      } /
 
       // ==========================================
       // 2. EXPORTERS (Converts OTLP to native formats)
@@ -188,7 +193,7 @@ alloy:
         targets    = prometheus.exporter.unix.local_machine.targets
         forward_to = [prometheus.remote_write.local.receiver]
       }
-      
+
       // ==========================================
       // 7. APPLICATION SCRAPING (prom-client)
       // ==========================================
