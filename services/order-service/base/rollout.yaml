@@ -2,6 +2,13 @@ apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: rollout
+  annotations:
+    notifications.argoproj.io/subscribe.on-rollout-completed.slack: deployments-dev
+    notifications.argoproj.io/subscribe.on-rollout-failed.slack: deployments-dev
+    notifications.argoproj.io/subscribe.on-health-degraded.slack: deployments-dev
+    prometheus.io/scrape: "true"   # <--- Tells Alloy to scrape this pod
+    prometheus.io/path: "/metrics" # <--- Where the metrics live
+    prometheus.io/port: "3001" 
 spec:
   replicas: 2
   selector:
