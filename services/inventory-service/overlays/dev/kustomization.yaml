@@ -14,4 +14,4 @@ patches:
 images:
 - name: skymonil/inventory-service
   newName: skymonil/inventory-service
-  newTag: cda50a990529e6ee99093b09c12500f4e91b5fec
+  newTag: 645d4395dd1005d0581fef5506c935b6d9c87d47

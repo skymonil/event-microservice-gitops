@@ -14,4 +14,4 @@ patches:
 images:
 - name: skymonil/order-service
   newName: skymonil/order-service
-  newTag: 262da29a196cd28359b6028861fc8923471036d5
+  newTag: 5c6afa9b8270c0dd3f2bfd1958ba64f8283c757c
