@@ -11,6 +11,10 @@ spec:
     metadata:
       labels:
         app: payment-service
+      annotations:
+      prometheus.io/scrape: "true"   # <--- Tells Alloy to scrape this pod
+      prometheus.io/path: "/metrics" # <--- Where the metrics live
+      prometheus.io/port: "3002"  # <--- Which port to scrape
     spec:
       containers:
       - name: payment-service

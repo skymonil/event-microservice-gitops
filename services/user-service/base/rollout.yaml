@@ -6,9 +6,7 @@ metadata:
     notifications.argoproj.io/subscribe.on-rollout-completed.slack: deployments-dev
     notifications.argoproj.io/subscribe.on-rollout-failed.slack: deployments-dev
     notifications.argoproj.io/subscribe.on-health-degraded.slack: deployments-dev
-    prometheus.io/scrape: "true"   # <--- Tells Alloy to scrape this pod
-    prometheus.io/path: "/metrics" # <--- Where the metrics live
-    prometheus.io/port: "3000"  # <--- Which port to scrape
+    
 spec:
   replicas: 2
   revisionHistoryLimit: 3
@@ -19,6 +17,10 @@ spec:
     metadata:
       labels:
         app: user-service
+      annotations:
+      prometheus.io/scrape: "true"   # <--- Tells Alloy to scrape this pod
+      prometheus.io/path: "/metrics" # <--- Where the metrics live
+      prometheus.io/port: "3000"  # <--- Which port to scrape
     spec:
       containers:
       - name: user-service
