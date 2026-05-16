@@ -16,9 +16,9 @@ spec:
       labels:
         app: order-service
       annotations:
-      prometheus.io/scrape: "true"
-      prometheus.io/port: "3001"     # Ensure this matches your Node.js port!
-      prometheus.io/path: "/metrics"
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "3001"     # Ensure this matches your Node.js port!
+        prometheus.io/path: "/metrics"
     spec:
       containers:
       - name: order-service
