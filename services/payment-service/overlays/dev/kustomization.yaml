@@ -15,4 +15,4 @@ patches:
 images:
 - name: skymonil/payment-service
   newName: skymonil/payment-service
-  newTag: d2f85af9bb6b3436fa97749f4c3609388e831b62
+  newTag: 91d7df61d2e7f4f85b30ffe5c6f6486a9208846c
