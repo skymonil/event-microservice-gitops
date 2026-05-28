@@ -25,3 +25,6 @@ patches:
     - op: replace
       path: /spec/template/spec/containers/0/env/0/valueFrom/secretKeyRef/name
       value: user-service-secrets
+
+generators:
+  - ksops-generator.yaml
