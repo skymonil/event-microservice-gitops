@@ -3,7 +3,6 @@ kind: Kustomization
 resources:
 - rollout.yaml
 - service.yaml
-- secrets.yaml
 - ConfigMap.yaml
 - ../../common
 
@@ -23,3 +22,6 @@ patches:
     - op: replace
       path: /spec/template/spec/containers/0/env/0/valueFrom/secretKeyRef/name
       value: order-service-secrets
+
+generators:
+  - ksops-generator.yaml
