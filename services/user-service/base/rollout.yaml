@@ -33,7 +33,7 @@ spec:
         - configMapRef:
             name: user-service-config
         - secretRef:
-            name: user-service-secrets
+            name: user-service-user-service-secrets2
         
         # 🟢 PROBES ADDED HERE
         readinessProbe:
