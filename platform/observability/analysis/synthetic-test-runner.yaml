@@ -1,0 +1,50 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterAnalysisTemplate # 🟢 Upgraded
+metadata:
+  name: synthetic-test-runner
+spec:
+  args:
+  - name: test-cmd
+  - name: target-url
+  - name: service-name       # 🟢 Added to dynamically link secrets
+  metrics:
+  - name: run-test
+    provider:
+      job:
+        spec:
+          backoffLimit: 1
+          ttlSecondsAfterFinished: 300
+          template:
+            spec:
+              restartPolicy: Never
+              containers:
+              - name: tester
+                image: skymonil/synthetic-tests:latest
+                imagePullPolicy: Always
+                command: ["pnpm", "run", "{{ args.test-cmd }}"]
+                env:
+                - name: TARGET_URL 
+                  value: "{{ args.target-url }}"
+                
+                - name: JWT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      # 🟢 Dynamically pulls the correct secret based on the app running the test
+                      name: "{{ args.service-name }}-secret"
+                      key: JWT_SECRET
+                
+                - name: KAFKA_BROKERS
+                  valueFrom:
+                    configMapKeyRef:
+                      name: global-env-config
+                      key: kafka.brokers
+                
+                # 🟢 Updated cross-service DNS calls to reflect Namespace-per-Service
+                - name: USER_SERVICE_URL
+                  value: "http://user-service.user-service.svc.cluster.local"
+                - name: ORDER_SERVICE_URL
+                  value: "http://order-service.order-service.svc.cluster.local"
+                - name: PAYMENT_SERVICE_URL
+                  value: "http://payment-service.payment-service.svc.cluster.local"
+                - name: INVENTORY_SERVICE_URL
+                  value: "http://inventory-service.inventory-service.svc.cluster.local"

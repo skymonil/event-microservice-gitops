@@ -1,0 +1,33 @@
+{{- if .Values.seeding.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "microservice.fullname" . }}-seeding
+  labels:
+    {{- include "microservice.labels" . | nindent 4 }}
+  annotations:
+    # 🟢 Runs during the sync phase, but only if it doesn't already exist
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  backoffLimit: 1
+  template:
+    metadata:
+      labels:
+        {{- include "microservice.selectorLabels" . | nindent 8 }}
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: seeder
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          # Executes your specific seed command
+          command:
+            {{- toYaml .Values.seeding.command | nindent 12 }}
+          envFrom:
+            - secretRef:
+                name: {{ include "microservice.fullname" . }}-secret
+            {{- if .Values.config }}
+            - configMapRef:
+                name: {{ include "microservice.fullname" . }}-config
+            {{- end }}
+{{- end }}

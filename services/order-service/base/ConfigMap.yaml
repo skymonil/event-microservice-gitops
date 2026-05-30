@@ -1,11 +1,12 @@
+# // services/order-service/base/ConfigMap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: config
-  namespace: default
+  namespace: order-service
 data:
   NODE_ENV: "development"
   PORT: "3001"
   JWT_EXPIRES_IN: "1h"
   LOG_LEVEL: "debug"
-  KAFKA_BROKERS: "event-cluster-kafka-bootstrap.kafka:9092"
+  KAFKA_BROKERS: "dev-cluster-kafka-bootstrap.kafka:9092"

@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: dev-platform-infrastructure
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  generators:
+    - list:
+        elements:
+          - addon: cluster-addons
+            syncWave: "-3"
+          - addon: gateway/overlays/k3s
+            syncWave: "-2"
+          - addon: state/postgres
+            syncWave: "-1"
+          - addon: state/redis
+            syncWave: "-1"
+          - addon: state/kafka
+            syncWave: "-1"
+          - addon: observability
+            syncWave: "0"
+  template:
+    metadata:
+      name: 'dev-platform-{{addon}}'
+      annotations:
+        # Enforces order so core tools install before apps or databases sync
+        argocd.argoproj.io/sync-wave: '{{syncWave}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/your-org/event-microservice-gitops.git
+        targetRevision: HEAD
+        path: 'platform/{{addon}}'
+      destination:
+        server: https://kubernetes.default.svc
+        # Components manage their own target namespaces via Kustomize or Helm values
+        namespace: argocd
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

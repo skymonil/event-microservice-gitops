@@ -1,0 +1,52 @@
+# -- Core Image Settings
+image:
+  repository: ""
+  tag: ""
+  pullPolicy: IfNotPresent
+
+# -- Replica Configuration
+replicaCount: 1
+
+# -- Argo Rollouts Strategy
+strategy:
+  canary:
+    steps:
+      - setWeight: 20
+      - pause: {duration: 10m}
+      - setWeight: 100
+
+# -- Service Configuration
+service:
+  type: ClusterIP
+  port: 80
+
+# -- Non-Sensitive Configuration (Injected as ConfigMap)
+config: {}
+  # LOG_LEVEL: "info"
+  # SPRING_PROFILES_ACTIVE: "dev"
+  # KAFKA_BOOTSTRAP_SERVERS: "dev-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+
+# -- Sensitive Configuration (Injected as Secret via SOPS)
+# When using ArgoCD + SOPS, your encrypted values file will decrypt on the fly
+# and inject these values securely into the Kubernetes Secret.
+secrets: {}
+  # DB_PASSWORD: "decrypted-by-sops"
+
+# -- Database Seeding Job
+
+# Controls the dbmate schema migration (PreSync)
+migration:
+  enabled: false
+
+seeding:
+  enabled: false
+  command: ["pnpm", "run", "db:seed"]
+
+# -- Compute Resources
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

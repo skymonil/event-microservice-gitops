@@ -1,6 +1,15 @@
-# environments/dev/platform/gateway/overlays/k3s/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
   - ../../base
+
+helmCharts:
+  - name: kong
+    repo: https://charts.konghq.com
+    version: 2.38.0
+    releaseName: kong
+    namespace: kong
+    # Kustomize will merge these values with your base values.yaml
+    additionalValuesFiles:
+      - values-k3s.yaml

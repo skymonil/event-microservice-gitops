@@ -1,0 +1,91 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: {{ include "microservice.fullname" . }}
+  labels:
+    {{- include "microservice.labels" . | nindent 4 }}
+
+spec:
+  replicas: {{ .Values.replicaCount }}
+
+  selector:
+    matchLabels:
+      {{- include "microservice.selectorLabels" . | nindent 6 }}
+
+  strategy:
+    canary:
+      {{- toYaml .Values.strategy | nindent 6 }}
+
+      {{- if .Values.analysis.enabled }}
+      analysis:
+        templates:
+          - templateName: http-golden-signals
+            clusterScope: true
+          - templateName: synthetic-test-runner
+            clusterScope: true
+        args:
+          - name: service-name
+            value: {{ include "microservice.name" . }}
+          - name: target-url
+            value: http://{{ include "microservice.fullname" . }}:{{ .Values.service.port }}
+          - name: test-cmd
+            value: {{ .Values.analysis.testCmd | default "test:smoke" | quote }}
+      {{- end }}
+
+  template:
+    metadata:
+      labels:
+        {{- include "microservice.selectorLabels" . | nindent 8 }}
+
+      annotations:
+        {{- if .Values.config }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- end }}
+
+        {{- if .Values.secrets }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        {{- end }}
+
+    spec:
+      containers:
+        - name: application
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+
+          {{- if or .Values.config .Values.secrets }}
+          envFrom:
+            {{- if .Values.config }}
+            - configMapRef:
+                name: {{ include "microservice.fullname" . }}-config
+            {{- end }}
+
+            {{- if .Values.secrets }}
+            - secretRef:
+                name: {{ include "microservice.fullname" . }}-secret
+            {{- end }}
+          {{- end }}
+
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+          {{- if .Values.probes }}
+          {{- with .Values.probes.startup }}
+          startupProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          {{- with .Values.probes.readiness }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          {{- with .Values.probes.liveness }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}

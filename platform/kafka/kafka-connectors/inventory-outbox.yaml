@@ -1,3 +1,4 @@
+## // platform/kafka/kafka-connectors/inventory-outbox.yaml
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaConnector
 metadata:

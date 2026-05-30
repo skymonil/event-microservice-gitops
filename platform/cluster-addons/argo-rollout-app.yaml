@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-rollouts
+  namespace: argocd
+spec:
+  project: default
+  
+  # Use 'sources' instead of a single 'source'
+  sources:
+    # Source 1: The upstream Helm chart
+    - repoURL: https://argoproj.github.io/argo-helm
+      chart: argo-rollouts
+      targetRevision: 2.40.5
+      helm:
+        valueFiles:
+          # The $values variable refers to the Git repository defined below
+          - $values/platform/cluster-addons/argo-rollouts/values.yaml
+          
+    # Source 2: Your Git repository containing the configuration
+    - repoURL: https://github.com/your-org/event-microservice-gitops.git
+      targetRevision: HEAD
+      # The 'ref' name must match the variable used above ($values)
+      ref: values
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argo-rollouts
+  
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

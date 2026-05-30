@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Ensure the database is isolated in its own namespace
+namespace: redis
+
+helmCharts:
+  - name: postgresql
+    repo: https://charts.bitnami.com/bitnami
+    version: 15.2.5  # Pinning to a specific chart version for stability
+    releaseName: dev-postgres
+    namespace: postgres
+    valuesFile: values.yaml

@@ -1,6 +1,14 @@
-# overlays/aws/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
 resources:
   - ../../base
 
-patches:
-  - path: service-patch.yaml
+helmCharts:
+  - name: kong
+    repo: https://charts.konghq.com
+    version: 2.38.0
+    releaseName: kong
+    namespace: kong
+    additionalValuesFiles:
+      - values-aws.yaml

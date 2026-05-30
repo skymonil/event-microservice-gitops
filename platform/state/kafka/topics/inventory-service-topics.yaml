@@ -1,0 +1,81 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: inventory.reserved
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: dev-cluster
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: 86400000
+    cleanup.policy: delete
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: inventory.released
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: dev-cluster
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: 86400000
+    cleanup.policy: delete
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: stock.adjusted
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: dev-cluster
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: 86400000
+    cleanup.policy: delete
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: inventory.expired
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: dev-cluster
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: 86400000
+    cleanup.policy: delete
+
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: product.created
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: dev-cluster # 🟢 Fixed to match your cluster name
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  partitions: 1 # 🟢 Optimized for single-pod consumers
+  replicas: 1
+  config:
+    retention.ms: 86400000 # 24 Hours retention for Dev
+    cleanup.policy: delete

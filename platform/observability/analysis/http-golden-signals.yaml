@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterAnalysisTemplate  # 🟢 Upgraded to Cluster-wide scope
+metadata:
+  name: http-golden-signals
+  # 🟢 Namespace removed
+spec:
+  args:
+    - name: service-name
+  metrics:
+  - name: error-rate
+    interval: 1m
+    count: 3
+    failureLimit: 2
+    successCondition: result < 0.05 || isNaN(result)
+    provider:
+      prometheus:
+        address: http://prometheus-server.observability.svc.cluster.local
+        query: |
+          scalar(
+            (
+              sum(rate(http_request_duration_seconds_count{job="{{args.service-name}}", status=~"5.."}[1m]))
+              OR on() vector(0)
+            )
+            /
+            (
+              sum(rate(http_request_duration_seconds_count{job="{{args.service-name}}"}[1m]))
+              OR on() vector(1)
+            )
+          )
+
+  - name: p99-latency
+    interval: 1m
+    count: 3
+    failureLimit: 2
+    successCondition: result < 0.5 || isNaN(result)
+    provider:
+      prometheus:
+        address: http://prometheus-server.observability.svc.cluster.local
+        query: |
+          scalar(
+            histogram_quantile(
+              0.99,
+              sum(rate(http_request_duration_seconds_bucket{job="{{args.service-name}}"}[1m])) by (le)
+            )
+          )

@@ -1,26 +1,26 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
-
 metadata:
-  name: dev-root
+  name: root-app
   namespace: argocd
-
-
-
+  # The finalizer ensures that if the root app is deleted, it cleanly prunes all child resources
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
-
   project: default
-
   source:
-    repoURL: https://github.com/skymonil/event-microservice-gitops
-    targetRevision: main
-    path: environments/dev
-
+    # Replace with your actual Git repository URL
+    repoURL: https://github.com/skymonil/event-microservice-gitops.git
+    targetRevision: HEAD
+    # Points directly to the target cluster directory containing your ApplicationSets
+    path: gitops/clusters/dev
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
-
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      # Ensures namespaces are automatically created if they don't exist yet
+      - CreateNamespace=true

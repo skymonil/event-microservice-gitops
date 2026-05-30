@@ -1,22 +1,10 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
 metadata:
-  name: local-path-storage
-  namespace: argocd
+  name: standard
   annotations:
-    argocd.argoproj.io/sync-wave: "-1"  # 🟢 Deploy this BEFORE everything else (Wave -1)
-spec:
-  project: default
-  source:
-    repoURL: 'https://github.com/rancher/local-path-provisioner'
-    targetRevision: v0.0.30  # 🛡️ Pin version for stability
-    path: deploy
-  destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: local-path-storage
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
+    # Marks this as the default storage engine for all incoming PVCs
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: rancher.io/local-path
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Delete

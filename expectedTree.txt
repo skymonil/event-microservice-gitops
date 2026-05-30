@@ -1,64 +1,44 @@
-gitops-repo/
-
-├── bootstrap
-│   └── root-app.yaml
-
-├── environments
-│   ├── dev
-│   │   ├── apps
-│   │   │   ├── inventory-service.yaml
-│   │   │   ├── order-service.yaml
-│   │   │   ├── payment-service.yaml
-│   │   │   └── user-service.yaml
-│   │   │
-│   │   └── infrastructure
-│   │       ├── gateway.yaml
-│   │       ├── kafka.yaml
-│   │       ├── observability.yaml
-│   │       ├── database.yaml
-│   │       └── cluster-addons.yaml
-│   │
-│   ├── staging
-│   └── prod
-
-├── platform
-│   ├── gateway
-│   │   ├── base
-│   │   └── overlays
-│   │       ├── k3s
-│   │       └── aws
-│   │
-│   ├── observability
-│   │   ├── loki-values.yaml
-│   │   ├── tempo-values.yaml
-│   │   ├── alloy-values.yaml
-│   │   ├── prometheus.yaml
-│   │   └── dashboards
-│   │
-│   ├── kafka
-│   │   ├── cluster
-│   │   └── connectors
-│   │
-│   ├── database
-│   │   ├── postgres.yaml
-│   │   └── redis.yaml
-│   │
-│   └── cluster-addons
-│       ├── metallb.yaml
-│       ├── sealed-secrets.yaml
-│       ├── storage.yaml
-│       └── argo-rollouts.yaml
-
-├── services
-│   ├── inventory-service
-│   │   ├── base
-│   │   └── overlays
-│   │       ├── dev
-│   │       ├── staging
-│   │       └── prod
-│   │
-│   ├── order-service
-│   ├── payment-service
-│   └── user-service
-
-└── README.md
+gitops/
+├── bootstrap/
+│   └── root-app.yaml                   # Points directly to clusters/
+│
+├── clusters/
+│   ├── dev/
+│   │   ├── platform-appset.yaml        # Generates platform infrastructure components
+│   │   └── workloads-appset.yaml       # Generates microservice workloads dynamically
+│   ├── staging/
+│   └── prod/
+│
+├── platform/                           # Reusable infra definitions
+│   ├── cluster-addons/                 # argo-rollouts, metallb, sealed-secrets, storage
+│   ├── gateway/                        # kong-config, kong-deployment, etc.
+│   ├── state/                          # Backing services for local/dev environments
+│   │   ├── postgres/                   # postgres manifests & values
+│   │   ├── redis/                      # redis manifests & values
+│   │   └── kafka/                      # Strimzi cluster manifests & topics
+│   └── observability/                  # alloy, loki, prometheus, tempo, analysis files
+│
+├── charts/
+│   └── microservice/                   # The ONE reusable Helm chart for business apps
+│       ├── Chart.yaml
+│       ├── values.yaml                 # Baseline/default chart values
+│       └── templates/
+│           ├── rollout.yaml            # Generic Rollout resource
+│           ├── service.yaml            # Generic Service resource
+│           ├── configmap.yaml          # Reads from .Values.config
+│           ├── secrets.yaml            # Configured to work with SOPS/SealedSecrets
+│           └── seeding-job.yaml        # Conditional k8s Job if database seeding is active
+│
+└── workloads/                          # CONFIGURATION ONLY (No raw K8s templates)
+    ├── dev/
+    │   ├── inventory-service/
+    │   │   ├── values.yaml             # Overrides image, ingress hosts, enables seeding
+    │   │   └── secrets.enc.yaml        # SOPS encrypted values if needed
+    │   ├── order-service/
+    │   │   └── values.yaml
+    │   ├── payment-service/
+    │   │   └── values.yaml
+    │   └── user-service/
+    │       └── values.yaml
+    ├── staging/
+    └── prod/                           # Production overrides (e.g., points database host to AWS RDS)

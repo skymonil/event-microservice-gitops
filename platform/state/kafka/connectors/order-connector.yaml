@@ -1,0 +1,58 @@
+# platform/state/kafka/connectors/orders-connector.yaml
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnector
+metadata:
+  name: order-outbox-connector
+  namespace: kafka
+  labels:
+    # 🟢 CRITICAL: This label MUST match your KafkaConnect metadata.name
+    strimzi.io/cluster: event-cluster
+  annotations:
+    # Deploy only after KafkaConnect (Wave 3) is fully up and running
+    argocd.argoproj.io/sync-wave: "4"
+spec:
+  class: io.debezium.connector.postgresql.PostgresConnector
+  tasksMax: 1
+  config:
+    # --- 1. Database Connection ---
+    # Pointing to the Postgres service deployed in the previous step
+    database.hostname: dev-postgres-postgresql.postgres.svc.cluster.local
+    database.port: "5432"
+    database.user: postgres
+    database.password: postgres
+    database.dbname: orders
+    
+    # A logical name for the database server/cluster
+    topic.prefix: order-service
+    
+    # --- 2. Capture Settings ---
+    # Native Postgres logical decoding plugin
+    plugin.name: pgoutput
+    slot.name: order_service_slot
+    # Only listen to changes on the outbox table, ignore internal business tables
+    table.include.list: public.outbox
+    snapshot.mode: "never"
+    
+    # --- 3. The Debezium Outbox Event Router ---
+    # This transforms the raw database row into a clean Kafka event
+    transforms: outbox
+    transforms.outbox.type: io.debezium.transforms.outbox.EventRouter
+    transforms.outbox.table.op.invalid.behavior: "warn"
+    transforms.outbox.route.by.field: "event_type"
+    transforms.outbox.table.field.event.id: id
+    transforms.outbox.table.field.event.key: aggregate_id
+    transforms.outbox.table.field.event.type: event_type
+    transforms.outbox.table.field.event.payload: payload
+
+    # 🟢 Tracing (OpenTelemetry Headers)
+    transforms.outbox.table.fields.additional.placement: "traceparent:header,tracestate:header"
+    
+    # 🟢 Routes the message to the exact Kafka Topics you defined earlier
+    transforms.outbox.route.topic.replacement: ${routedByValue}
+    transforms.outbox.table.expand.json.payload: "true"
+    # --- 4. Data Formats ---
+    # Prevents Kafka Connect from wrapping your JSON in schema metadata
+    key.converter: org.apache.kafka.connect.StringConverter
+    key.converter.schemas.enable: "false"
+    value.converter: org.apache.kafka.connect.json.JsonConverter
+    value.converter.schemas.enable: "false"

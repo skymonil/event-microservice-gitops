@@ -1,17 +1,11 @@
-# //base/kustomization.yaml
-namespace: kong #
-resources:
-  - kong-namespace.yaml
-  - kong-deployment.yaml
-  - kong-service.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: kong
 
-configMapGenerator:
-- name: kong-config
-  files:
-    - kong.yaml=kong-config.yaml
-
-generatorOptions:
-  disableNameSuffixHash: false
-
-configurations:
-  - kustomizeconfig.yaml
+helmCharts:
+  - name: kong
+    repo: https://charts.konghq.com
+    version: 2.38.0 # Use the latest stable chart version
+    releaseName: kong
+    namespace: kong
+    valuesFile: values.yaml
