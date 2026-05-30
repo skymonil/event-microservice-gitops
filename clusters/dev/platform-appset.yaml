@@ -39,6 +39,10 @@ spec:
         targetRevision: HEAD
         # 🟢 Points to the functional path location
         path: 'platform/{{path}}'
+
+        kustomize:
+          buildOptions: "--enable-helm"
+
       destination:
         server: https://kubernetes.default.svc
         namespace: argocd
