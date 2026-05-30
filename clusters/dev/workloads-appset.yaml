@@ -10,29 +10,35 @@ spec:
     - git:
         repoURL: https://github.com/skymonil/event-microservice-gitops.git
         revision: HEAD
-        # Scans directories exactly one level deep to find individual services
         directories:
           - path: workloads/dev/*
   template:
     metadata:
       name: 'dev-{{path.basename}}'
       annotations:
-        # Ensures workloads are only deployed after platform infra (sync-waves < 0) is fully healthy
         argocd.argoproj.io/sync-wave: "5"
     spec:
       project: default
-      source:
-        repoURL: https://github.com/skymonil/event-microservice-gitops.git
-        targetRevision: HEAD
-        # Points EVERY discovered application to your single generic Helm chart
-        path: charts/microservice
-        helm:
-          # Automatically feeds the specific app's values file into the generic chart templates
-          valueFiles:
-            - '/{{path}}/values.yaml'
+      
+      # 🟢 FIX: Switch from 'source' to 'sources' to use the multi-source engine
+      sources:
+        # Source 1: Points directly to your template engine folder
+        - repoURL: https://github.com/skymonil/event-microservice-gitops.git
+          targetRevision: HEAD
+          path: charts/microservice # This folder contains your real Chart.yaml
+          helm:
+            valueFiles:
+              # $values points to the root of Source 2 defined below
+              - $values/{{path}}/values.yaml
+              - $values/{{path}}/secrets.enc.yaml
+
+        # Source 2: Points to the root of your repo to act as the values provider
+        - repoURL: https://github.com/skymonil/event-microservice-gitops.git
+          targetRevision: HEAD
+          ref: values # This matches the $values variable prefix used above
+
       destination:
         server: https://kubernetes.default.svc
-        # Dynamically isolates each service into its own dedicated namespace
         namespace: '{{path.basename}}'
       syncPolicy:
         automated:
