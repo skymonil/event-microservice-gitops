@@ -39,11 +39,11 @@ spec:
 
       annotations:
         {{- if .Values.config }}
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/config: {{ toYaml .Values.config | sha256sum }}
         {{- end }}
 
         {{- if .Values.secrets }}
-        checksum/secret: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        checksum/secret: {{ toYaml .Values.secrets | sha256sum }}
         {{- end }}
 
     spec:
