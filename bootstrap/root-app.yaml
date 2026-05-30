@@ -13,7 +13,7 @@ spec:
     repoURL: https://github.com/skymonil/event-microservice-gitops.git
     targetRevision: HEAD
     # Points directly to the target cluster directory containing your ApplicationSets
-    path: gitops/clusters/dev
+    path: clusters/dev
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
