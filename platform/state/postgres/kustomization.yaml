@@ -4,6 +4,9 @@ kind: Kustomization
 # Ensure the database is isolated in its own namespace
 namespace: redis
 
+resources:
+  - namespace.yaml
+
 helmCharts:
   - name: postgresql
     repo: https://charts.bitnami.com/bitnami
@@ -11,3 +14,5 @@ helmCharts:
     releaseName: dev-postgres
     namespace: postgres
     valuesFile: values.yaml
+
+  
