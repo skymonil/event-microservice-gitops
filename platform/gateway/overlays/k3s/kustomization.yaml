@@ -5,11 +5,15 @@ kind: Kustomization
 resources:
   - ../../base
 
-# 🟢 We pass the k3s configuration as a standard Helm patch to the base definition
-helmGlobals:
-  additionalValuesFiles:
-    - values-k3s.yaml
-
+helmCharts:
+  - name: kong
+    repo: https://charts.konghq.com
+    version: 2.38.0
+    releaseName: kong
+    namespace: kong
+    # Kustomize will merge these values with your base values.yaml
+    additionalValuesFiles:
+      - values-k3s.yaml
 patches:
   - target:
       kind: ServiceAccount
