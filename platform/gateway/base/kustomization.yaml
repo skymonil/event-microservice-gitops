@@ -9,3 +9,14 @@ helmCharts:
     releaseName: kong
     namespace: kong
     valuesFile: values.yaml
+
+patches:
+  - target:
+      kind: ServiceAccount
+      name: kong-kong
+      namespace: kong
+    patch: |-
+      # 🟢 Tells Kustomize to natively merge the configurations instead of treating duplicates as an error
+      $patch: replace
+      metadata:
+        name: kong-kong
