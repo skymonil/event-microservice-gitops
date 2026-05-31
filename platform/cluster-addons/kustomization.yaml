@@ -8,5 +8,5 @@ resources:
   - https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.36/deploy/local-path-storage.yaml
   - argo-rollout-app.yaml
   - metallb-config.yaml
-  - metallb.yamll
+  - metallb.yaml
 
