@@ -5,7 +5,7 @@ namespace: kong
 helmCharts:
   - name: kong
     repo: https://charts.konghq.com
-    version: 2.38.0 # Use the latest stable chart version
+    version: 2.38.0
     releaseName: kong
     namespace: kong
     valuesFile: values.yaml
@@ -14,9 +14,8 @@ patches:
   - target:
       kind: ServiceAccount
       name: kong-kong
-      namespace: kong
     patch: |-
-      # 🟢 Tells Kustomize to natively merge the configurations instead of treating duplicates as an error
-      $patch: replace
+      apiVersion: v1
+      kind: ServiceAccount
       metadata:
         name: kong-kong
