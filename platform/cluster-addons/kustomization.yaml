@@ -9,3 +9,13 @@ resources:
   - storage.yaml
   - https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.36/deploy/local-path-storage.yaml
   - argo-rollout-app.yaml
+
+patches:
+  - target:
+      group: argoproj.io
+      kind: Application
+      name: argo-rollouts
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: argocd
