@@ -8,11 +8,16 @@ resources:
   - namespace.yaml
 
 helmCharts:
-  - name: postgresql
-    repo: https://charts.bitnami.com/bitnami
-    version: 15.2.5  # Pinning to a specific chart version for stability
-    releaseName: dev-postgres
-    namespace: postgres
-    valuesFile: values.yaml
 
+- name: postgresql
+
+  repo: https://charts.bitnami.com/bitnami
+
+  version: 18.5.15
+
+  releaseName: postgres
+
+  namespace: database
+
+  valuesFile: values.yaml
   
