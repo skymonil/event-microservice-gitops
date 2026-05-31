@@ -17,7 +17,7 @@ helmCharts:
 
   releaseName: postgres
 
-  namespace: database
+  namespace: postgres
 
   valuesFile: values.yaml
   
