@@ -1,6 +1,8 @@
-## // platform/gateway/overlays/k3s/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
+helmGlobals:
+  chartHome: /tmp/kustomize-helm-charts
 
 resources:
   - ../../base
@@ -11,15 +13,4 @@ helmCharts:
     version: 2.38.0
     releaseName: kong
     namespace: kong
-    # Kustomize will merge these values with your base values.yaml
-    additionalValuesFiles:
-      - values-k3s.yaml
-patches:
-  - target:
-      kind: ServiceAccount
-      name: kong-kong
-    patch: |-
-      apiVersion: v1
-      kind: ServiceAccount
-      metadata:
-        name: kong-kong
+    valuesFile: values-k3s.yaml
