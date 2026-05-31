@@ -13,3 +13,12 @@ helmCharts:
     # Kustomize will merge these values with your base values.yaml
     additionalValuesFiles:
       - values-k3s.yaml
+patches:
+  - target:
+      kind: ServiceAccount
+      name: kong-kong
+    patch: |-
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: kong-kong

@@ -5,17 +5,7 @@ namespace: kong
 helmCharts:
   - name: kong
     repo: https://charts.konghq.com
-    version: 2.38.0
+    version: 2.38.0 # Use the latest stable chart version
     releaseName: kong
     namespace: kong
     valuesFile: values.yaml
-
-patches:
-  - target:
-      kind: ServiceAccount
-      name: kong-kong
-    patch: |-
-      apiVersion: v1
-      kind: ServiceAccount
-      metadata:
-        name: kong-kong
