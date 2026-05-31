@@ -1,3 +1,4 @@
+## // platform/gateway/base/values.yaml
 image:
   repository: kong
   tag: "3.7"

@@ -1,2 +1,3 @@
+## // platform/gateway/overlays/k3s/values-k3s.yaml
 proxy:
   type: ClusterIP
