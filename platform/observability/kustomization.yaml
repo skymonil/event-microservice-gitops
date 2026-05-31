@@ -4,7 +4,10 @@ kind: Kustomization
 namespace: observability
 
 # Leave resources empty unless you have raw manifests (like dashboards or NetworkPolicies)
-resources: []
+resources: 
+ - analysis/http-golden-signals.yaml
+ - analysis/synthetic-test-runner.yaml
+
 
 helmCharts:
   - name: loki
