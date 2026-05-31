@@ -31,7 +31,7 @@ seeding:
   image:
     repository: skymonil/user-service
     tag: latest
-  command: ["pnpm", "run", "db:migrate"]
+  command: ["pnpm", "run", "migrate"]
 
 # 6. Progressive Delivery (Migrated from overlays/dev/rollout-strategy.yaml)
 strategy:

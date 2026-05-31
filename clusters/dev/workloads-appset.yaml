@@ -28,7 +28,6 @@ spec:
             valueFiles:
               # $values references the 'ref' name declared in Source 2 below
               - $values/{{path}}/values.yaml
-              - $values/{{path}}/secrets.enc.yaml
           
         # 🟢 Source 2: The Data Provider. Acts as a standalone filesystem point.
         - repoURL: https://github.com/skymonil/event-microservice-gitops.git
