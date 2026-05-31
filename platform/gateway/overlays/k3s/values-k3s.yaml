@@ -21,7 +21,7 @@ dblessConfig:
     _format_version: "3.0"
     services:
       - name: user-service
-        url: http://dev-user-service.user-service.svc.cluster.local:80
+        url: http://dev-user-service.user-service.svc.cluster.local:3000
         routes:
           - name: user-route
             paths: [ "/api/users" ]
