@@ -1,8 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-# 1. Create the dedicated namespaces for these tools
-namespace: cluster-system 
 
 # 2. Define the local files to apply
 resources:
@@ -10,12 +8,3 @@ resources:
   - https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.36/deploy/local-path-storage.yaml
   - argo-rollout-app.yaml
 
-patches:
-  - target:
-      group: argoproj.io
-      kind: Application
-      name: argo-rollouts
-    patch: |-
-      - op: replace
-        path: /metadata/namespace
-        value: argocd
