@@ -16,7 +16,7 @@ ingressController:
 
 # Your declarative DB-less configuration
 dblessConfig:
-  config:
+  config: |
     _format_version: "3.0"
     services:
       - name: user-service
