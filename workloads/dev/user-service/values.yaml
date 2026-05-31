@@ -14,7 +14,7 @@ service:
   # Since Kong is now your Gateway and LoadBalancer, individual services 
   # should only be exposed internally to prevent consuming excess IPs.
   type: ClusterIP
-  port: 3000
+  port: 80
 
 # 4. Environment Variables (Migrated from base/ConfigMap.yaml)
 config:
