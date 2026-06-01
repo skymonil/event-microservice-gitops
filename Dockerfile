@@ -14,6 +14,9 @@ ENV HELM_PLUGINS=/home/argocd/.local/share/helm/plugins
 
 RUN helm plugin install \
     https://github.com/jkroepke/helm-secrets \
-    --version 4.6.2
+    --version 4.6.2 && \
+    sed -i '/platformCommand:/,+3 d' \
+    /home/argocd/.local/share/helm/plugins/helm-secrets/plugin.yaml && \
+    cat /home/argocd/.local/share/helm/plugins/helm-secrets/plugin.yaml
 
 USER 999

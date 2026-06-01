@@ -1,55 +1,47 @@
-# workloads/dev/user-service/values.yaml
+microservice:
 
-# 1. Image & Tag (Migrated from overlays/dev/kustomization.yaml)
-image:
-  repository: skymonil/user-service
-  tag: latest
-
-# 2. Scaling (Migrated from base/rollout.yaml)
-replicaCount: 1
-
-# 3. Service Configuration (Migrated from base/service.yaml)
-service:
-  # 🟢 OPTIMIZATION: Changed from LoadBalancer to ClusterIP. 
-  # Since Kong is now your Gateway and LoadBalancer, individual services 
-  # should only be exposed internally to prevent consuming excess IPs.
-  type: ClusterIP
-  port: 3000
-
-# 4. Environment Variables (Migrated from base/ConfigMap.yaml)
-config:
-  NODE_ENV: "development"
-  PORT: "3000"
-  JWT_EXPIRES_IN: "1h"
-  LOG_LEVEL: "debug"
-  # 🟢 OPTIMIZATION: Updated to use the fully qualified cluster DNS
-  KAFKA_BROKERS: "dev-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
-
-# 5. Database Migration (Migrated from base/kustomization.yaml patches)
-seeding:
-  enabled: false
   image:
     repository: skymonil/user-service
     tag: latest
-  command: ["pnpm", "run", "migrate"]
 
-# 6. Progressive Delivery (Migrated from overlays/dev/rollout-strategy.yaml)
-strategy:
-  canary:
-    steps:
-      - setWeight: 100
-      - pause: {duration: 15s}
+  replicaCount: 1
 
-# 7. Analysis Testing (Migrated from overlays/dev/rollout-strategy.yaml)
-analysis:
-  enabled: true
-  testCmd: "test:user"
+  service:
+    type: ClusterIP
+    port: 3000
 
-# 8. Compute Resources (Migrated from base/rollout.yaml)
-resources:
-  requests:
-    cpu: 100m
-    memory: 128Mi
-  limits:
-    cpu: 500m
-    memory: 256Mi
+  config:
+    NODE_ENV: "development"
+    PORT: "3000"
+    JWT_EXPIRES_IN: "1h"
+    LOG_LEVEL: "debug"
+    KAFKA_BROKERS: "dev-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+
+  seeding:
+    enabled: false
+    image:
+      repository: skymonil/user-service
+      tag: latest
+    command:
+      - pnpm
+      - run
+      - migrate
+
+  strategy:
+    canary:
+      steps:
+        - setWeight: 100
+        - pause:
+            duration: 15s
+
+  analysis:
+    enabled: true
+    testCmd: test:user
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi

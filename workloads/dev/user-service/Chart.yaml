@@ -1,0 +1,8 @@
+apiVersion: v2
+name: user-service
+version: 0.1.0
+
+dependencies:
+  - name: microservice
+    version: 0.1.0
+    repository: file://../../../../charts/microservice
