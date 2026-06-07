@@ -43,6 +43,6 @@ spec:
         type: internal
         tls: true
   entityOperator:
-    # 🟢 This enables the Topic Operator we discussed earlier!
+    # 🟢 This enables the Topic Operator to process your order/inventory topics
     topicOperator: {}
     userOperator: {}
