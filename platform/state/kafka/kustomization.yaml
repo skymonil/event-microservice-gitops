@@ -4,4 +4,4 @@ namespace: kafka
 
 resources:
   - cluster/
-  - operator
+  - operator/
