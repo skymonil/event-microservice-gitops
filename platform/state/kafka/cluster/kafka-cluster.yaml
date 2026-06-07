@@ -8,6 +8,8 @@ metadata:
   labels:
     # 🟢 This links the nodes to the cluster defined below
     strimzi.io/cluster: dev-cluster
+  annotations:
+    strimzi.io/node-pools: "enabled"
 spec:
   replicas: 1
   roles:
