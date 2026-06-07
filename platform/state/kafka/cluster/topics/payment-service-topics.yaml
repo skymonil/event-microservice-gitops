@@ -32,6 +32,8 @@ metadata:
   name: payment.completed
   labels:
     strimzi.io/cluster: dev-cluster
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
 spec:
   partitions: 1
   replicas: 1
