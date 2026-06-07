@@ -1,5 +1,0 @@
-resources:
-
-- inventory-outbox.yaml
-- orders-outbox.yaml
-- payments-outbox.yaml
