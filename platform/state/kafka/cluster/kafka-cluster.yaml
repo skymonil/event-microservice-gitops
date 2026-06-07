@@ -1,34 +1,32 @@
-## // platform/state/kafka/cluster/kafka-cluster.yaml
+# platform/state/kafka/cluster/kafka-cluster.yaml
+
+# 1. Define the KRaft Nodes (Brokers + Controllers)
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaNodePool
 metadata:
   name: dual-role
-  namespace: kafka
   labels:
+    # 🟢 This links the nodes to the cluster defined below
     strimzi.io/cluster: dev-cluster
-  # Ensure the Operator installs before ArgoCD tries to create this CRD
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   replicas: 1
   roles:
     - controller
     - broker
   storage:
-    type: ephemeral # Data resets on restart (Perfect for Dev)
-  resources:
-    requests:
-      memory: 512Mi
-      cpu: 250m
-    limits:
-      memory: 1Gi
-      cpu: 500m
+    type: jbod
+    volumes:
+      - id: 0
+        type: persistent-claim
+        size: 5Gi
+        deleteClaim: true
+
 ---
+# 2. Define the Cluster Configuration
 apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
   name: dev-cluster
-  namespace: kafka
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
@@ -40,12 +38,11 @@ spec:
         port: 9092
         type: internal
         tls: false
-    config:
-      offsets.topic.replication.factor: 1
-      transaction.state.log.replication.factor: 1
-      transaction.state.log.min.isr: 1
-      default.replication.factor: 1
-      min.insync.replicas: 1
+      - name: tls
+        port: 9093
+        type: internal
+        tls: true
   entityOperator:
+    # 🟢 This enables the Topic Operator we discussed earlier!
     topicOperator: {}
     userOperator: {}
