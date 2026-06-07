@@ -31,7 +31,7 @@ microservice:
     command:
       - pnpm
       - run
-      - db:migrate
+      - migrate
 
   # 6. Progressive Delivery
   strategy:
@@ -44,7 +44,7 @@ microservice:
   # 7. Analysis Testing
   analysis:
     enabled: true
-    testCmd: "test:order"
+    testCmd: "test:inventory"
 
   # 8. Compute Resources
   resources:
