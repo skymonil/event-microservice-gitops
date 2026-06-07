@@ -7,5 +7,5 @@ namespace: kafka
 resources:
   - kafka-cluster.yaml
   - kafka-connect.yaml
-  - connectors/kustomization.yaml
-  - topics
+  - connectors/
+  - topics/
