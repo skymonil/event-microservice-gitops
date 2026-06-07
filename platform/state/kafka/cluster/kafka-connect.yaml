@@ -8,12 +8,12 @@ metadata:
     strimzi.io/use-connector-resources: "true"
     argocd.argoproj.io/sync-wave: "3"   # ⬅️ IMPORTANT (not 1)
 spec:
-  version: 4.0.0
+  version: 4.2.0
   replicas: 1
   bootstrapServers: dev-cluster-kafka-bootstrap.kafka:9092
 
   # ✅ Prebuilt Debezium Kafka Connect image
-  image: skymonil/kafka-connect-debezium:latest-kafka-4.0.0
+  image: skymonil/kafka-connect-debezium:latest-kafka-4.2.0
 
   config:
     group.id: connect-cluster
