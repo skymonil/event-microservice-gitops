@@ -1,5 +1,5 @@
 # platform/state/kafka/cluster/connectors/order-connector.yaml
-apiVersion: kafka.strimzi.io/v1beta2
+apiVersion: kafka.strimzi.io/v1
 kind: KafkaConnector
 metadata:
   name: order-outbox-connector
