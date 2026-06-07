@@ -3,7 +3,7 @@
 # 1. Image & Tag (Migrated from overlays/dev/kustomization.yaml)
 image:
   repository: skymonil/inventory-service
-  tag: latest
+  tag: "d2f85af9bb6b3436fa97749f4c3609388e831b62"
 
 # 2. Scaling (Migrated from base/rollout.yaml)
 replicaCount: 1
@@ -14,12 +14,12 @@ service:
   # Since Kong is now your Gateway and LoadBalancer, individual services 
   # should only be exposed internally to prevent consuming excess IPs.
   type: ClusterIP
-  port: 3001
+  port: 3003
 
 # 4. Environment Variables (Migrated from base/ConfigMap.yaml)
 config:
   NODE_ENV: "development"
-  PORT: "3001"
+  PORT: "3003"
   JWT_EXPIRES_IN: "1h"
   LOG_LEVEL: "debug"
   # 🟢 OPTIMIZATION: Updated to use the fully qualified cluster DNS
@@ -29,7 +29,7 @@ config:
 seeding:
   enabled: false
   image:
-    repository: skymonil/order-service
+    repository: skymonil/inventory-service
     tag: "d2f85af9bb6b3436fa97749f4c3609388e831b62"
   command: ["pnpm", "run", "db:migrate"]
 
@@ -58,19 +58,19 @@ probes:
   startup:
     httpGet:
       path: /health/live
-      port: 3001
+      port: 3003
     failureThreshold: 30
     periodSeconds: 5
   readiness:
     httpGet:
       path: /health/ready
-      port: 3001
+      port: 3003
     initialDelaySeconds: 5
     periodSeconds: 10
     failureThreshold: 3
   liveness:
     httpGet:
       path: /health/live
-      port: 3001
+      port: 3003
     initialDelaySeconds: 10
     periodSeconds: 20

@@ -2,7 +2,7 @@ microservice:
 
   image:
     repository: skymonil/user-service
-    tag: latest
+    tag: "d2f85af9bb6b3436fa97749f4c3609388e831b62"
 
   replicaCount: 1
 
@@ -21,7 +21,7 @@ microservice:
     enabled: false
     image:
       repository: skymonil/user-service
-      tag: latest
+      tag: "d2f85af9bb6b3436fa97749f4c3609388e831b62"
     command:
       - pnpm
       - run
@@ -45,3 +45,20 @@ microservice:
     limits:
       cpu: 500m
       memory: 256Mi
+  
+  probes:
+  readiness:
+    httpGet:
+      path: /readyz
+      port: 3001
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    successThreshold: 1
+    failureThreshold: 3
+  liveness:
+    httpGet:
+      path: /healthz
+      port: 3001
+    initialDelaySeconds: 15
+    periodSeconds: 20
+    failureThreshold: 3

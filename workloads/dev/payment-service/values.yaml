@@ -1,0 +1,47 @@
+microservice:
+
+  image:
+    repository: skymonil/payment-service
+    tag: "91d7df61d2e7f4f85b30ffe5c6f6486a9208846c"
+
+  replicaCount: 1
+
+  service:
+    type: ClusterIP
+    port: 3002
+
+  config:
+    NODE_ENV: "development"
+    PORT: "3002"
+    JWT_EXPIRES_IN: "1h"
+    LOG_LEVEL: "debug"
+    KAFKA_BROKERS: "dev-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+
+  seeding:
+    enabled: false
+    image:
+      repository: skymonil/payment-service
+      tag: "91d7df61d2e7f4f85b30ffe5c6f6486a9208846c"
+    command:
+      - pnpm
+      - run
+      - migrate
+
+  strategy:
+    canary:
+      steps:
+        - setWeight: 100
+        - pause:
+            duration: 15s
+
+  analysis:
+    enabled: true
+    testCmd: test:payment
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi

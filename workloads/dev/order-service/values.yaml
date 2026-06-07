@@ -3,7 +3,7 @@
 # 1. Image & Tag (Migrated from overlays/dev/kustomization.yaml)
 image:
   repository: skymonil/order-service
-  tag: latest
+  tag: d2f85af9bb6b3436fa97749f4c3609388e831b62
 
 # 2. Scaling (Migrated from base/rollout.yaml)
 replicaCount: 1
