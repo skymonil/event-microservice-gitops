@@ -8,8 +8,6 @@ metadata:
   labels:
     # 🟢 This links the nodes to the cluster defined below
     strimzi.io/cluster: dev-cluster
-  annotations:
-    strimzi.io/node-pools: "enabled"
 spec:
   replicas: 1
   roles:
@@ -31,6 +29,7 @@ metadata:
   name: dev-cluster
   annotations:
     argocd.argoproj.io/sync-wave: "1"
+    strimzi.io/node-pools: "enabled"
 spec:
   kafka:
     version: 3.7.0
