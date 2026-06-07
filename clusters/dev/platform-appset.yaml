@@ -20,9 +20,13 @@ spec:
           - name: state-redis
             path: state/redis
             syncWave: "-1"
-          - name: state-kafka
-            path: state/kafka
+          - name: state-kafka-operator
+            path: state/kafka/operator
             syncWave: "-1"
+          
+          - name: state-kafka
+            path: state/kafka/cluster
+            syncWave: "0"
           - name: observability
             path: observability
             syncWave: "0"

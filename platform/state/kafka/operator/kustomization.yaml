@@ -13,7 +13,4 @@ helmCharts:
     valuesFile: operator-values.yaml
 
 resources:
-  - kafka-cluster.yaml
-  - kafka-connect.yaml                   # 🟢 Added to the build
-  - connectors
-  - topics
+  - namespace.yaml
