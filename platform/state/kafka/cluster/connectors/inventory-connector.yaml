@@ -1,4 +1,4 @@
-# platform/state/kafka/connectors/inventory-connector.yaml
+# platform/state/kafka/cluster/connectors/inventory-connector.yaml
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaConnector
 metadata:

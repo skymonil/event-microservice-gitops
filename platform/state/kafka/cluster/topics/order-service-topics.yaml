@@ -1,4 +1,4 @@
-# platform/kafka/topics/order-events.yaml
+## // platform/state/kafka/cluster/topics/order-service-topics.yaml
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:

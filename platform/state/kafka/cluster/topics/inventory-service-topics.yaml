@@ -1,3 +1,4 @@
+## // platform/state/kafka/cluster/topics/inventory-service-topics.yaml
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:

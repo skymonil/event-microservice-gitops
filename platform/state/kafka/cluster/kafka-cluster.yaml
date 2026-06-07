@@ -1,4 +1,4 @@
-# platform/state/kafka/kafka-cluster.yaml
+## // platform/state/kafka/cluster/kafka-cluster.yaml
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaNodePool
 metadata:
