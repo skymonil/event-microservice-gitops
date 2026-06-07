@@ -15,9 +15,5 @@ helmCharts:
 resources:
   - kafka-cluster.yaml
   - kafka-connect.yaml                   # 🟢 Added to the build
-  - topics/inventory-service-topics.yaml
-  - connectors/inventory-connector.yaml
-  - connectors/order-connector.yaml
-  - topics/order-service-topics.yaml
-  - topics/payment-service-topics.yaml
-  - connectors/payment-connector.yaml
+  - connectors
+  - topics
