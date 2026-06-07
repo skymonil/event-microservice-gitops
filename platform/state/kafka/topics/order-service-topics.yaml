@@ -11,21 +11,9 @@ spec:
   config:
     retention.ms: 86400000
     cleanup.policy: delete
+
 ---
-apiVersion: kafka.strimzi.io/v1beta2
-kind: KafkaTopic
-metadata:
-  name: order.cancelled
-  labels:
-    strimzi.io/cluster: dev-cluster
-spec:
-  partitions: 1
-  replicas: 1
-  config:
-    retention.ms: 86400000
-    cleanup.policy: delete
-  
----
+
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
