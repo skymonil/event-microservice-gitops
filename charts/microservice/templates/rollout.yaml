@@ -26,7 +26,7 @@ spec:
             clusterScope: true
         args:
           - name: service-name
-            value: {{ include "microservice.name" . }}
+            value: {{ include "microservice.fullname" . }}
           - name: target-url
             value: http://{{ include "microservice.fullname" . }}:{{ .Values.service.port }}
           - name: test-cmd
