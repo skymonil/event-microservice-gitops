@@ -7,7 +7,7 @@ metadata:
   labels:
     strimzi.io/cluster: dev-cluster
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "4"
 spec:
   partitions: 1
   replicas: 1
@@ -23,7 +23,7 @@ metadata:
   labels:
     strimzi.io/cluster: dev-cluster
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "4"
 spec:
   partitions: 1
   replicas: 1
@@ -39,7 +39,7 @@ metadata:
   labels:
     strimzi.io/cluster: dev-cluster
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "4"
 spec:
   partitions: 1
   replicas: 1
@@ -55,7 +55,7 @@ metadata:
   labels:
     strimzi.io/cluster: dev-cluster
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "4"
 spec:
   partitions: 1
   replicas: 1
@@ -73,7 +73,7 @@ metadata:
   labels:
     strimzi.io/cluster: dev-cluster # 🟢 Fixed to match your cluster name
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "4"
 spec:
   partitions: 1 # 🟢 Optimized for single-pod consumers
   replicas: 1
