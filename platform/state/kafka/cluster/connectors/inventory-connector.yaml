@@ -6,7 +6,7 @@ metadata:
   namespace: kafka
   labels:
     # 🟢 CRITICAL: This label MUST match your KafkaConnect metadata.name
-    strimzi.io/cluster: dev-cluster
+    strimzi.io/cluster: kafka-connect
   annotations:
     # Deploy only after KafkaConnect (Wave 3) is fully up and running
     argocd.argoproj.io/sync-wave: "5"
