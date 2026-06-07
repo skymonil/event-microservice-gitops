@@ -5,6 +5,8 @@ metadata:
   name: payment.failed
   labels:
     strimzi.io/cluster: dev-cluster
+  annotations:
+    argocd.argoproj.io/sync-wave: "4" # ⬅️ ADDED
 spec:
   partitions: 1
   replicas: 1
@@ -18,13 +20,14 @@ metadata:
   name: payment.refunded
   labels:
     strimzi.io/cluster: dev-cluster
+  annotations:
+    argocd.argoproj.io/sync-wave: "4" # ⬅️ ADDED
 spec:
   partitions: 1
   replicas: 1
   config:
     retention.ms: 86400000
     cleanup.policy: delete
-  
 ---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
