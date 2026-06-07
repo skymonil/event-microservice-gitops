@@ -1,4 +1,4 @@
-# platform/state/kafka/operator-values.yaml
+# platform/state/kafka/operator/operator-values.yaml
 replicas: 1
 
 resources:

@@ -22,11 +22,11 @@ spec:
             syncWave: "-1"
           - name: state-kafka-operator
             path: state/kafka/operator
-            syncWave: "-1"
+            syncWave: "1"
           
           - name: state-kafka
             path: state/kafka/cluster
-            syncWave: "0"
+            syncWave: "2"
           - name: observability
             path: observability
             syncWave: "0"
