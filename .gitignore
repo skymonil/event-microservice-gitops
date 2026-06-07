@@ -1,3 +1,65 @@
 key.txt
 keys.txt
 *.agekey
+# ==============================================================================
+# HELM SPECIFIC
+# ==============================================================================
+# Ignore downloaded/cached chart dependencies (.tgz files)
+*.tgz
+
+# Ignore the charts/ directory where subcharts are fetched locally
+# (Let your GitOps controller pull dependencies via Chart.yaml)
+charts/
+
+# If you use a proxy chart pattern, explicitly ignore the charts sub-directory 
+# inside your local chart directories while keeping the parent chart structure.
+**/charts/
+
+# Ignore local chart lock files if your team dynamic-fetches latest patch versions
+# (Optional: Remove if you want strict lockfile pinning in git)
+Chart.lock
+
+# Ignore Helm repository index files generated locally
+index.yaml
+
+# ==============================================================================
+# GITOPS / RENDERED MANIFESTS (DIAGNOSTICS ONLY)
+# ==============================================================================
+# Ignore local dry-run or template outputs used during debugging
+*.rendered.yaml
+*template*.yaml
+.helm-rendered/
+
+# ==============================================================================
+# SECRETS & SECURITY (CRITICAL FOR GITOPS)
+# ==============================================================================
+# Ignore plain text unencrypted secrets/certificates 
+*.secret
+*.pem
+*.key
+*.crt
+
+# If using helm-secrets (sops), ignore unencrypted backups or local env files
+.sops.yaml.bak
+*.dec
+*decrypted*
+.env
+.env.*
+
+# ==============================================================================
+# SYSTEM & TOOLING CACHES
+# ==============================================================================
+# Kubeconfig files containing cluster access tokens
+*kubeconfig*
+.kube/
+
+# Terraform (if you bootstrap your GitOps engine with TF)
+.terraform/
+*.tfstate
+*.tfstate.*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
