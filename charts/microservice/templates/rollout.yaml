@@ -15,7 +15,7 @@ spec:
 
   strategy:
     canary:
-      {{- toYaml .Values.strategy | nindent 6 }}
+      {{- toYaml .Values.strategy | nindent 4 }}
 
       {{- if .Values.analysis.enabled }}
       analysis:
