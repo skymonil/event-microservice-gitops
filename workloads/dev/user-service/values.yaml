@@ -2,7 +2,7 @@
 microservice:
   image:
     repository: skymonil/user-service
-    tag: "6f1f943ed376504aa0c658e80b72a47e9ea071f2"
+    tag: "e2f2ccfac61000711d3fb97c2f7b487e1d3a1d73"
   replicaCount: 1
   service:
     type: ClusterIP
