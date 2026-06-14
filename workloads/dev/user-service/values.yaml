@@ -1,23 +1,18 @@
 ## // workloads/dev/user-service/values.yaml
 microservice:
-
   image:
     repository: skymonil/user-service
-    tag: "d2f85af9bb6b3436fa97749f4c3609388e831b62"
-
+    tag: "f222d6c020e307eadccab7228470a8dadb70333c"
   replicaCount: 1
-
   service:
     type: ClusterIP
     port: 3000
-
   config:
     NODE_ENV: "development"
     PORT: "3000"
     JWT_EXPIRES_IN: "1h"
     LOG_LEVEL: "debug"
     KAFKA_BROKERS: "dev-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
-
   seeding:
     enabled: false
     image:
@@ -27,18 +22,15 @@ microservice:
       - pnpm
       - run
       - migrate
-
   strategy:
     canary:
       steps:
         - setWeight: 100
         - pause:
             duration: 15s
-
   analysis:
     enabled: true
     testCmd: test:user
-
   resources:
     requests:
       cpu: 100m
@@ -46,7 +38,6 @@ microservice:
     limits:
       cpu: 500m
       memory: 256Mi
-  
   probes:
   readiness:
     httpGet:
