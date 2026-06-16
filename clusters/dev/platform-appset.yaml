@@ -13,7 +13,6 @@ spec:
           # 🟢 Split name (safe for k8s) and path (points to directory)
           - name: gateway-k3s
             path: gateway/overlays/k3s
-            namespace: kong
             syncWave: "-2"
           - name: state-postgres
             path: state/postgres
