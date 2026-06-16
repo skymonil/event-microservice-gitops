@@ -230,8 +230,6 @@ alloy:
 # Expose the OTLP ports so your Node.js apps can reach Alloy
 controller:
   type: daemonset
-global:
-  namespace: observability
 
 service:
   type: ClusterIP
