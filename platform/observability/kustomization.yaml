@@ -7,6 +7,7 @@ namespace: observability
 resources: 
  - analysis/http-golden-signals.yaml
  - analysis/synthetic-test-runner.yaml
+ - namespace.yaml
 
 
 helmCharts:
