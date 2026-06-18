@@ -8,11 +8,14 @@ microservice:
 
   service:
     type: ClusterIP
-    port: 3003
+    port: 3001
 
   config:
     NODE_ENV: development
-    PORT: "3003"
+    PORT: "3001"
+    KAFKA_BROKERS: "dev-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+    LOG_LEVEL: "debug"
+    JWT_EXPIRES_IN: "1h"
 
   podSecurity:
     automountServiceAccountToken: false
