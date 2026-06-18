@@ -1,3 +1,4 @@
+microservice: 
 image:
   repository: skymonil/order-service
   tag: d2f85af9bb6b3436fa97749f4c3609388e831b62
