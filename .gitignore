@@ -63,3 +63,4 @@ index.yaml
 Thumbs.db
 .idea/
 .vscode/
+**/*.tmp.yaml

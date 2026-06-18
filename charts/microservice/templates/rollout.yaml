@@ -7,6 +7,7 @@ metadata:
     {{- include "microservice.labels" . | nindent 4 }}
 
 spec:
+
   replicas: {{ .Values.replicaCount }}
 
   selector:
@@ -17,7 +18,7 @@ spec:
     canary:
       {{- toYaml .Values.strategy | nindent 4 }}
 
-      {{- if .Values.analysis.enabled }}
+      {{- if and .Values.analysis .Values.analysis.enabled }}
       analysis:
         templates:
           - templateName: http-golden-signals
@@ -48,10 +49,24 @@ spec:
         {{- end }}
 
     spec:
+
+      automountServiceAccountToken: {{ .Values.podSecurity.automountServiceAccountToken | default false }}
+
+      {{- with .Values.podSecurity.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+
       containers:
         - name: application
+
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          {{- with .Values.podSecurity.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
 
           ports:
             - name: http
