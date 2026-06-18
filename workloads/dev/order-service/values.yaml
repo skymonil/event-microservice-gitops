@@ -31,3 +31,8 @@ microservice:
       capabilities:
         drop:
           - ALL
+  strategy:
+    maxSurge: 25%
+    maxUnavailable: 0
+    steps:
+      - setWeight: 100
