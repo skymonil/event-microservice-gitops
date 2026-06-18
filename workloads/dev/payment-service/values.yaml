@@ -1,53 +1,48 @@
-image:
-  repository: skymonil/payment-service
-  tag: "91d7df61d2e7f4f85b30ffe5c6f6486a9208846c"
-
-replicaCount: 1
-
-service:
-  type: ClusterIP
-  port: 3002
-
-config:
-  NODE_ENV: "development"
-  PORT: "3002"
-  JWT_EXPIRES_IN: "1h"
-  LOG_LEVEL: "debug"
-  KAFKA_BROKERS: "dev-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
-
-podSecurity:
-
-  automountServiceAccountToken: false
-
-  podSecurityContext:
-    runAsNonRoot: true
-    runAsUser: 10001
-    runAsGroup: 10001
-
-    seccompProfile:
-      type: RuntimeDefault
-
-  containerSecurityContext:
-
-    allowPrivilegeEscalation: false
-
-    readOnlyRootFilesystem: true
-
-    capabilities:
-      drop:
-        - ALL
-
-seeding:
-  enabled: false
-
+microservice:
   image:
     repository: skymonil/payment-service
     tag: "91d7df61d2e7f4f85b30ffe5c6f6486a9208846c"
 
-  command:
-    - pnpm
-    - run
-    - migrate
+  replicaCount: 1
+
+  service:
+    type: ClusterIP
+    port: 3002
+
+  config:
+    NODE_ENV: "development"
+    PORT: "3002"
+    JWT_EXPIRES_IN: "1h"
+    LOG_LEVEL: "debug"
+    KAFKA_BROKERS: "dev-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+
+  podSecurity:
+    automountServiceAccountToken: false
+
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 10001
+      runAsGroup: 10001
+      seccompProfile:
+        type: RuntimeDefault
+
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop:
+          - ALL
+
+  seeding:
+    enabled: false
+
+    image:
+      repository: skymonil/payment-service
+      tag: "91d7df61d2e7f4f85b30ffe5c6f6486a9208846c"
+      command:
+        - pnpm
+        - run
+        - migrate
 
 strategy:
   steps:
