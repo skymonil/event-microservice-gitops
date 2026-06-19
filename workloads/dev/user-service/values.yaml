@@ -2,7 +2,7 @@
 microservice:
   image:
     repository: skymonil/user-service
-    tag: "0920dcf8ed47077da949345e96713ba31b8e2a62"
+    tag: "e500e4d6db144d3a7c8282175d96c62ffc32e342"
     pullPolicy: IfNotPresent
   replicaCount: 1
   service:
@@ -41,7 +41,7 @@ microservice:
     enabled: true
     image:
       repository: skymonil/user-service
-      tag: "705fb5e9f7456a4c2587edf6363628b2c1988f78"
+      tag: "e500e4d6db144d3a7c8282175d96c62ffc32e342"
       command:
         - pnpm
         - run
