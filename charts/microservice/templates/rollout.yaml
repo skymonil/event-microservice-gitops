@@ -15,6 +15,12 @@ spec:
 
   strategy:
     canary:
+
+      stableService: {{ include "microservice.fullname" . }}-stable
+      canaryService: {{ include "microservice.fullname" . }}-canary
+      maxSurge: {{ .Values.strategy.maxSurge | default "100%" }}
+      maxUnavailable: {{ .Values.strategy.maxUnavailable | default 0 }}
+
       {{- toYaml .Values.strategy | nindent 6 }}
 
       {{- if and .Values.analysis .Values.analysis.enabled }}

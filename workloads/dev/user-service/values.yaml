@@ -25,9 +25,9 @@ microservice:
     containerSecurityContext:
       allowPrivilegeEscalation: false
       readOnlyRootFilesystem: true
-    capabilities:
-      drop:
-        - ALL
+      capabilities:
+        drop:
+          - ALL
   analysis:
     enabled: true
     testCmd: "test:user"

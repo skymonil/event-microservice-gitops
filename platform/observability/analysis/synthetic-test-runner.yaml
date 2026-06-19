@@ -31,10 +31,10 @@ spec:
                 
                 # 🟢 Updated cross-service DNS calls to reflect Namespace-per-Service
                 - name: USER_SERVICE_URL
-                  value: "http://user-service.user-service.svc.cluster.local"
+                  value: "http://dev-user-service-canary.user-service.svc.cluster.local:3000"
                 - name: ORDER_SERVICE_URL
-                  value: "http://order-service.order-service.svc.cluster.local"
+                  value: "http://dev-order-service-canary.order-service.svc.cluster.local:3000"
                 - name: PAYMENT_SERVICE_URL
-                  value: "http://payment-service.payment-service.svc.cluster.local"
+                  value: "http://dev-payment-service-canary.payment-service.svc.cluster.local:3000"
                 - name: INVENTORY_SERVICE_URL
-                  value: "http://inventory-service.inventory-service.svc.cluster.local"
+                  value: "http://dev-inventory-service-canary.inventory-service.svc.cluster.local:3000"
