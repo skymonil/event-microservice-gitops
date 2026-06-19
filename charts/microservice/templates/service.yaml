@@ -1,8 +1,7 @@
-## // charts/microservice/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "microservice.fullname" . }}
+  name: {{ include "microservice.fullname" . }}-preview
   labels:
     {{- include "microservice.labels" . | nindent 4 }}
 spec:
