@@ -34,10 +34,7 @@ spec:
                       key: JWT_SECRET
                 
                 - name: KAFKA_BROKERS
-                  valueFrom:
-                    configMapKeyRef:
-                      name: global-env-config
-                      key: kafka.brokers
+                  value: dev-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092
                 
                 # 🟢 Updated cross-service DNS calls to reflect Namespace-per-Service
                 - name: USER_SERVICE_URL

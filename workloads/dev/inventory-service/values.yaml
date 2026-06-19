@@ -1,97 +1,94 @@
-image:
-  repository: skymonil/inventory-service
-  tag: "039a7c413e0cda1fd6d440a7a435d831ea114fda"
-
-replicaCount: 1
-
-service:
-  type: ClusterIP
-  port: 3003
-
-config:
-  NODE_ENV: "development"
-  PORT: "3003"
-  JWT_EXPIRES_IN: "1h"
-  LOG_LEVEL: "debug"
-  KAFKA_BROKERS: "dev-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
-
-podSecurity:
-
-  automountServiceAccountToken: false
-
-  podSecurityContext:
-    runAsNonRoot: true
-    runAsUser: 10001
-    runAsGroup: 10001
-
-    seccompProfile:
-      type: RuntimeDefault
-
-  containerSecurityContext:
-
-    allowPrivilegeEscalation: false
-
-    readOnlyRootFilesystem: true
-
-    capabilities:
-      drop:
-        - ALL
-
-seeding:
-  enabled: false
-
+# workloads/dev/inventory-service/values.yaml
+microservice:
   image:
     repository: skymonil/inventory-service
-    tag: "d2f85af9bb6b3436fa97749f4c3609388e831b62"
+    tag: "039a7c413e0cda1fd6d440a7a435d831ea114fda"
+    pullPolicy: IfNotPresent
 
-  command:
-    - pnpm
-    - run
-    - migrate
+  replicaCount: 1
 
-strategy:
-  steps:
-    - setWeight: 100
-    - pause:
-        duration: 15s
+  service:
+    type: ClusterIP
+    port: 3003
 
-analysis:
-  enabled: true
-  testCmd: "test:inventory"
+  # 🟢 Moved cleanly inside the microservice block
+  config:
+    NODE_ENV: "development"
+    PORT: "3003"
+    JWT_EXPIRES_IN: "1h"
+    LOG_LEVEL: "debug"
+    KAFKA_BROKERS: "dev-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
 
-resources:
-  requests:
-    cpu: 100m
-    memory: 128Mi
+  # 🟢 Moved inside the microservice block
+  podSecurity:
+    automountServiceAccountToken: false
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 10001
+      runAsGroup: 10001
+      seccompProfile:
+        type: RuntimeDefault
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop:
+          - ALL
 
-  limits:
-    cpu: 500m
-    memory: 256Mi
+  # 🟢 Moved inside the microservice block
+  seeding:
+    enabled: false
+    image:
+      repository: skymonil/inventory-service
+      tag: "d2f85af9bb6b3436fa97749f4c3609388e831b62"
+    command:
+      - pnpm
+      - run
+      - migrate
 
-probes:
+  # 🟢 Moved inside the microservice block
+  analysis:
+    enabled: true
+    testCmd: "test:inventory"
 
-  startup:
-    httpGet:
-      path: /health/live
-      port: 3003
+  # 🟢 Moved inside the microservice block & fixed rolling step parameters
+  strategy:
+    maxSurge: "25%"
+    maxUnavailable: 0
+    steps:
+      - setWeight: 20
+      - pause:
+          duration: 15s
+      - setWeight: 100
 
-    failureThreshold: 30
-    periodSeconds: 5
+  # 🟢 Moved inside the microservice block
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
 
-  readiness:
-    httpGet:
-      path: /health/ready
-      port: 3003
-
-    initialDelaySeconds: 5
-    periodSeconds: 10
-    failureThreshold: 3
-
-  liveness:
-    httpGet:
-      path: /health/live
-      port: 3003
-
-    initialDelaySeconds: 10
-    periodSeconds: 20
-    failureThreshold: 3
+  # 🟢 Moved inside the microservice block
+  probes:
+    startup:
+      httpGet:
+        path: /health/live
+        port: 3003
+      failureThreshold: 30
+      periodSeconds: 5
+    readiness:
+      httpGet:
+        path: /health/ready
+        port: 3003
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      failureThreshold: 3
+    liveness:
+      httpGet:
+        path: /health/live
+        port: 3003
+      initialDelaySeconds: 10
+      periodSeconds: 20
+      failureThreshold: 3

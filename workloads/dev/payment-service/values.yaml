@@ -1,7 +1,9 @@
+# workloads/dev/payment-service/values.yaml
 microservice:
   image:
     repository: skymonil/payment-service
     tag: "91d7df61d2e7f4f85b30ffe5c6f6486a9208846c"
+    pullPolicy: IfNotPresent
 
   replicaCount: 1
 
@@ -18,14 +20,12 @@ microservice:
 
   podSecurity:
     automountServiceAccountToken: false
-
     podSecurityContext:
       runAsNonRoot: true
       runAsUser: 10001
       runAsGroup: 10001
       seccompProfile:
         type: RuntimeDefault
-
     containerSecurityContext:
       allowPrivilegeEscalation: false
       readOnlyRootFilesystem: true
@@ -35,30 +35,34 @@ microservice:
 
   seeding:
     enabled: false
-
     image:
       repository: skymonil/payment-service
       tag: "91d7df61d2e7f4f85b30ffe5c6f6486a9208846c"
-      command:
-        - pnpm
-        - run
-        - migrate
+    command:
+      - pnpm
+      - run
+      - migrate
 
-strategy:
-  steps:
-    - setWeight: 100
-    - pause:
-        duration: 15s
+  # 🟢 Properly nested under microservice scope
+  analysis:
+    enabled: true
+    testCmd: "test:payment"
 
-analysis:
-  enabled: true
-  testCmd: "test:payment"
+  # 🟢 Properly nested and adjusted to proper 20% validation stage
+  strategy:
+    maxSurge: "25%"
+    maxUnavailable: 0
+    steps:
+      - setWeight: 20
+      - pause:
+          duration: 15s
+      - setWeight: 100
 
-resources:
-  requests:
-    cpu: 100m
-    memory: 128Mi
-
-  limits:
-    cpu: 500m
-    memory: 256Mi
+  # 🟢 Properly nested under microservice scope
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
