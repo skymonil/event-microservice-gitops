@@ -30,7 +30,7 @@ microservice:
         - ALL
   analysis:
     enabled: true
-    testCmd: "test:order"
+    testCmd: "test:user"
   
   strategy:
     maxSurge: "100%"
