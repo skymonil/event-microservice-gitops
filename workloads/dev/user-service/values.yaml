@@ -2,7 +2,7 @@
 microservice:
   image:
     repository: skymonil/user-service
-    tag: "9ae4e337def97730ecf273d636e95fd68ba6b213"
+    tag: "695112b97dd9dbb2205982d5fe871e043dd1c388"
     pullPolicy: IfNotPresent
   replicaCount: 1
   service:
@@ -31,7 +31,6 @@ microservice:
   analysis:
     enabled: true
     testCmd: "test:user"
-  
   strategy:
     maxSurge: "100%"
     maxUnavailable: 0
