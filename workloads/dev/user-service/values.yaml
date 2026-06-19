@@ -41,7 +41,7 @@ microservice:
     enabled: true
     image:
       repository: skymonil/user-service
-      tag: "d2f85af9bb6b3436fa97749f4c3609388e831b62"
+      tag: "705fb5e9f7456a4c2587edf6363628b2c1988f78"
       command:
         - pnpm
         - run
