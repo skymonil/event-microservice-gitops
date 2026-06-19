@@ -2,47 +2,35 @@
 microservice:
   image:
     repository: skymonil/user-service
-    tag: "039a7c413e0cda1fd6d440a7a435d831ea114fda"
+    tag: "9ae4e337def97730ecf273d636e95fd68ba6b213"
     pullPolicy: IfNotPresent
-
   replicaCount: 1
-
   service:
     type: ClusterIP
     port: 3000
-
   config:
     NODE_ENV: "development"
     PORT: "3000"
     JWT_EXPIRES_IN: "1h"
     LOG_LEVEL: "debug"
     KAFKA_BROKERS: "dev-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
-
   podSecurity:
-
     automountServiceAccountToken: false
-
     podSecurityContext:
       runAsNonRoot: true
       runAsUser: 10001
       runAsGroup: 10001
-
       seccompProfile:
         type: RuntimeDefault
-
     containerSecurityContext:
-
       allowPrivilegeEscalation: false
-
       readOnlyRootFilesystem: true
-
     capabilities:
-        drop:
-          - ALL
-
-  analysis: 
+      drop:
+        - ALL
+  analysis:
     enabled: true
-    testCmd: "test:user"
+    testCmd: "test:order"
   
   strategy:
     maxSurge: "100%"
@@ -50,46 +38,35 @@ microservice:
     # 🟢 Fixed Logic: Route 20% -> Test for 1m -> Promote to 100%
     steps:
       - setWeight: 100
-
   seeding:
     enabled: false
-
     image:
       repository: skymonil/user-service
       tag: "d2f85af9bb6b3436fa97749f4c3609388e831b62"
-
       command:
-      - pnpm
-      - run
-      - migrate
-
-
+        - pnpm
+        - run
+        - migrate
   resources:
     requests:
       cpu: 100m
       memory: 128Mi
-
     limits:
       cpu: 500m
       memory: 256Mi
-
   probes:
-
     readiness:
       httpGet:
         path: /readyz
         port: 3000
-
       initialDelaySeconds: 5
       periodSeconds: 10
       successThreshold: 1
       failureThreshold: 3
-
     liveness:
       httpGet:
         path: /healthz
         port: 3000
-
       initialDelaySeconds: 15
       periodSeconds: 20
       failureThreshold: 3
