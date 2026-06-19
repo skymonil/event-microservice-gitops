@@ -1,92 +1,98 @@
 # workloads/dev/user-service/values.yaml
-
-image:
-  repository: skymonil/user-service
-  tag: "039a7c413e0cda1fd6d440a7a435d831ea114fda"
-
-replicaCount: 1
-
-service:
-  type: ClusterIP
-  port: 3000
-
-config:
-  NODE_ENV: "development"
-  PORT: "3000"
-  JWT_EXPIRES_IN: "1h"
-  LOG_LEVEL: "debug"
-  KAFKA_BROKERS: "dev-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
-
-podSecurity:
-
-  automountServiceAccountToken: false
-
-  podSecurityContext:
-    runAsNonRoot: true
-    runAsUser: 10001
-    runAsGroup: 10001
-
-    seccompProfile:
-      type: RuntimeDefault
-
-  containerSecurityContext:
-
-    allowPrivilegeEscalation: false
-
-    readOnlyRootFilesystem: true
-
-    capabilities:
-      drop:
-        - ALL
-
-seeding:
-  enabled: false
-
+microservice:
   image:
     repository: skymonil/user-service
-    tag: "d2f85af9bb6b3436fa97749f4c3609388e831b62"
+    tag: "039a7c413e0cda1fd6d440a7a435d831ea114fda"
+    pullPolicy: IfNotPresent
 
-  command:
-    - pnpm
-    - run
-    - migrate
+  replicaCount: 1
 
-strategy:
-  steps:
-    - setWeight: 100
-    - pause:
-        duration: 15s
+  service:
+    type: ClusterIP
+    port: 3000
 
-analysis:
-  enabled: true
-  testCmd: "test:user"
+  config:
+    NODE_ENV: "development"
+    PORT: "3000"
+    JWT_EXPIRES_IN: "1h"
+    LOG_LEVEL: "debug"
+    KAFKA_BROKERS: "dev-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
 
-resources:
-  requests:
-    cpu: 100m
-    memory: 128Mi
+  podSecurity:
 
-  limits:
-    cpu: 500m
-    memory: 256Mi
+    automountServiceAccountToken: false
 
-probes:
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 10001
+      runAsGroup: 10001
 
-  readiness:
-    httpGet:
-      path: /readyz
-      port: 3000
+      seccompProfile:
+        type: RuntimeDefault
 
-    initialDelaySeconds: 5
-    periodSeconds: 10
-    successThreshold: 1
-    failureThreshold: 3
+    containerSecurityContext:
 
-  liveness:
-    httpGet:
-      path: /healthz
-      port: 3000
+      allowPrivilegeEscalation: false
 
-    initialDelaySeconds: 15
-    periodSeconds: 20
-    failureThreshold: 3
+      readOnlyRootFilesystem: true
+
+    capabilities:
+        drop:
+          - ALL
+
+  analysis: 
+    enabled: true
+    testCmd: "test:order"
+  
+  strategy:
+    maxSurge: "25%"
+    maxUnavailable: 0
+    # 🟢 Fixed Logic: Route 20% -> Test for 1m -> Promote to 100%
+    steps:
+      - setWeight: 20
+      - pause:
+          duration: 1m
+      - setWeight: 100
+
+  seeding:
+    enabled: false
+
+    image:
+      repository: skymonil/user-service
+      tag: "d2f85af9bb6b3436fa97749f4c3609388e831b62"
+
+      command:
+      - pnpm
+      - run
+      - migrate
+
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+  probes:
+
+    readiness:
+      httpGet:
+        path: /readyz
+        port: 3000
+
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      failureThreshold: 3
+
+    liveness:
+      httpGet:
+        path: /healthz
+        port: 3000
+
+      initialDelaySeconds: 15
+      periodSeconds: 20
+      failureThreshold: 3
