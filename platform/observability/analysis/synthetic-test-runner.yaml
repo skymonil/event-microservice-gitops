@@ -26,13 +26,6 @@ spec:
                 - name: TARGET_URL 
                   value: "{{ args.target-url }}"
                 
-                - name: JWT_SECRET
-                  valueFrom:
-                    secretKeyRef:
-                      # 🟢 Dynamically pulls the correct secret based on the app running the test
-                      name: "{{ args.service-name }}-secret"
-                      key: JWT_SECRET
-                
                 - name: KAFKA_BROKERS
                   value: dev-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092
                 
