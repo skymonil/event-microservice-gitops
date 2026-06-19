@@ -1,3 +1,4 @@
+## //platform/observability/analysis/synthetic-test-runner.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: ClusterAnalysisTemplate # 🟢 Upgraded
 metadata:
@@ -31,7 +32,7 @@ spec:
                 
                 # 🟢 Updated cross-service DNS calls to reflect Namespace-per-Service
                 - name: USER_SERVICE_URL
-                  value: "http://dev-user-service-canary.user-service.svc.cluster.local:3000"
+                  value: "http://dev-user-service-preview.user-service.svc.cluster.local:3000"
                 - name: ORDER_SERVICE_URL
                   value: "http://dev-order-service-canary.order-service.svc.cluster.local:3000"
                 - name: PAYMENT_SERVICE_URL
