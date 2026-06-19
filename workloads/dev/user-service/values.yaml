@@ -38,7 +38,7 @@ microservice:
     steps:
       - setWeight: 100
   seeding:
-    enabled: false
+    enabled: true
     image:
       repository: skymonil/user-service
       tag: "d2f85af9bb6b3436fa97749f4c3609388e831b62"
