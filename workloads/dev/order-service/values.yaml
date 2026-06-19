@@ -3,6 +3,7 @@ microservice:
   image:
     repository: skymonil/order-service
     tag: d2f85af9bb6b3436fa97749f4c3609388e831b62
+    pullPolicy: IfNotPresent
 
   replicaCount: 1
 
@@ -37,7 +38,11 @@ microservice:
     testCmd: "test:order"
 
   strategy:
-    maxSurge: 25%
+    maxSurge: "25%"
     maxUnavailable: 0
+    # 🟢 Fixed Logic: Route 20% -> Test for 1m -> Promote to 100%
     steps:
+      - setWeight: 20
+      - pause:
+          duration: 1m
       - setWeight: 100

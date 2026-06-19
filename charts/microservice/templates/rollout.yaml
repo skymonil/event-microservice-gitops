@@ -1,4 +1,4 @@
-## // charts/microservice/templates/rollout.yaml
+# charts/microservice/templates/rollout.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
@@ -7,7 +7,6 @@ metadata:
     {{- include "microservice.labels" . | nindent 4 }}
 
 spec:
-
   replicas: {{ .Values.replicaCount }}
 
   selector:
@@ -16,7 +15,7 @@ spec:
 
   strategy:
     canary:
-      {{- toYaml .Values.strategy | nindent 4 }}
+      {{- toYaml .Values.strategy | nindent 6 }}
 
       {{- if and .Values.analysis .Values.analysis.enabled }}
       analysis:
@@ -49,23 +48,23 @@ spec:
         {{- end }}
 
     spec:
+      # 🟢 Defensive Check: Prevents the "nil pointer" compiler error
+      automountServiceAccountToken: {{ if .Values.podSecurity }}{{ .Values.podSecurity.automountServiceAccountToken | default false }}{{ else }}false{{ end }}
 
-      automountServiceAccountToken: {{ .Values.podSecurity.automountServiceAccountToken | default false }}
-
-      {{- with .Values.podSecurity.podSecurityContext }}
+      {{- if and .Values.podSecurity .Values.podSecurity.podSecurityContext }}
       securityContext:
-        {{- toYaml . | nindent 6 }}
+        {{- toYaml .Values.podSecurity.podSecurityContext | nindent 8 }}
       {{- end }}
 
       containers:
         - name: application
-
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
 
-          {{- with .Values.podSecurity.containerSecurityContext }}
+          # 🟢 Fixed Indentation: Changed from `with` to `if and` using nindent 12
+          {{- if and .Values.podSecurity .Values.podSecurity.containerSecurityContext }}
           securityContext:
-            {{- toYaml . | nindent 10 }}
+            {{- toYaml .Values.podSecurity.containerSecurityContext | nindent 12 }}
           {{- end }}
 
           ports:
@@ -86,8 +85,10 @@ spec:
             {{- end }}
           {{- end }}
 
+          {{- if .Values.resources }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
 
           {{- if .Values.probes }}
           {{- with .Values.probes.startup }}
