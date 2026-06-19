@@ -9,11 +9,10 @@ keys.txt
 
 # Ignore the charts/ directory where subcharts are fetched locally
 # (Let your GitOps controller pull dependencies via Chart.yaml)
-charts/
 
 # If you use a proxy chart pattern, explicitly ignore the charts sub-directory 
 # inside your local chart directories while keeping the parent chart structure.
-**/charts/
+!**/charts/
 
 # Ignore local chart lock files if your team dynamic-fetches latest patch versions
 # (Optional: Remove if you want strict lockfile pinning in git)
