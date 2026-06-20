@@ -38,11 +38,20 @@ microservice:
     testCmd: "test:order"
 
   strategy:
-    maxSurge: "25%"
+    maxSurge: "100%"
     maxUnavailable: 0
     # 🟢 Fixed Logic: Route 20% -> Test for 1m -> Promote to 100%
     steps:
-      - setWeight: 20
-      - pause:
-          duration: 1m
       - setWeight: 100
+  migration:
+    enabled: true
+  seeding:
+    enabled: false
+  
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi

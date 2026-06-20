@@ -4,12 +4,11 @@
 architecture: standalone
 
 # 2. Authentication (Updated credentials with root password and default database)
-global:
-  postgresql:
-    auth:
-      username: "postgres"
-      postgresPassword: "postgres"
-      database: "user_db" 
+auth:
+  username: "postgres"
+  postgresPassword: "postgres"
+  # Optional: Keeping your default database from the original snippet
+  database: "user_db" 
 
 primary:
   # 3. Resource Limits to prevent it from starving your k3s cluster
