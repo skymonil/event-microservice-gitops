@@ -43,6 +43,9 @@ microservice:
       - run
       - migrate
 
+  migration:
+    enabled: true
+
   # 🟢 Properly nested under microservice scope
   analysis:
     enabled: true
@@ -50,12 +53,9 @@ microservice:
 
   # 🟢 Properly nested and adjusted to proper 20% validation stage
   strategy:
-    maxSurge: "25%"
+    maxSurge: "100%"
     maxUnavailable: 0
     steps:
-      - setWeight: 20
-      - pause:
-          duration: 15s
       - setWeight: 100
 
   # 🟢 Properly nested under microservice scope

@@ -42,18 +42,17 @@ microservice:
       - seed
   migration:
     enabled: true
+
   # 🟢 Moved inside the microservice block
   analysis:
     enabled: true
     testCmd: "test:inventory"
+
   # 🟢 Moved inside the microservice block & fixed rolling step parameters
   strategy:
-    maxSurge: "25%"
+    maxSurge: "100%"
     maxUnavailable: 0
     steps:
-      - setWeight: 20
-      - pause:
-          duration: 15s
       - setWeight: 100
   # 🟢 Moved inside the microservice block
   resources:
