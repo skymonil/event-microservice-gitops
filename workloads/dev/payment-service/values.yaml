@@ -2,22 +2,18 @@
 microservice:
   image:
     repository: skymonil/payment-service
-    tag: "91d7df61d2e7f4f85b30ffe5c6f6486a9208846c"
+    tag: "5c1600142de3f78a7d42f23e41126ab60bed4199"
     pullPolicy: IfNotPresent
-
   replicaCount: 1
-
   service:
     type: ClusterIP
     port: 3002
-
   config:
     NODE_ENV: "development"
     PORT: "3002"
     JWT_EXPIRES_IN: "1h"
     LOG_LEVEL: "debug"
     KAFKA_BROKERS: "dev-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
-
   podSecurity:
     automountServiceAccountToken: false
     podSecurityContext:
@@ -32,7 +28,6 @@ microservice:
       capabilities:
         drop:
           - ALL
-
   seeding:
     enabled: false
     image:
@@ -42,22 +37,18 @@ microservice:
       - pnpm
       - run
       - migrate
-
   migration:
     enabled: true
-
   # 🟢 Properly nested under microservice scope
   analysis:
     enabled: true
     testCmd: "test:payment"
-
   # 🟢 Properly nested and adjusted to proper 20% validation stage
   strategy:
     maxSurge: "100%"
     maxUnavailable: 0
     steps:
       - setWeight: 100
-
   # 🟢 Properly nested under microservice scope
   resources:
     requests:
