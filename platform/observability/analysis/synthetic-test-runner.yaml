@@ -34,8 +34,8 @@ spec:
                 - name: USER_SERVICE_URL
                   value: "http://dev-user-service-preview.user-service.svc.cluster.local:3000"
                 - name: ORDER_SERVICE_URL
-                  value: "http://dev-order-service-canary.order-service.svc.cluster.local:3000"
+                  value: "http://dev-order-service-preview.order-service.svc.cluster.local:3000"
                 - name: PAYMENT_SERVICE_URL
-                  value: "http://dev-payment-service-canary.payment-service.svc.cluster.local:3000"
+                  value: "http://dev-payment-service-preview.payment-service.svc.cluster.local:3000"
                 - name: INVENTORY_SERVICE_URL
-                  value: "http://dev-inventory-service-canary.inventory-service.svc.cluster.local:3000"
+                  value: "http://dev-inventory-service-preview.inventory-service.svc.cluster.local:3000"
