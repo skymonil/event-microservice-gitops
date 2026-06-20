@@ -2,15 +2,12 @@
 microservice:
   image:
     repository: skymonil/inventory-service
-    tag: "039a7c413e0cda1fd6d440a7a435d831ea114fda"
+    tag: "b37f332ec3e3381483d46bf499ae8616484dee7c"
     pullPolicy: IfNotPresent
-
   replicaCount: 1
-
   service:
     type: ClusterIP
     port: 3003
-
   # 🟢 Moved cleanly inside the microservice block
   config:
     NODE_ENV: "development"
@@ -18,7 +15,6 @@ microservice:
     JWT_EXPIRES_IN: "1h"
     LOG_LEVEL: "debug"
     KAFKA_BROKERS: "dev-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
-
   # 🟢 Moved inside the microservice block
   podSecurity:
     automountServiceAccountToken: false
@@ -34,7 +30,6 @@ microservice:
       capabilities:
         drop:
           - ALL
-
   # 🟢 Moved inside the microservice block
   seeding:
     enabled: false
@@ -45,15 +40,12 @@ microservice:
       - pnpm
       - run
       - seed
-  
   migration:
     enabled: true
-
   # 🟢 Moved inside the microservice block
   analysis:
     enabled: true
     testCmd: "test:inventory"
-
   # 🟢 Moved inside the microservice block & fixed rolling step parameters
   strategy:
     maxSurge: "25%"
@@ -63,7 +55,6 @@ microservice:
       - pause:
           duration: 15s
       - setWeight: 100
-
   # 🟢 Moved inside the microservice block
   resources:
     requests:
@@ -72,7 +63,6 @@ microservice:
     limits:
       cpu: 500m
       memory: 256Mi
-
   # 🟢 Moved inside the microservice block
   probes:
     startup:
