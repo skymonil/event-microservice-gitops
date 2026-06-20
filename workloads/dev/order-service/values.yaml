@@ -2,7 +2,7 @@
 microservice:
   image:
     repository: skymonil/order-service
-    tag: 6445edbc8f249b94180730a6307bc7ceda608439
+    tag: f6c8f4d908f7f95425bccdd6905dd9d8872d62fb
     pullPolicy: IfNotPresent
   replicaCount: 1
   service:
