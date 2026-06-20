@@ -37,7 +37,7 @@ microservice:
 
   # 🟢 Moved inside the microservice block
   seeding:
-    enabled: true
+    enabled: false
     image:
       repository: skymonil/inventory-service
       tag: "d2f85af9bb6b3436fa97749f4c3609388e831b62"
