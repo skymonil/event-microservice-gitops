@@ -2,22 +2,18 @@
 microservice:
   image:
     repository: skymonil/order-service
-    tag: d2f85af9bb6b3436fa97749f4c3609388e831b62
+    tag: 6445edbc8f249b94180730a6307bc7ceda608439
     pullPolicy: IfNotPresent
-
   replicaCount: 1
-
   service:
     type: ClusterIP
     port: 3001
-
   config:
     NODE_ENV: development
     PORT: "3001"
     KAFKA_BROKERS: "dev-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
     LOG_LEVEL: "debug"
     JWT_EXPIRES_IN: "1h"
-
   podSecurity:
     automountServiceAccountToken: false
     podSecurityContext:
@@ -32,11 +28,9 @@ microservice:
       capabilities:
         drop:
           - ALL
-
-  analysis: 
+  analysis:
     enabled: true
     testCmd: "test:order"
-
   strategy:
     maxSurge: "100%"
     maxUnavailable: 0
@@ -47,7 +41,6 @@ microservice:
     enabled: true
   seeding:
     enabled: false
-  
   resources:
     requests:
       cpu: 100m
