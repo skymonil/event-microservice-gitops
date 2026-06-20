@@ -37,15 +37,10 @@ microservice:
     # 🟢 Fixed Logic: Route 20% -> Test for 1m -> Promote to 100%
     steps:
       - setWeight: 100
-  seeding:
+  migration:
     enabled: true
-    image:
-      repository: skymonil/user-service
-      tag: "b22c7a8fb6d362f886f72fdcbf953b06c9858515"
-      command:
-        - pnpm
-        - run
-        - migrate
+  seeding:
+    enabled: false
   resources:
     requests:
       cpu: 100m
