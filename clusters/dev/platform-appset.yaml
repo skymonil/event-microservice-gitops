@@ -27,6 +27,11 @@ spec:
           - name: state-kafka
             path: state/kafka/cluster
             syncWave: "2"
+
+          - name: kyverno 
+            path: security/kyverno/overlays/dev
+            namespace: kyverno
+            syncWave: "0"
           - name: observability
             path: observability
             syncWave: "0"
