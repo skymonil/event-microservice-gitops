@@ -1,5 +1,5 @@
 ## // charts/microservice/templates/migration-job.yaml
-{{- if and .Values.microservice .Values.microservice.migration .Values.microservice.migration.enabled }}
+{{- if .Values.migration.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -21,7 +21,7 @@ spec:
       containers:
         - name: migrator
           # 🟢 Uses the exact same image and tag as the incoming Rollout
-          image: "{{ .Values.microservice.image.repository }}:{{ .Values.microservice.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           workingDir: /app 
           command: ["/bin/sh", "-c"]
