@@ -2,7 +2,7 @@
 microservice:
   image:
     repository: skymonil/inventory-service
-    tag: "b37f332ec3e3381483d46bf499ae8616484dee7c"
+    tag: "d32b69066f27d6d9348e6d3290aa09d186b5706a"
     pullPolicy: IfNotPresent
   replicaCount: 1
   service:
@@ -42,12 +42,10 @@ microservice:
       - seed
   migration:
     enabled: true
-
   # 🟢 Moved inside the microservice block
   analysis:
     enabled: true
     testCmd: "test:inventory"
-
   # 🟢 Moved inside the microservice block & fixed rolling step parameters
   strategy:
     maxSurge: "100%"
