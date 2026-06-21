@@ -41,7 +41,7 @@ spec:
             path: observability-alloy
             namespace: monitoring
           - name: observability-analysis
-            path: observability/analysis
+            path: observability-analysis
             namespace: monitoring
           - name: kyverno
             path: security/kyverno
