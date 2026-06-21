@@ -48,6 +48,9 @@ spec:
         targetRevision: HEAD
         # 🟢 Points to the functional path location
         path: 'platform/{{path}}'
+        helm:
+          valueFiles:
+            - values.yaml
 
     #    kustomize:
    #       buildOptions: "--enable-helm"

@@ -1,3 +1,4 @@
+# /platform/security/kyverno/values.yaml
 admissionController:
   replicas: 1
 
