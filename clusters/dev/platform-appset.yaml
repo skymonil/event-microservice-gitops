@@ -3,74 +3,120 @@ kind: ApplicationSet
 metadata:
   name: dev-platform-infrastructure
   namespace: argocd
+
 spec:
   generators:
     - list:
         elements:
-          - name: cluster-addons
-            path: cluster-addons
+
+          - name: storage
+            path: cluster-addons/storage
+            namespace: kube-system
             syncWave: "-3"
+
+          - name: metallb
+            path: cluster-addons/metallb
+            namespace: metallb-system
+            syncWave: "-3"
+
+          - name: argo-rollouts
+            path: cluster-addons/argo-rollouts
+            namespace: argo-rollouts
+            syncWave: "-3"
+
           - name: gateway-k3s
             path: gateway/overlays/k3s
+            namespace: gateway
             syncWave: "-2"
+
           - name: state-postgres
             path: state/postgres
+            namespace: postgres
             syncWave: "-1"
+
           - name: state-redis
             path: state/redis
+            namespace: redis
             syncWave: "-1"
-          - name: state-kafka-operator
-            path: state/kafka/operator
-            syncWave: "1"
-          - name: state-kafka
-            path: state/kafka/cluster
-            syncWave: "2"
-          - name: observability-prometheus
-            path: observability-prometheus
-            namespace: monitoring
-          - name: observability-loki
-            path: observability-loki
-            namespace: monitoring
-          - name: observability-tempo
-            path: observability-tempo
-            namespace: monitoring
-          - name: observability-grafana
-            path: observability-grafana
-            namespace: monitoring
-          - name: observability-alloy
-            path: observability-alloy
-            namespace: monitoring
-          - name: observability-analysis
-            path: observability-analysis
-            type: directory
-            namespace: monitoring
+
           - name: kyverno
             path: security/kyverno
             namespace: kyverno
             syncWave: "0"
+
+          - name: observability-prometheus
+            path: observability-prometheus
+            namespace: monitoring
+            syncWave: "0"
+
+          - name: observability-loki
+            path: observability-loki
+            namespace: monitoring
+            syncWave: "0"
+
+          - name: observability-tempo
+            path: observability-tempo
+            namespace: monitoring
+            syncWave: "0"
+
+          - name: observability-grafana
+            path: observability-grafana
+            namespace: monitoring
+            syncWave: "0"
+
+          - name: observability-alloy
+            path: observability-alloy
+            namespace: monitoring
+            syncWave: "0"
+
+          - name: observability-analysis
+            path: observability-analysis
+            namespace: monitoring
+            syncWave: "0"
+
+          - name: state-kafka-operator
+            path: state/kafka/operator
+            namespace: kafka
+            syncWave: "1"
+
+          - name: state-kafka
+            path: state/kafka/cluster
+            namespace: kafka
+            syncWave: "2"
+
+          - name: state-kafka-topics
+            path: state/kafka/topics
+            namespace: kafka
+            syncWave: "3"
+
+          - name: state-kafka-connectors
+            path: state/kafka/connectors
+            namespace: kafka
+            syncWave: "4"
+
   template:
     metadata:
       name: 'dev-platform-{{name}}'
       annotations:
         argocd.argoproj.io/sync-wave: '{{syncWave}}'
+
     spec:
       project: default
+
       source:
         repoURL: https://github.com/skymonil/event-microservice-gitops.git
         targetRevision: HEAD
         path: 'platform/{{path}}'
-        helm:
-          valueFiles:
-            - values.yaml
-        kustomize:
-          buildOptions: "--enable-helm"
+
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{namespace}}'
+
       syncPolicy:
         automated:
           prune: true
           selfHeal: true
+
         syncOptions:
           - CreateNamespace=true
           - ServerSideApply=true

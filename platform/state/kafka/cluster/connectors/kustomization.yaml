@@ -1,9 +1,0 @@
-## // platform/state/kafka/cluster/connectors/kustomization.yaml
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-namespace: kafka
-
-resources:
-  - inventory-connector.yaml
-  - order-connector.yaml
-  - payment-connector.yaml
