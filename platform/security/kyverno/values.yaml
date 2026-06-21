@@ -9,3 +9,6 @@ cleanupController:
 
 reportsController:
   replicas: 1
+
+crds:
+  install: true
