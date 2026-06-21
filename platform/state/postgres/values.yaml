@@ -1,17 +1,19 @@
-# platform/state/postgres/values.yaml
+fullnameOverride: postgres
 
-# 1. Architecture for Development
 architecture: standalone
 
-# 2. Authentication (Updated credentials with root password and default database)
 auth:
-  username: "postgres"
-  postgresPassword: "postgres"
-  # Optional: Keeping your default database from the original snippet
-  database: "user_db" 
+  username: postgres
+  password: postgres
+  postgresPassword: postgres
+  database: user_db
 
 primary:
-  # 3. Resource Limits to prevent it from starving your k3s cluster
+  persistence:
+    enabled: true
+    storageClass: local-path
+    size: 5Gi
+
   resources:
     requests:
       cpu: 250m
@@ -20,43 +22,26 @@ primary:
       cpu: 500m
       memory: 512Mi
 
-  # 4. Debezium Configuration (Injected into postgresql.conf for logical replication)
   configuration: |
-    wal_level = logical
-    max_wal_senders = 10
-    max_replication_slots = 10
-    listen_addresses = '*'
-      
-  # 5. Multi-Database Initialization Strategy
-  # Creates isolated logical databases and provisions app users / permissions.
+    wal_level=logical
+    max_wal_senders=10
+    max_replication_slots=10
+    listen_addresses='*'
+
   initdb:
     scripts:
       01-init-microservice-dbs.sql: |
+        CREATE DATABASE users;
+        CREATE DATABASE orders;
+        CREATE DATABASE inventory;
+        CREATE DATABASE payments;
 
+        GRANT ALL PRIVILEGES ON DATABASE users TO postgres;
+        GRANT ALL PRIVILEGES ON DATABASE orders TO postgres;
+        GRANT ALL PRIVILEGES ON DATABASE inventory TO postgres;
+        GRANT ALL PRIVILEGES ON DATABASE payments TO postgres;
 
-        /* Create new databases from appended script */
-        CREATE DATABASE "users";
-        CREATE DATABASE "orders";
-        CREATE DATABASE "inventory";
-        CREATE DATABASE "payments";
-
-
-        /* Grant permissions to postgres user */
-        GRANT ALL PRIVILEGES ON DATABASE "orders" TO postgres;
-        GRANT ALL PRIVILEGES ON DATABASE "users" TO postgres;
-        GRANT ALL PRIVILEGES ON DATABASE "inventory" TO postgres;
-        GRANT ALL PRIVILEGES ON DATABASE "payments" TO postgres;
-
-  # 6. Storage Persistence
-  persistence:
-    enabled: true
-    storageClass: "local-path"
-    size: 5Gi
-
-# 7. Observability Metrics
 metrics:
   enabled: true
   serviceMonitor:
     enabled: false
-
-fullnameOverride: postgres
