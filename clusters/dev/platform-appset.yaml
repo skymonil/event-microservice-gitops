@@ -52,8 +52,8 @@ spec:
           valueFiles:
             - values.yaml
 
-    #    kustomize:
-   #       buildOptions: "--enable-helm"
+      kustomize:
+         buildOptions: "--enable-helm"
 
       destination:
         server: https://kubernetes.default.svc
