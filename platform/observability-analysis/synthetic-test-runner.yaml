@@ -22,15 +22,15 @@ spec:
               - name: tester
                 image: skymonil/synthetic-tests:latest
                 imagePullPolicy: Always
-                command: ["pnpm", "run", "{{ args.test-cmd }}"]
+                command: ["pnpm", "run", '{{ "{{ args.test-cmd }}" }}']
                 env:
                 - name: TARGET_URL 
-                  value: "{{ args.target-url }}"
+                  value: '{{ "{{ args.target-url }}" }}'
 
                 - name: JWT_SECRET
                   valueFrom:
                     secretKeyRef:
-                      name: "{{ args.service-name }}-secret"
+                      name: '{{ "{{ args.service-name }}" }}-secret'
                       key: JWT_SECRET
                 
                 - name: KAFKA_BROKERS
