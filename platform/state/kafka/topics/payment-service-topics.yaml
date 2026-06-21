@@ -14,7 +14,7 @@ spec:
     retention.ms: 86400000
     cleanup.policy: delete
 ---
-apiVersion: kafka.strimzi.io/v1beta2
+apiVersion: kafka.strimzi.io/v1
 kind: KafkaTopic
 metadata:
   name: payment.refunded
@@ -29,7 +29,7 @@ spec:
     retention.ms: 86400000
     cleanup.policy: delete
 ---
-apiVersion: kafka.strimzi.io/v1beta2
+apiVersion: kafka.strimzi.io/v1
 kind: KafkaTopic
 metadata:
   name: payment.completed
