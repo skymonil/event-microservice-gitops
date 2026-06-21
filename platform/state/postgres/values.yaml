@@ -58,3 +58,5 @@ metrics:
   enabled: true
   serviceMonitor:
     enabled: false
+
+fullnameOverride: postgres
