@@ -15,7 +15,7 @@ spec:
     retention.ms: 86400000
     cleanup.policy: delete
 ---
-apiVersion: kafka.strimzi.io/v1beta2
+apiVersion: kafka.strimzi.io/v1
 kind: KafkaTopic
 metadata:
   name: inventory.released
@@ -31,7 +31,7 @@ spec:
     retention.ms: 86400000
     cleanup.policy: delete
 ---
-apiVersion: kafka.strimzi.io/v1beta2
+apiVersion: kafka.strimzi.io/v1
 kind: KafkaTopic
 metadata:
   name: stock.adjusted
@@ -47,7 +47,7 @@ spec:
     retention.ms: 86400000
     cleanup.policy: delete
 ---
-apiVersion: kafka.strimzi.io/v1beta2
+apiVersion: kafka.strimzi.io/v1
 kind: KafkaTopic
 metadata:
   name: inventory.expired
@@ -65,7 +65,7 @@ spec:
 
 ---
 
-apiVersion: kafka.strimzi.io/v1beta2
+apiVersion: kafka.strimzi.io/v1
 kind: KafkaTopic
 metadata:
   name: product.created
