@@ -29,7 +29,7 @@ spec:
             syncWave: "2"
 
           - name: kyverno 
-            path: security/kyverno/overlays/dev
+            path: security/kyverno
             namespace: kyverno
             syncWave: "0"
           - name: observability
@@ -54,7 +54,7 @@ spec:
 
       destination:
         server: https://kubernetes.default.svc
-        namespace: argocd
+        namespace: '{{namespace | default "argocd"}}'
       syncPolicy:
         automated:
           prune: true
