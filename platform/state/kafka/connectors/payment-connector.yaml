@@ -16,7 +16,7 @@ spec:
   config:
     # --- 1. Database Connection ---
     # Pointing to the Postgres service deployed in the previous step
-    database.hostname: postgres-postgresql.postgres.svc.cluster.local
+    database.hostname: postgres.postgres.svc.cluster.local
     database.port: "5432"
     database.user: postgres
     database.password: postgres
