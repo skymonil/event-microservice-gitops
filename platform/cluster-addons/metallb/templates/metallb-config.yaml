@@ -1,3 +1,4 @@
+# /platform/cluster-addons/metallb/metallb-config.yaml
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
