@@ -113,7 +113,24 @@ env:
   portal_api_error_log: /dev/stderr
   prefix: /kong_prefix/
 
+# This section is any customer specific environments variables that doesn't require KONG_ prefix.
+# These custom environment variables are typicall used in custom plugins or serverless plugins to
+# access environment specific credentials or tokens.
+# Example as below, uncomment if required and add additional attributes as required.
+# Note that these environment variables will only apply to the proxy and init container. The ingress-controller
+# container has its own customEnv section.
 
+# customEnv:
+#   api_token:
+#     valueFrom:
+#       secretKeyRef:
+#         key: token
+#         name: api_key
+#   client_name: testClient
+
+# Load all ConfigMap or Secret keys as environment variables:
+# https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#configure-all-key-value-pairs-in-a-configmap-as-container-environment-variables
+envFrom: []
 
 # This section can be used to configure some extra labels that will be added to each Kubernetes object generated.
 extraLabels: {}
@@ -334,6 +351,7 @@ proxy:
   # use a LoadBalancer Service due to limitations in current Kubernetes versions.
   # To proxy both TCP and UDP with LoadBalancers, you must enable the udpProxy Service
   # in the next section and place all UDP stream listen configuration under it.
+  stream: []
     #   # Set the container (internal) and service (external) ports for this listen.
     #   # These values should normally be the same. If your environment requires they
     #   # differ, note that Kong will match routes based on the containerPort only.
@@ -422,6 +440,7 @@ udpProxy:
   # To enable, remove "[]", uncomment the section below, and select your desired
   # ports and parameters. Listens are dynamically named after their servicePort,
   # e.g. "stream-9000" for the below.
+  stream: []
     #   # Set the container (internal) and service (external) ports for this listen.
     #   # These values should normally be the same. If your environment requires they
     #   # differ, note that Kong will match routes based on the containerPort only.
@@ -461,7 +480,10 @@ plugins: {}
 # Be aware that the secret name will be used verbatim, and that certain types
 # of punctuation (e.g. `.`) can cause issues.
 # Example configuration
-
+# secretVolumes:
+# - kong-proxy-tls
+# - kong-admin-tls
+secretVolumes: []
 
 # Enable/disable migration jobs, and set annotations for them
 migrations:
@@ -514,10 +536,26 @@ migrations:
 # and not as an Ingress Controller.
 dblessConfig:
   # Either Kong's configuration is managed from an existing ConfigMap (with Key: kong.yml)
-  configMap: kong-dbless-config
+  configMap: "dbless-kong-config"
   # Or Kong's configuration is managed from an existing Secret (with Key: kong.yml)
   secret: ""
   # Or the configuration is passed in full-text below
+  config: |
+  # # _format_version: "1.1"
+  # # services:
+  # #   # Example configuration
+  # #   # - name: example.com
+  # #   #   url: http://example.com
+  # #   #   routes:
+  # #   #   - name: example
+  # #   #     paths:
+  # #   #     - "/example"
+  ## Optionally specify any extra sidecar containers to be included in the
+  ## migration jobs
+  ## See https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core
+  # sidecarContainers:
+  #   - name: sidecar
+  #     image: sidecar:latest
 
 # -----------------------------------------------------------------------------
 # Ingress Controller parameters
@@ -527,7 +565,7 @@ dblessConfig:
 # created in k8s. It uses CRDs for more fine grained control over routing and
 # for Kong specific configuration.
 ingressController:
-  enabled: false
+  enabled: true
   image:
     repository: kong/kubernetes-ingress-controller
     tag: "3.5"
@@ -576,6 +614,7 @@ ingressController:
 
   # Load all ConfigMap or Secret keys as environment variables:
   # https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#configure-all-key-value-pairs-in-a-configmap-as-container-environment-variables
+  envFrom: []
 
   admissionWebhook:
     matchPolicy: Equivalent
@@ -1351,11 +1390,13 @@ extraConfigMaps: []
 #   mountPath: /mount/to/my/location
 #   subPath: my-subpath # Optional, if you wish to mount a single key and not the entire ConfigMap
 
+extraSecrets: []
 # extraSecrets:
 # - name: my-secret
 #   mountPath: /mount/to/my/location
 #   subPath: my-subpath # Optional, if you wish to mount a single key and not the entire ConfigMap
 
+extraObjects: []
 # extraObjects:
 # - apiVersion: configuration.konghq.com/v1
 #   kind: KongClusterPlugin
