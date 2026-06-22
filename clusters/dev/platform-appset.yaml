@@ -24,9 +24,9 @@ spec:
             namespace: argo-rollouts
             syncWave: "-3"
 
-          - name: gateway-k3s
-            path: gateway/overlays/k3s
-            namespace: gateway
+          - name: kong-gateway
+            path: gateway/
+            namespace: kong
             syncWave: "-2"
 
           - name: state-postgres
