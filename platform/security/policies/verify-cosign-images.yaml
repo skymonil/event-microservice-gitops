@@ -1,9 +1,7 @@
 apiVersion: kyverno.io/v1
-
 kind: ClusterPolicy
 
 metadata:
-
   name: verify-images
 
 spec:
@@ -14,7 +12,7 @@ spec:
 
   rules:
 
-  - name: check-signatures
+  - name: verify-signatures
 
     match:
 
@@ -23,7 +21,6 @@ spec:
       - resources:
 
           kinds:
-
           - Pod
 
     verifyImages:
@@ -31,6 +28,8 @@ spec:
     - imageReferences:
 
       - "docker.io/skymonil/*"
+
+      mutateDigest: true
 
       attestors:
 
@@ -40,6 +39,10 @@ spec:
 
         - keyless:
 
-            issuer: "https://token.actions.githubusercontent.com"
+            issuer: https://token.actions.githubusercontent.com
 
-            subject: "https://github.com/skymonil/Event-Based-Microservice-App/.github/workflows/*"
+            subject: https://github.com/skymonil/Event-Based-Microservice-App/.github/workflows/*
+
+            rekor:
+
+              url: https://rekor.sigstore.dev
