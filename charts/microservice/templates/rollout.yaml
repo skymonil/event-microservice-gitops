@@ -18,7 +18,8 @@ spec:
       activeService: {{ include "microservice.fullname" . }}
       previewService: {{ include "microservice.fullname" . }}-preview
       autoPromotionEnabled: true
-      abortScaleDownDelaySeconds: 3200
+      abortScaleDownDelaySeconds: 1600
+      scaleDownDelayRevisionLimit: 1 
 
       prePromotionAnalysis:
         templates:
