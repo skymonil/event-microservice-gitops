@@ -14,7 +14,7 @@ spec:
     successCondition: result < 0.05 || isNaN(result)
     provider:
       prometheus:
-        address: http://prometheus-server.observability.svc.cluster.local
+        address: http://dev-platform-observability-prometheus-server.monitoring.svc.cluster.local
         query: |
           scalar(
             (
@@ -35,7 +35,7 @@ spec:
     successCondition: result < 0.5 || isNaN(result)
     provider:
       prometheus:
-        address: http://prometheus-server.observability.svc.cluster.local
+        address: http://dev-platform-observability-prometheus-server.monitoring.svc.cluster.local
         query: |
           scalar(
             histogram_quantile(

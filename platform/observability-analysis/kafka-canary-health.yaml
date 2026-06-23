@@ -13,7 +13,7 @@ spec:
     successCondition: result > 0 || isNaN(result)
     provider:
       prometheus:
-        address: http://prometheus-server.observability.svc.cluster.local
+        address: http://dev-platform-observability-prometheus-server.monitoring.svc.cluster.local
         query: |
           sum(rate(kafka_messages_consumed_total{
             service="{{args.service-name}}",
@@ -27,7 +27,7 @@ spec:
     successCondition: result == 0 || isNaN(result)
     provider:
       prometheus:
-        address: http://prometheus-server.observability.svc.cluster.local
+        address: http://dev-platform-observability-prometheus-server.monitoring.svc.cluster.local
         query: |
           sum(rate(kafka_messages_dlq_total{
             service="{{args.service-name}}",
