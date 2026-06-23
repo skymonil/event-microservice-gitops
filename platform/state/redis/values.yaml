@@ -51,10 +51,10 @@ global:
 kubeVersion: ""
 ## @param nameOverride String to partially override common.names.fullname
 ##
-nameOverride: "redis"
+nameOverride: ""
 ## @param fullnameOverride String to fully override common.names.fullname
 ##
-fullnameOverride: ""
+fullnameOverride: "redis"
 ## @param namespaceOverride String to fully override common.names.namespace
 ##
 namespaceOverride: ""
