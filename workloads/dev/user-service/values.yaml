@@ -2,7 +2,7 @@
 microservice:
   image:
     repository: skymonil/user-service
-    tag: "05e4b53b5e36358c270ef0f9f47949464485ba92"
+    tag: "b240dc7d1b6edf88eacae5a46f6e139ce6a50568"
     pullPolicy: IfNotPresent
   replicaCount: 1
   service:
