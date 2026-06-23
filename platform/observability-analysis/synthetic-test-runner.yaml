@@ -1,47 +1,63 @@
-## //platform/observability/analysis/synthetic-test-runner.yaml
 apiVersion: argoproj.io/v1alpha1
-kind: ClusterAnalysisTemplate # 🟢 Upgraded
+kind: ClusterAnalysisTemplate
+
 metadata:
   name: synthetic-test-runner
-spec:
-  args:
-  - name: test-cmd
-  - name: target-url
-  - name: service-name       # 🟢 Added to dynamically link secrets
-  metrics:
-  - name: run-test
-    provider:
-      job:
-        spec:
-          backoffLimit: 1
-          ttlSecondsAfterFinished: 300
-          template:
-            spec:
-              restartPolicy: Never
-              containers:
-              - name: tester
-                image: skymonil/synthetic-tests:latest
-                imagePullPolicy: Always
-                command: ["pnpm", "run", '{{ "{{ args.test-cmd }}" }}']
-                env:
-                - name: TARGET_URL 
-                  value: '{{ "{{ args.target-url }}" }}'
 
-                - name: JWT_SECRET
-                  valueFrom:
-                    secretKeyRef:
-                      name: '{{ "{{ args.service-name }}" }}-secret'
-                      key: JWT_SECRET
-                
-                - name: KAFKA_BROKERS
-                  value: dev-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092
-                
-                # 🟢 Updated cross-service DNS calls to reflect Namespace-per-Service
-                - name: USER_SERVICE_URL
-                  value: "http://dev-user-service-preview.user-service.svc.cluster.local:3000"
-                - name: ORDER_SERVICE_URL
-                  value: "http://dev-order-service-preview.order-service.svc.cluster.local:3000"
-                - name: PAYMENT_SERVICE_URL
-                  value: "http://dev-payment-service-preview.payment-service.svc.cluster.local:3000"
-                - name: INVENTORY_SERVICE_URL
-                  value: "http://dev-inventory-service-preview.inventory-service.svc.cluster.local:3000"
+spec:
+
+  args:
+    - name: test-cmd
+    - name: target-url
+
+  metrics:
+    - name: run-test
+
+      provider:
+
+        job:
+
+          spec:
+
+            backoffLimit: 1
+
+            ttlSecondsAfterFinished: 300
+
+            template:
+
+              spec:
+
+                restartPolicy: Never
+
+                containers:
+
+                  - name: tester
+
+                    image: skymonil/synthetic-tests:latest
+
+                    imagePullPolicy: Always
+
+                    command:
+                      - pnpm
+                      - run
+                      - "{{args.test-cmd}}"
+
+                    env:
+
+                      - name: TARGET_URL
+                        value: "{{args.target-url}}"
+
+                      - name: KAFKA_BROKERS
+                        value: dev-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092
+
+                      - name: USER_SERVICE_URL
+                        value: http://dev-user-service-preview.user-service.svc.cluster.local:3000
+
+                      - name: ORDER_SERVICE_URL
+                        value: http://dev-order-service-preview.order-service.svc.cluster.local:3000
+
+                      - name: PAYMENT_SERVICE_URL
+                        value: http://dev-payment-service-preview.payment-service.svc.cluster.local:3000
+
+                      - name: INVENTORY_SERVICE_URL
+                        value: http://dev-inventory-service-preview.inventory-service.svc.cluster.local:3000
