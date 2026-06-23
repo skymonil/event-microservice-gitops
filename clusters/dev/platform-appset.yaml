@@ -24,6 +24,11 @@ spec:
             namespace: argo-rollouts
             syncWave: "-3"
 
+          - name: kyverno-policies
+            path: security/policies
+            namespace: kyverno
+            syncWave: "1"
+
           - name: kong-gateway
             path: gateway/
             namespace: kong
