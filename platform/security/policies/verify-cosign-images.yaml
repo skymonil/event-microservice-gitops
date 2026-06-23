@@ -1,0 +1,45 @@
+apiVersion: kyverno.io/v1
+
+kind: ClusterPolicy
+
+metadata:
+
+  name: verify-images
+
+spec:
+
+  validationFailureAction: Enforce
+
+  background: false
+
+  rules:
+
+  - name: check-signatures
+
+    match:
+
+      any:
+
+      - resources:
+
+          kinds:
+
+          - Pod
+
+    verifyImages:
+
+    - imageReferences:
+
+      - "docker.io/skymonil/*"
+
+      attestors:
+
+      - count: 1
+
+        entries:
+
+        - keyless:
+
+            issuer: "https://token.actions.githubusercontent.com"
+
+            subject: "https://github.com/skymonil/Event-Based-Microservice-App/.github/workflows/*"
