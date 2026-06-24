@@ -1,0 +1,38 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+
+metadata:
+  name: inject-pod-security-context
+
+spec:
+  background: false
+
+  rules:
+
+  - name: add-pod-security-context
+
+    match:
+
+      any:
+
+      - resources:
+
+          kinds:
+
+          - Pod
+
+    mutate:
+
+      patchStrategicMerge:
+
+        spec:
+
+          securityContext:
+
+            +(runAsNonRoot): true
+
+            +(runAsUser): 1000
+
+            +(runAsGroup): 1000
+
+            +(fsGroup): 1000

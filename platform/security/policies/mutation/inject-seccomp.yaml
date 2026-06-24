@@ -1,0 +1,37 @@
+apiVersion: kyverno.io/v1
+
+kind: ClusterPolicy
+
+metadata:
+
+  name: inject-seccomp
+
+spec:
+
+  background: false
+
+  rules:
+
+  - name: add-runtime-default-seccomp
+
+    match:
+
+      any:
+
+      - resources:
+
+          kinds:
+
+          - Pod
+
+    mutate:
+
+      patchStrategicMerge:
+
+        spec:
+
+          securityContext:
+
+            +(seccompProfile):
+
+              +(type): RuntimeDefault

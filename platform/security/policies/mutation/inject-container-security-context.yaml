@@ -1,0 +1,49 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+
+metadata:
+  name: inject-container-security-context
+
+spec:
+
+  background: false
+
+  rules:
+
+  - name: add-container-security-context
+
+    match:
+
+      any:
+
+      - resources:
+
+          kinds:
+
+          - Pod
+
+    mutate:
+
+      foreach:
+
+      - list: "request.object.spec.containers"
+
+        patchStrategicMerge:
+
+          spec:
+
+            containers:
+
+            - (name): "{{ element.name }}"
+
+              securityContext:
+
+                +(allowPrivilegeEscalation): false
+
+                +(readOnlyRootFilesystem): true
+
+                +(capabilities):
+
+                  drop:
+
+                  - ALL
