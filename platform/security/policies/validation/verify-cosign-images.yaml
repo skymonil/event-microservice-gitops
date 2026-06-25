@@ -29,7 +29,7 @@ spec:
 
       - "docker.io/skymonil/*"
 
-      mutateDigest: true
+      mutateDigest: false
 
       attestors:
 
