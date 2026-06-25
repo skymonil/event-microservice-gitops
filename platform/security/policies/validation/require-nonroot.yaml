@@ -22,11 +22,11 @@ spec:
           kinds:
 
           - Pod
-        namespaces:
-          - user-service
-          - order-service
-          - inventory-service
-          - payment-service
+          namespaces:
+            - user-service
+            - order-service
+            - inventory-service
+            - payment-service
 
     validate:
 
