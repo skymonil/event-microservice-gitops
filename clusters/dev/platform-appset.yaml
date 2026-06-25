@@ -24,8 +24,13 @@ spec:
             namespace: argo-rollouts
             syncWave: "-3"
 
-          - name: kyverno-policies
-            path: security/policies
+          - name: kyverno-validation-policies
+            path: security/policies/validation
+            namespace: kyverno
+            syncWave: "1"
+
+          - name: kyverno-mutation-policies
+            path: security/policies/mutation
             namespace: kyverno
             syncWave: "1"
 
