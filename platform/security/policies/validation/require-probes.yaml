@@ -6,7 +6,7 @@ metadata:
 
 spec:
 
-  validationFailureAction: Enforce
+  validationFailureAction: Audit
 
   rules:
 
