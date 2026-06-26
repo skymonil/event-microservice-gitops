@@ -1,0 +1,47 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+
+metadata:
+  name: postgres-netpol
+  namespace: postgres
+
+spec:
+  podSelector: {}
+
+  policyTypes:
+    - Ingress
+    - Egress
+
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: user-service
+
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: order-service
+
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: inventory-service
+
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: payment-service
+
+      ports:
+        - protocol: TCP
+          port: 5432
+
+  egress:
+    # DNS
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53

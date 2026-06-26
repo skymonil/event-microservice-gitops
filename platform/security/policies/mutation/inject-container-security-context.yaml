@@ -47,3 +47,259 @@ spec:
                   drop:
 
                   - ALL
+
+-- ============================================================
+-- DAG Materializer Metadata Schema — DDL only (no seed data)
+-- Schema  : dag_config
+-- DB      : frmdb
+-- PG      : 16.3
+-- ============================================================
+
+CREATE SCHEMA IF NOT EXISTS dag_config;
+
+
+-- ─────────────────────────────────────────────────────────────
+-- 1. metadata_version
+-- ─────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS dag_config.metadata_version (
+    version     TEXT         NOT NULL DEFAULT '0',
+    updated_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+INSERT INTO dag_config.metadata_version (version) VALUES ('0');
+
+
+-- ─────────────────────────────────────────────────────────────
+-- 2. batch_definition
+-- ─────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS dag_config.batch_definition (
+
+    itenantid            INTEGER       NOT NULL,
+    id                   BIGSERIAL,
+
+    client               TEXT          NOT NULL,
+    tenant               TEXT          NOT NULL,
+    db_name              TEXT          NOT NULL,
+    schema_name          TEXT          NOT NULL,
+    table_name           TEXT          NOT NULL,
+
+    dag_archetype        TEXT          NOT NULL,
+    schedule_cron        TEXT          NOT NULL,
+
+    is_active            BOOLEAN       NOT NULL DEFAULT TRUE,
+
+    context_variable     TEXT,
+
+    max_active_runs      INTEGER       NOT NULL DEFAULT 1,
+    retries              INTEGER       NOT NULL DEFAULT 3,
+    retry_delay_minutes  INTEGER       NOT NULL DEFAULT 5,
+
+    metadata_hash        TEXT,
+
+    description          TEXT,
+    tags                 TEXT[],
+
+    created_at           TIMESTAMPTZ   NOT NULL DEFAULT NOW(),
+    updated_at           TIMESTAMPTZ   NOT NULL DEFAULT NOW(),
+
+    PRIMARY KEY (itenantid, id),
+    UNIQUE (itenantid, client, tenant, db_name, schema_name, table_name)
+
+) PARTITION BY LIST (itenantid);
+
+CREATE TABLE IF NOT EXISTS dag_config.batch_definition_8
+    PARTITION OF dag_config.batch_definition FOR VALUES IN (8);    -- BAPA
+
+CREATE TABLE IF NOT EXISTS dag_config.batch_definition_14
+    PARTITION OF dag_config.batch_definition FOR VALUES IN (14);   -- JPSL
+
+CREATE TABLE IF NOT EXISTS dag_config.batch_definition_21
+    PARTITION OF dag_config.batch_definition FOR VALUES IN (21);   -- PAYMENTAGG
+
+CREATE TABLE IF NOT EXISTS dag_config.batch_definition_22
+    PARTITION OF dag_config.batch_definition FOR VALUES IN (22);   -- GIFTCARD
+
+CREATE INDEX IF NOT EXISTS idx_batch_definition_active
+    ON dag_config.batch_definition (itenantid, is_active);
+
+CREATE INDEX IF NOT EXISTS idx_batch_definition_archetype
+    ON dag_config.batch_definition (itenantid, dag_archetype);
+
+
+-- ─────────────────────────────────────────────────────────────
+-- 3. batch_task
+-- ─────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS dag_config.batch_task (
+
+    itenantid              INTEGER   NOT NULL,
+    id                     BIGSERIAL,
+
+    definition_id          BIGINT    NOT NULL,
+    task_id                TEXT      NOT NULL,
+    operator_type          TEXT      NOT NULL,
+
+    spark_conn_id          TEXT,
+    application_path       TEXT,
+    application_args       JSONB,
+    spark_conf             JSONB,
+
+    python_callable_path   TEXT,
+
+    pool                   TEXT,
+    retries                INTEGER,
+    retry_delay_minutes    INTEGER,
+
+    task_cron_override     TEXT,
+
+    sequence_order         INT,
+    sequencing_reason      TEXT      CHECK (
+        sequencing_reason IN ('resource_constraint', 'data_dependency', 'both')
+        OR sequencing_reason IS NULL
+    ),
+    continue_on_failure    BOOLEAN   NOT NULL DEFAULT FALSE,
+
+    parallel_group         TEXT,
+
+    is_active              BOOLEAN   NOT NULL DEFAULT TRUE,
+
+    PRIMARY KEY (itenantid, id),
+    UNIQUE (itenantid, definition_id, task_id)
+
+) PARTITION BY LIST (itenantid);
+
+CREATE TABLE IF NOT EXISTS dag_config.batch_task_8
+    PARTITION OF dag_config.batch_task FOR VALUES IN (8);    -- BAPA
+
+CREATE TABLE IF NOT EXISTS dag_config.batch_task_14
+    PARTITION OF dag_config.batch_task FOR VALUES IN (14);   -- JPSL
+
+CREATE TABLE IF NOT EXISTS dag_config.batch_task_21
+    PARTITION OF dag_config.batch_task FOR VALUES IN (21);   -- PAYMENTAGG
+
+CREATE TABLE IF NOT EXISTS dag_config.batch_task_22
+    PARTITION OF dag_config.batch_task FOR VALUES IN (22);   -- GIFTCARD
+
+CREATE INDEX IF NOT EXISTS idx_batch_task_definition
+    ON dag_config.batch_task (itenantid, definition_id);
+
+CREATE UNIQUE INDEX IF NOT EXISTS batch_task_seq_order_uidx
+    ON dag_config.batch_task (definition_id, sequence_order)
+    WHERE sequence_order IS NOT NULL AND parallel_group IS NULL;
+
+
+-- ─────────────────────────────────────────────────────────────
+-- 4. batch_dependency
+-- ─────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS dag_config.batch_dependency (
+
+    itenantid              INTEGER  NOT NULL,
+    id                     BIGSERIAL,
+
+    definition_id          BIGINT   NOT NULL,
+
+    upstream_task_id       TEXT     NOT NULL,
+    downstream_task_id     TEXT     NOT NULL,
+
+    PRIMARY KEY (itenantid, id),
+    UNIQUE (itenantid, definition_id, upstream_task_id, downstream_task_id)
+
+) PARTITION BY LIST (itenantid);
+
+CREATE TABLE IF NOT EXISTS dag_config.batch_dependency_8
+    PARTITION OF dag_config.batch_dependency FOR VALUES IN (8);    -- BAPA
+
+CREATE TABLE IF NOT EXISTS dag_config.batch_dependency_14
+    PARTITION OF dag_config.batch_dependency FOR VALUES IN (14);   -- JPSL
+
+CREATE TABLE IF NOT EXISTS dag_config.batch_dependency_21
+    PARTITION OF dag_config.batch_dependency FOR VALUES IN (21);   -- PAYMENTAGG
+
+CREATE TABLE IF NOT EXISTS dag_config.batch_dependency_22
+    PARTITION OF dag_config.batch_dependency FOR VALUES IN (22);   -- GIFTCARD
+
+
+-- ─────────────────────────────────────────────────────────────
+-- 5. Trigger functions and triggers
+-- ─────────────────────────────────────────────────────────────
+
+--1---
+CREATE OR REPLACE FUNCTION dag_config.refresh_dag_metadata()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
+DECLARE
+    v_def_id  BIGINT;
+    v_hash    TEXT;
+BEGIN
+    IF TG_TABLE_NAME LIKE 'batch_definition%' THEN
+        v_def_id := CASE WHEN TG_OP = 'DELETE' THEN OLD.id ELSE NEW.id END;
+    ELSE
+        v_def_id := CASE WHEN TG_OP = 'DELETE' THEN OLD.definition_id
+                         ELSE NEW.definition_id END;
+    END IF;
+
+    SELECT md5(row_to_json(t)::text) INTO v_hash
+    FROM (
+        SELECT
+            bd.id, bd.itenantid, bd.client, bd.tenant, bd.db_name,
+            bd.schema_name, bd.table_name, bd.dag_archetype,
+            bd.schedule_cron, bd.is_active, bd.context_variable,
+            bd.max_active_runs, bd.retries, bd.retry_delay_minutes,
+            bd.description, bd.tags,
+            (
+                SELECT json_agg(bt.* ORDER BY bt.sequence_order NULLS LAST, bt.id)
+                FROM dag_config.batch_task bt
+                WHERE bt.definition_id = bd.id
+            ) AS tasks,
+            (
+                SELECT json_agg(bdep.* ORDER BY bdep.id)
+                FROM dag_config.batch_dependency bdep
+                WHERE bdep.definition_id = bd.id
+            ) AS deps
+        FROM dag_config.batch_definition bd
+        WHERE bd.id = v_def_id
+    ) t;
+
+    UPDATE dag_config.batch_definition
+       SET metadata_hash = v_hash
+     WHERE id = v_def_id;
+
+    UPDATE dag_config.metadata_version
+       SET version    = (version::BIGINT + 1)::TEXT,
+           updated_at = NOW();
+
+    RETURN NULL;
+END;
+$$;
+
+-- 2 ---
+CREATE OR REPLACE FUNCTION dag_config.fn_set_updated_at()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trg_batch_definition_refresh
+    AFTER INSERT
+        OR UPDATE OF client, tenant, db_name, schema_name, table_name,
+                     dag_archetype, schedule_cron, is_active, context_variable,
+                     max_active_runs, retries, retry_delay_minutes,
+                     description, tags
+        OR DELETE
+    ON dag_config.batch_definition
+    FOR EACH ROW EXECUTE FUNCTION dag_config.refresh_dag_metadata();
+
+CREATE TRIGGER trg_batch_definition_updated_at
+    BEFORE UPDATE
+    ON dag_config.batch_definition
+    FOR EACH ROW EXECUTE FUNCTION dag_config.fn_set_updated_at();
+
+CREATE TRIGGER trg_batch_task_refresh
+    AFTER INSERT OR UPDATE OR DELETE
+    ON dag_config.batch_task
+    FOR EACH ROW EXECUTE FUNCTION dag_config.refresh_dag_metadata();
+
+CREATE TRIGGER trg_batch_dependency_refresh
+    AFTER INSERT OR UPDATE OR DELETE
+    ON dag_config.batch_dependency
+    FOR EACH ROW EXECUTE FUNCTION dag_config.refresh_dag_metadata();

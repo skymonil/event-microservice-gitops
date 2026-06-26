@@ -38,6 +38,10 @@ spec:
             path: security/kubescape-operator
             namespace: kubescape
             syncWave: "2"
+          
+          - name: network-policies
+            path: security/network-policies
+            syncWave: "3"
 
           - name: kong-gateway
             path: gateway/
