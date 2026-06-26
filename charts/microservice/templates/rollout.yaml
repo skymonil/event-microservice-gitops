@@ -8,7 +8,7 @@ metadata:
 
 spec:
   replicas: {{ .Values.replicaCount }}
-
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       {{- include "microservice.selectorLabels" . | nindent 6 }}
