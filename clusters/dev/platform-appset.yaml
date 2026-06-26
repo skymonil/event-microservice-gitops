@@ -41,6 +41,7 @@ spec:
           
           - name: network-policies
             path: security/network-policies
+            namespace: argocd
             syncWave: "3"
 
           - name: kong-gateway
