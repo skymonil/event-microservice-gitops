@@ -34,10 +34,10 @@ spec:
             namespace: kyverno
             syncWave: "1"
 
-          - name: kubescape
-            path: security/kubescape-operator
-            namespace: kubescape
-            syncWave: "2"
+#          - name: kubescape
+#            path: security/kubescape-operator
+#            namespace: kubescape
+#            syncWave: "2"
           
           - name: network-policies
             path: security/network-policies
@@ -113,6 +113,11 @@ spec:
             path: state/kafka/connectors
             namespace: kafka
             syncWave: "4"
+
+          - name: falcon
+            path: security/falcon-sensor
+            namespace: falcon
+            syncWave: "5"
 
   template:
     metadata:
