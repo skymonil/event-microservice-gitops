@@ -5,56 +5,34 @@ metadata:
   namespace: kong
 spec:
   podSelector: {}
+
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
+    - Egress
+
   ingress:
-  - {} # Allows all standard ingress
-  # ALLOW API SERVER RETURN TRAFFIC AND HEALTH CHECKS
-  - from:
-    - ipBlock:
-        cidr: 10.43.0.1/32
-    - ipBlock:
-        cidr: 10.0.0.0/8 # Standard internal host network range for K3s/RKE2 clusters
-    ports:
-    - port: 443
-      protocol: TCP
+    - {}
+
   egress:
-  # 1. ALLOW KUBERNETES API SERVER ACCESS
-  - to:
-    - ipBlock:
-        cidr: 10.43.0.1/32
-    - ipBlock:
-        cidr: 10.0.0.0/8 # Covers the underlying host node IP routing the API request
-    ports:
-    - port: 443
-      protocol: TCP
+    # Allow all traffic within the cluster
+    - to:
+        - namespaceSelector: {}
 
-  # 2. ALLOW DNS RESOLUTION
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: kube-system
-    ports:
-    - port: 53
-      protocol: UDP
-    - port: 53
-      protocol: TCP
+    # Allow access to the Kubernetes API Service
+    - to:
+        - ipBlock:
+            cidr: 10.43.0.1/32
+      ports:
+        - protocol: TCP
+          port: 443
 
-  # 3. ALLOW YOUR MICROSERVICES
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: user-service
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: order-service
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: inventory-service
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: payment-service
+    # Allow DNS
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
