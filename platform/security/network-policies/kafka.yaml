@@ -3,6 +3,7 @@ kind: NetworkPolicy
 metadata:
   name: kafka-ingress
   namespace: kafka
+
 spec:
   podSelector:
     matchLabels:
@@ -12,19 +13,37 @@ spec:
     - Ingress
 
   ingress:
+
+    # Allow Kafka components in the same namespace
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kafka
+
+    # Allow application namespaces to connect to Kafka
     - from:
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: user-service
+
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: order-service
+
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: inventory-service
+
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: payment-service
+
       ports:
         - protocol: TCP
           port: 9092
+
+    # Optional: Prometheus/Kafka Exporter
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
