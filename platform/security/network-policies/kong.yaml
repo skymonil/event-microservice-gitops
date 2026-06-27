@@ -1,49 +1,50 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
-
 metadata:
   name: kong
   namespace: kong
-
 spec:
   podSelector: {}
-
   policyTypes:
   - Ingress
   - Egress
-
   ingress:
-  - {}
-
+  - {} # Allows all ingress
   egress:
-
+  # 1. ALLOW KUBERNETES API SERVER ACCESS
   - to:
     - namespaceSelector:
         matchLabels:
-          kubernetes.io/metadata.name: user-service
+          kubernetes.io/metadata.name: default
+    ports:
+    - port: 443
+      protocol: TCP
 
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: order-service
-
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: inventory-service
-
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: payment-service
-
+  # 2. ALLOW DNS RESOLUTION
   - to:
     - namespaceSelector:
         matchLabels:
           kubernetes.io/metadata.name: kube-system
-
     ports:
     - port: 53
       protocol: UDP
     - port: 53
       protocol: TCP
+
+  # 3. ALLOW YOUR MICROSERVICES
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: user-service
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: order-service
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: inventory-service
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: payment-service
