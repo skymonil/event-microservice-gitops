@@ -9,12 +9,23 @@ spec:
   - Ingress
   - Egress
   ingress:
-  - {} # Allows all ingress
+  - {} # Allows all standard ingress
+  # ALLOW API SERVER RETURN TRAFFIC AND HEALTH CHECKS
+  - from:
+    - ipBlock:
+        cidr: 10.43.0.1/32
+    - ipBlock:
+        cidr: 10.0.0.0/8 # Standard internal host network range for K3s/RKE2 clusters
+    ports:
+    - port: 443
+      protocol: TCP
   egress:
-  # 1. ALLOW KUBERNETES API SERVER ACCESS (Updated)
+  # 1. ALLOW KUBERNETES API SERVER ACCESS
   - to:
     - ipBlock:
-        cidr: 10.43.0.1/32 # Explicitly allows the API Server cluster IP
+        cidr: 10.43.0.1/32
+    - ipBlock:
+        cidr: 10.0.0.0/8 # Covers the underlying host node IP routing the API request
     ports:
     - port: 443
       protocol: TCP
