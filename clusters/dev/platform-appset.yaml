@@ -115,7 +115,7 @@ spec:
             syncWave: "4"
 
           - name: falcon
-            path: security/falcon-sensor
+            path: security/falco
             namespace: falcon
             syncWave: "5"
 
