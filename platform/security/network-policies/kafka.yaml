@@ -1,58 +1,30 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
-
 metadata:
-  name: kafka
+  name: kafka-ingress
   namespace: kafka
-
 spec:
-  podSelector: {}
+  podSelector:
+    matchLabels:
+      strimzi.io/name: dev-cluster-kafka
 
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
 
   ingress:
-
-  - from:
-
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: user-service
-
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: order-service
-
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: inventory-service
-
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: payment-service
-
-    ports:
-    - port: 9092
-
-  egress:
-
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: kube-system
-    ports:
-    - port: 53
-      protocol: UDP
-    - port: 53
-      protocol: TCP
-
-
-  - to:
-    - ipBlock:
-        cidr: 10.43.0.1/32
-    ports:
-    - protocol: TCP
-      port: 443
-
-    
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: user-service
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: order-service
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: inventory-service
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: payment-service
+      ports:
+        - protocol: TCP
+          port: 9092
