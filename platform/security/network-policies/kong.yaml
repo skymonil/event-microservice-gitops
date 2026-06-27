@@ -11,11 +11,10 @@ spec:
   ingress:
   - {} # Allows all ingress
   egress:
-  # 1. ALLOW KUBERNETES API SERVER ACCESS
+  # 1. ALLOW KUBERNETES API SERVER ACCESS (Updated)
   - to:
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: default
+    - ipBlock:
+        cidr: 10.43.0.1/32 # Explicitly allows the API Server cluster IP
     ports:
     - port: 443
       protocol: TCP
