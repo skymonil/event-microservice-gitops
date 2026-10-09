@@ -1,0 +1,42 @@
+
+microservice:
+  image:
+    repository: skymonil/house-price-api
+    tag: "2.9"
+    pullPolicy: IfNotPresent
+
+  replicaCount: 1
+
+  service:
+    type: ClusterIP
+    port: 8000
+
+  config:
+    MLFLOW_TRACKING_URI: "https://mlflow.615915.xyz"
+    MLFLOW_MODEL_URI: "models:/HousePricePredictor@champion"
+
+  # Required by the current shared rollout template.
+  analysis:
+    testCmd: "test:smoke"
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+  probes:
+    readiness:
+      httpGet:
+        path: /health
+        port: http
+      initialDelaySeconds: 10
+      periodSeconds: 10
+    liveness:
+      httpGet:
+        path: /health
+        port: http
+      initialDelaySeconds: 30
+      periodSeconds: 20
