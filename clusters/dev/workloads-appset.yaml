@@ -25,7 +25,7 @@ spec:
 
         helm:
           dependencyUpdate: true
-
+          ignoreMissingValueFiles: true
           valueFiles:
             - values.yaml
             - secrets://secrets.enc.yaml
