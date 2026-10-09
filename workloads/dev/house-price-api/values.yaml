@@ -2,7 +2,7 @@
 microservice:
   image:
     repository: skymonil/house-price-api
-    tag: "2.9"
+    tag: "966d1ef20b255fbfe1362b684d301ad925fea527"
     pullPolicy: IfNotPresent
 
   replicaCount: 1
